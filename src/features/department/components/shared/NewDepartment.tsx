@@ -104,7 +104,7 @@ const NewDepartment = ({ setDepartments }: DepartmentsProps) => {
         <Select
           onValueChange={(value) => handleDepartmentChange("type", value)}
         >
-          <SelectTrigger id="dept-type">
+          <SelectTrigger id="dept-type" className="w-full">
             <SelectValue placeholder="Select department type" />
           </SelectTrigger>
           <SelectContent>

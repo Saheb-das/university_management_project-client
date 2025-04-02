@@ -17,7 +17,7 @@ interface DepartmentsProps {
   departments: Department[];
 }
 
-const UpdateCourse = ({ departments }: DepartmentsProps) => {
+const AddSubjectInCourse = ({ departments }: DepartmentsProps) => {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [subjects, setSubjects] = useState<{
     [key: number]: { name: string; code: string }[];
@@ -48,7 +48,7 @@ const UpdateCourse = ({ departments }: DepartmentsProps) => {
           Select Course
         </Label>
         <Select onValueChange={setSelectedCourse}>
-          <SelectTrigger id="course-select">
+          <SelectTrigger id="course-select" className="w-full">
             <SelectValue placeholder="Select a course" />
           </SelectTrigger>
           <SelectContent className="text-[15px]">
@@ -144,4 +144,4 @@ const UpdateCourse = ({ departments }: DepartmentsProps) => {
 };
 
 // export
-export default UpdateCourse;
+export default AddSubjectInCourse;

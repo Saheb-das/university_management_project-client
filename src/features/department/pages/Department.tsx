@@ -4,8 +4,9 @@ import { useState } from "react";
 // internal import
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewDepartment, { Course } from "../components/shared/NewDepartment";
-import UpdateCourse from "../components/shared/UpdateCourse";
 import Container from "@/components/shared/Container";
+import AddNewCourse from "../components/ui/AddNewCourse";
+import AddSubjectInCourse from "../components/shared/UpdateCourse";
 
 export type Department = {
   name: string;
@@ -72,15 +73,21 @@ function Department() {
               <TabsTrigger className="text-base" value="create">
                 Create New Department
               </TabsTrigger>
+              <TabsTrigger className="text-base" value="addCourse">
+                Add New Course
+              </TabsTrigger>
               <TabsTrigger className="text-base" value="update">
-                Update Existing Course
+                Add Course Subjects
               </TabsTrigger>
             </TabsList>
             <TabsContent className="mt-6" value="create">
               <NewDepartment setDepartments={setDepartments} />
             </TabsContent>
+            <TabsContent className="mt-6" value="addCourse">
+              <AddNewCourse />
+            </TabsContent>
             <TabsContent value="update">
-              <UpdateCourse departments={departments} />
+              <AddSubjectInCourse departments={departments} />
             </TabsContent>
           </Tabs>
         </div>
