@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { degreeOptions } from "../shared/NewDepartment";
 
 const departmentTypes = [
   "Science",
@@ -76,10 +77,18 @@ const AddNewCourse = () => {
       />
 
       <Label>Degree</Label>
-      <Input
-        value={course.degree}
-        onChange={(e) => handleCourseChange("degree", e.target.value)}
-      />
+      <Select onValueChange={(value) => handleCourseChange("degree", value)}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select degree" />
+        </SelectTrigger>
+        <SelectContent>
+          {degreeOptions.map((degree) => (
+            <SelectItem key={degree} value={degree}>
+              {degree}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Button className="w-full">Create Course</Button>
     </div>

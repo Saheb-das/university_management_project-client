@@ -18,7 +18,7 @@ import { Department } from "../../pages/Department";
 export type Course = {
   name: string;
   duration: string;
-  semesters: number;
+  semesters: number | null;
   totalFees: string;
   degree: string;
 };
@@ -33,9 +33,11 @@ const initNewDepartment = {
   type: "",
   code: "",
   courses: [
-    { name: "", duration: "", semesters: 0, totalFees: "", degree: "" },
+    { name: "", duration: "", semesters: null, totalFees: "", degree: "" },
   ],
 };
+
+export const degreeOptions = ["Bachelor", "Master", "Ph.D.", "Diploma"];
 
 const NewDepartment = ({ setDepartments }: DepartmentsProps) => {
   const [newDepartment, setNewDepartment] =
@@ -149,9 +151,9 @@ const NewDepartment = ({ setDepartments }: DepartmentsProps) => {
             }
           />
           <Input
-            type="number"
+            type="text"
             placeholder="Number of Semesters"
-            value={course.semesters.toString()}
+            value={course.semesters?.toString()}
             onChange={(e) =>
               handleCourseChange(index, "semesters", e.target.value)
             }
@@ -163,13 +165,22 @@ const NewDepartment = ({ setDepartments }: DepartmentsProps) => {
               handleCourseChange(index, "totalFees", e.target.value)
             }
           />
-          <Input
-            placeholder="Degree"
-            value={course.degree}
-            onChange={(e) =>
-              handleCourseChange(index, "degree", e.target.value)
+          <Select
+            onValueChange={(value) =>
+              handleCourseChange(index, "degree", value)
             }
-          />
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select degree" />
+            </SelectTrigger>
+            <SelectContent>
+              {degreeOptions.map((degree) => (
+                <SelectItem key={degree} value={degree}>
+                  {degree}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       ))}
       <Button onClick={addCourse}>
