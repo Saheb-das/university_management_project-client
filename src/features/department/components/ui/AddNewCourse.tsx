@@ -1,4 +1,7 @@
+// external import
 import { useState } from "react";
+
+// internal import
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +15,11 @@ import { Label } from "@/components/ui/label";
 import { degreeOptions } from "../shared/NewDepartment";
 
 const departmentTypes = [
-  "Science",
-  "Arts",
-  "Commerce",
-  "Engineering",
-  "Medical",
+  "science",
+  "arts",
+  "commerce",
+  "engineering",
+  "medical",
 ];
 
 const AddNewCourse = () => {
@@ -50,7 +53,7 @@ const AddNewCourse = () => {
         </SelectTrigger>
         <SelectContent>
           {departmentTypes.map((type) => (
-            <SelectItem key={type} value={type}>
+            <SelectItem key={type} value={type} className="capitalize">
               {type}
             </SelectItem>
           ))}
