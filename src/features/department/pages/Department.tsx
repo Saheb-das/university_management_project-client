@@ -3,17 +3,16 @@ import { useState } from "react";
 
 // internal import
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import NewDepartment, { Course } from "../components/shared/NewDepartment";
+import NewDepartment, { TCourse } from "../components/shared/NewDepartment";
 import Container from "@/components/shared/Container";
 import AddNewCourse from "../components/ui/AddNewCourse";
 import AddSubjectInCourse from "../components/shared/UpdateCourse";
-import InternalDepartment from "../components/ui/InternalDeprt";
 
 export type Department = {
   name: string;
   type: string;
   code: string;
-  courses: Course[];
+  courses: TCourse[];
 };
 
 const dummyDepartments: Department[] = [
@@ -62,14 +61,11 @@ const dummyDepartments: Department[] = [
 ];
 
 function Department() {
-  const [departments, setDepartments] =
-    useState<Department[]>(dummyDepartments);
-
   return (
     <>
       <Container>
         <div className="container mx-auto py-3  ">
-          <Tabs defaultValue="create">
+          <Tabs defaultValue="public">
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger className="text-base" value="public">
                 Academic Department
@@ -82,13 +78,13 @@ function Department() {
               </TabsTrigger>
             </TabsList>
             <TabsContent className="mt-6" value="public">
-              <NewDepartment setDepartments={setDepartments} />
+              <NewDepartment />
             </TabsContent>
             <TabsContent className="mt-6" value="addCourse">
               <AddNewCourse />
             </TabsContent>
             <TabsContent value="update">
-              <AddSubjectInCourse departments={departments} />
+              <AddSubjectInCourse />
             </TabsContent>
           </Tabs>
         </div>

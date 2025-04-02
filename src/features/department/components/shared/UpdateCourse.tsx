@@ -11,13 +11,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { Department } from "../../pages/Department";
 
-interface DepartmentsProps {
-  departments: Department[];
-}
+const departments = [
+  {
+    name: "Computer Science",
+    type: "Engineering",
+    code: "CSE",
+    courses: [
+      {
+        name: "B.Tech Computer Science",
+        duration: "4 Years",
+        semesters: 8,
+        totalFees: "400000",
+        degree: "B.Tech",
+      },
+      {
+        name: "M.Tech Computer Science",
+        duration: "2 Years",
+        semesters: 4,
+        totalFees: "250000",
+        degree: "M.Tech",
+      },
+    ],
+  },
+  {
+    name: "Electrical Engineering",
+    type: "Engineering",
+    code: "EEE",
+    courses: [
+      {
+        name: "B.Tech Electrical",
+        duration: "4 Years",
+        semesters: 8,
+        totalFees: "380000",
+        degree: "B.Tech",
+      },
+      {
+        name: "Diploma Electrical",
+        duration: "3 Years",
+        semesters: 6,
+        totalFees: "150000",
+        degree: "Diploma",
+      },
+    ],
+  },
+];
 
-const AddSubjectInCourse = ({ departments }: DepartmentsProps) => {
+const AddSubjectInCourse = () => {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [subjects, setSubjects] = useState<{
     [key: number]: { name: string; code: string }[];
