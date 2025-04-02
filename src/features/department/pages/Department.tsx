@@ -74,9 +74,6 @@ function Department() {
               <TabsTrigger className="text-base" value="public">
                 Academic Department
               </TabsTrigger>
-              <TabsTrigger className="text-base" value="private">
-                Internal Department
-              </TabsTrigger>
               <TabsTrigger className="text-base" value="addCourse">
                 Add New Course
               </TabsTrigger>
@@ -86,9 +83,6 @@ function Department() {
             </TabsList>
             <TabsContent className="mt-6" value="public">
               <NewDepartment setDepartments={setDepartments} />
-            </TabsContent>
-            <TabsContent className="mt-6" value="private">
-              <InternalDepartment />
             </TabsContent>
             <TabsContent className="mt-6" value="addCourse">
               <AddNewCourse />
