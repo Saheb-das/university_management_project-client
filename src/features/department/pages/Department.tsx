@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewDepartment from "../components/shared/NewDepartment";
 import Container from "@/components/shared/Container";
 import AddNewCourse from "../components/ui/AddNewCourse";
-import AddSubjectInCourse from "../components/shared/UpdateCourse";
+import AddSubjectInCourse from "../components/shared/AddSubjectInCourse";
 
 function Department() {
   return (
