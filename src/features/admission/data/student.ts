@@ -1,14 +1,32 @@
-export const studentFields = [
+import { studentSchema } from "@/zod/user";
+import { z } from "zod";
+
+type StudentFieldName = keyof z.infer<typeof studentSchema>;
+
+export const studentFields: {
+  name: StudentFieldName;
+  type: string;
+  placeholder: string;
+}[] = [
   { name: "firstName", type: "text", placeholder: "First Name" },
   { name: "lastName", type: "text", placeholder: "Last Name" },
   { name: "email", type: "email", placeholder: "Email" },
   { name: "phone", type: "tel", placeholder: "Phone" },
-  { name: "department", type: "text", placeholder: "Department" },
-  { name: "course", type: "text", placeholder: "Course" },
-  { name: "degree", type: "text", placeholder: "Degree" },
+  { name: "admissionYear", type: "text", placeholder: "Admission Year" },
+  { name: "address", type: "text", placeholder: "Address" },
+  { name: "adhaarNo", type: "text", placeholder: "Aadhaar Number" },
+  { name: "dob", type: "text", placeholder: "Date of Birth (dd-mm-yyyy)" },
+  { name: "guardianName", type: "text", placeholder: "Guardian's Name" },
   {
-    name: "admissionYear",
+    name: "relWithGuardian",
     type: "text",
-    placeholder: "Admission Year",
+    placeholder: "Relation with Guardian",
   },
-] as const;
+  {
+    name: "gradeAtHigherSec",
+    type: "text",
+    placeholder: "Grade at Higher Secondary",
+  },
+  { name: "gradeAtSec", type: "text", placeholder: "Grade at Secondary" },
+  { name: "password", type: "password", placeholder: "Password" },
+];
