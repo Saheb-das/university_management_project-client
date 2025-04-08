@@ -1,5 +1,5 @@
 // external import
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // internal import
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ const batchList = [
   { title: "master_DS_2021", id: "batch2" },
 ];
 
-const BatchSelector: React.FC = () => {
+const BatchSelector = () => {
   const [department, setDepartment] = useState("");
   const [degree, setDegree] = useState("");
   const [course, setCourse] = useState("");

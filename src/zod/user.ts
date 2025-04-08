@@ -57,6 +57,7 @@ export const studentSchema = z.object({
   gradeAtHigherSec: z.string().min(2, "atleast 2 char"),
   gradeAtSec: z.string().min(2, "atleast 2 char"),
   admissionYear: z.string().min(4, "atleast 4 char required"),
+  batch: z.string(),
 });
 
 export type TStudentClient = z.infer<typeof studentSchema>;

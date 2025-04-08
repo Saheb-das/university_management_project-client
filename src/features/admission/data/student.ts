@@ -12,7 +12,6 @@ export const studentFields: {
   { name: "lastName", type: "text", placeholder: "Last Name" },
   { name: "email", type: "email", placeholder: "Email" },
   { name: "phone", type: "tel", placeholder: "Phone" },
-  { name: "admissionYear", type: "text", placeholder: "Admission Year" },
   { name: "address", type: "text", placeholder: "Address" },
   { name: "adhaarNo", type: "text", placeholder: "Aadhaar Number" },
   { name: "dob", type: "text", placeholder: "Date of Birth (dd-mm-yyyy)" },
@@ -29,4 +28,6 @@ export const studentFields: {
   },
   { name: "gradeAtSec", type: "text", placeholder: "Grade at Secondary" },
   { name: "password", type: "password", placeholder: "Password" },
+  { name: "admissionYear", type: "text", placeholder: "Admission Year" },
+  { name: "batch", type: "text", placeholder: "Batch Name" },
 ];
