@@ -38,7 +38,54 @@ const NewMaterial = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div className="space-y-2">
+              <Label className="text-base" htmlFor="department">
+                Department
+              </Label>
+              <Select>
+                <SelectTrigger id="department" className="w-full">
+                  <SelectValue placeholder="Select department" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cs">Computer Science</SelectItem>
+                  <SelectItem value="ee">Electrical Engineering</SelectItem>
+                  <SelectItem value="me">Mechanical Engineering</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-base" htmlFor="degree">
+                Degree
+              </Label>
+              <Select>
+                <SelectTrigger id="degree" className="w-full">
+                  <SelectValue placeholder="Select degree" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="btech">B.Tech</SelectItem>
+                  <SelectItem value="mtech">M.Tech</SelectItem>
+                  <SelectItem value="phd">Ph.D</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-base" htmlFor="batch">
+                Batch
+              </Label>
+              <Select>
+                <SelectTrigger id="batch" className="w-full">
+                  <SelectValue placeholder="Select Batch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1st">bachelor-CSE-2021</SelectItem>
+                  <SelectItem value="2nd">bachelor-EEE-2021</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="space-y-2">
               <Label className="text-base" htmlFor="semester">
                 Semester
@@ -55,36 +102,23 @@ const NewMaterial = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label className="text-base" htmlFor="department">
-                Department
-              </Label>
-              <Select>
-                <SelectTrigger id="department" className="w-full">
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cs">Computer Science</SelectItem>
-                  <SelectItem value="ee">Electrical Engineering</SelectItem>
-                  <SelectItem value="me">Mechanical Engineering</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-base" htmlFor="degree">
-                Degree
-              </Label>
-              <Select>
-                <SelectTrigger id="degree" className="w-full">
-                  <SelectValue placeholder="Select degree" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="btech">B.Tech</SelectItem>
-                  <SelectItem value="mtech">M.Tech</SelectItem>
-                  <SelectItem value="phd">Ph.D</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-base" htmlFor="subject">
+              Subject
+            </Label>
+            <Select>
+              <SelectTrigger id="subject" className="w-full">
+                <SelectValue placeholder="Select subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1st">subject 1</SelectItem>
+                <SelectItem value="2nd">subject 2</SelectItem>
+                <SelectItem value="3rd">subject 3</SelectItem>
+                <SelectItem value="4th">subject 4</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label className="text-base" htmlFor="title">

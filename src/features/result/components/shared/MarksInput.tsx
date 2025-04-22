@@ -14,7 +14,7 @@ interface IMarksInputProps {
 
 const MarksInput = ({ subject, student, marks, onMarks }: IMarksInputProps) => {
   return (
-    <div key={subject.id} className="mb-2">
+    <div key={subject.id} className="mb-5">
       <Label className="text-base" htmlFor={`subject-${subject.id}`}>
         {subject.name}
       </Label>

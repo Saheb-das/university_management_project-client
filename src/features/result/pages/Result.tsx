@@ -5,6 +5,14 @@ import ResultFilter, { TFilters } from "../components/ui/ResultFilter";
 import FilteredList from "../components/ui/FilteredList";
 import MarksInput from "../components/shared/MarksInput";
 import Container from "@/components/shared/Container";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // dummy data
 export const students = [
@@ -68,6 +76,13 @@ export const subjects = [
   { id: 5, name: "World History", semester: 2, department: "History" },
 ];
 
+const exams = [
+  { id: 1, examType: "1st internal" },
+  { id: 2, examType: "2nd internal" },
+  { id: 3, examType: "final" },
+  { id: 4, examType: "lab" },
+];
+
 export interface IStudent {
   id: number;
   name: string;
@@ -85,12 +100,15 @@ export interface ISubject {
   department: string;
 }
 
+type ExamType = "1st internal" | "2nd internal" | "final" | "lab";
+
 export type TMarks = Record<number, Record<number, string>>;
 
 function Result() {
   const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<IStudent | null>(null);
   const [marks, setMarks] = useState<TMarks>({});
+  const [exam, setExam] = useState<ExamType | string>("");
 
   const getStudents = (filters: TFilters) => {
     const filtered = students.filter(
@@ -156,6 +174,26 @@ function Result() {
               <h2 className="text-xl font-bold mb-2">
                 {selectedStudent.name}'s Subjects
               </h2>
+              {/* select exam type */}
+              <div className="mb-4">
+                <Label className="text-base" htmlFor="exam">
+                  Examination
+                </Label>
+                <Select onValueChange={setExam}>
+                  <SelectTrigger className="mt-2 w-full" id="exam">
+                    <SelectValue placeholder="Select Exam" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {exams &&
+                      exams.map((exam) => (
+                        <SelectItem key={exam.id} value={exam.examType}>
+                          {exam.examType}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {subjects
                 .filter(
                   (subject) =>

@@ -19,57 +19,62 @@ export type TDegreeData = {
   diploma: { department: string; semester: number }[];
 };
 
-// dummy data
-const data: TDegreeData = {
-  bachelor: [
-    { department: "Computer Science", semester: 8 },
-    { department: "Electrical Engineering", semester: 8 },
-    { department: "Mechanical Engineering", semester: 8 },
-    { department: "Civil Engineering", semester: 8 },
-    { department: "Business Administration", semester: 6 },
-  ],
-  master: [
-    { department: "Computer Science", semester: 4 },
-    { department: "Electrical Engineering", semester: 4 },
-    { department: "Data Science", semester: 4 },
-    { department: "Civil Engineering", semester: 4 },
-    { department: "MBA (Business Administration)", semester: 4 },
-  ],
-  phd: [
-    { department: "Computer Science", semester: "Depends on Research" },
-    { department: "Physics", semester: "Depends on Research" },
-    { department: "Electrical Engineering", semester: "Depends on Research" },
-    { department: "Economics", semester: "Depends on Research" },
-    { department: "Mechanical Engineering", semester: "Depends on Research" },
-  ],
-  diploma: [
-    { department: "Computer Science", semester: 6 },
-    { department: "Electrical Engineering", semester: 6 },
-    { department: "Mechanical Engineering", semester: 6 },
-    { department: "Civil Engineering", semester: 6 },
-    { department: "Graphic Design", semester: 4 },
-  ],
-};
+const batchList = [
+  { id: "1", batchName: "bachelor-CSE-2020" },
+  { id: "2", batchName: "bachelor-CSE-2021" },
+  { id: "3", batchName: "bachelor-ECE-2020" },
+  { id: "4", batchName: "bachelor-EEE-2019" },
+  { id: "5", batchName: "bachelor-MECH-2022" },
+  { id: "6", batchName: "bachelor-CIVIL-2023" },
+  { id: "7", batchName: "master-CSE-2022" },
+  { id: "8", batchName: "master-ECE-2021" },
+  { id: "9", batchName: "master-MATH-2020" },
+  { id: "10", batchName: "diploma-IT-2021" },
+];
+
+const semesterList = [
+  { id: "sem-1", semNo: 1 },
+  { id: "sem-2", semNo: 2 },
+  { id: "sem-3", semNo: 3 },
+  { id: "sem-4", semNo: 4 },
+  { id: "sem-5", semNo: 5 },
+  { id: "sem-6", semNo: 6 },
+  { id: "sem-7", semNo: 7 },
+  { id: "sem-8", semNo: 8 },
+];
+
+const subjectList = [
+  { id: "sub-1", subjectName: "Mathematics I" },
+  { id: "sub-2", subjectName: "Physics I" },
+  { id: "sub-3", subjectName: "Computer Fundamentals" },
+  { id: "sub-4", subjectName: "Programming in C" },
+  { id: "sub-5", subjectName: "English Communication" },
+  { id: "sub-6", subjectName: "Data Structures" },
+  { id: "sub-7", subjectName: "Digital Logic Design" },
+  { id: "sub-8", subjectName: "Discrete Mathematics" },
+  { id: "sub-9", subjectName: "Object-Oriented Programming" },
+  { id: "sub-10", subjectName: "Database Management Systems" },
+];
 
 export interface IAssignTeacher {
-  degree: keyof TDegreeData | string;
-  department: string;
+  batch: string;
   semester: string;
+  subject: string;
 }
 
 interface AssignTeacherProps {
-  onAssignTeacher: ({ degree, department, semester }: IAssignTeacher) => void;
+  onAssignTeacher: ({ batch, semester, subject }: IAssignTeacher) => void;
 }
 
 function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
-  const [degree, setDegree] = useState<keyof TDegreeData | string>("");
-  const [department, setDepartment] = useState("");
+  const [batch, setBatch] = useState<string>("");
   const [semester, setSemester] = useState<string>("");
+  const [subject, setSubject] = useState("");
 
   const handleAssign = () => {
-    if (!degree || !department || !semester) return;
+    if (!batch || !subject || !semester) return;
 
-    onAssignTeacher({ degree, department, semester });
+    onAssignTeacher({ batch, subject, semester });
   };
 
   return (
@@ -78,42 +83,21 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
         Assign Teacher to Department
       </h2>
 
-      {/* Select Degree */}
-      <div>
-        <Label className="text-sm font-medium text-foreground">Degree</Label>
-        <Select value={degree} onValueChange={setDegree}>
-          <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder="Select Degree" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="bachelor">Bachelor</SelectItem>
-            <SelectItem value="master">Master</SelectItem>
-            <SelectItem value="phd">PhD</SelectItem>
-            <SelectItem value="diploma">Diploma</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Select Department */}
+      {/* Select Batch */}
       <div>
         <Label className="text-sm font-medium text-foreground">
-          Department
+          Batch Name
         </Label>
-        <Select
-          value={department}
-          onValueChange={setDepartment}
-          disabled={!degree}
-        >
+        <Select value={batch} onValueChange={setBatch}>
           <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder="Select Department" />
+            <SelectValue placeholder="Select Batch" />
           </SelectTrigger>
           <SelectContent>
-            {degree &&
-              data[degree as keyof TDegreeData]?.map((item) => (
-                <SelectItem key={item.department} value={item.department}>
-                  {item.department}
-                </SelectItem>
-              ))}
+            {batchList.map((batch) => (
+              <SelectItem key={batch.id} value={batch.batchName}>
+                {batch.batchName}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -121,35 +105,40 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
       {/* Select Semester */}
       <div>
         <Label className="text-sm font-medium text-foreground">Semester</Label>
-        <Select
-          value={semester}
-          onValueChange={setSemester}
-          disabled={!degree || !department}
-        >
+        <Select value={semester} onValueChange={setSemester} disabled={!batch}>
           <SelectTrigger className="w-full mt-1">
             <SelectValue placeholder="Select Semester" />
           </SelectTrigger>
           <SelectContent>
-            {degree &&
-              department &&
-              (() => {
-                const semesterCount = data[degree as keyof TDegreeData].find(
-                  (item) => item.department === department
-                )?.semester;
+            {batch &&
+              semesterList?.map((sem) => (
+                <SelectItem key={sem.id} value={sem.semNo.toString()}>
+                  Semester {sem.semNo}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-                if (typeof semesterCount === "number") {
-                  return Array.from({ length: semesterCount }, (_, index) => (
-                    <SelectItem key={index} value={`${index + 1}`}>
-                      Semester {index + 1}
-                    </SelectItem>
-                  ));
-                }
-                return (
-                  <SelectItem value="Depends on Research">
-                    Depends on Research
-                  </SelectItem>
-                );
-              })()}
+      {/* Select Subject */}
+      <div>
+        <Label className="text-sm font-medium text-foreground">Subject</Label>
+        <Select
+          value={subject}
+          onValueChange={setSubject}
+          disabled={!batch || !semester}
+        >
+          <SelectTrigger className="w-full mt-1">
+            <SelectValue placeholder="Select Subject" />
+          </SelectTrigger>
+          <SelectContent>
+            {batch &&
+              semester &&
+              subjectList?.map((sub) => (
+                <SelectItem key={sub.id} value={sub.subjectName}>
+                  {sub.subjectName}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
@@ -157,7 +146,7 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
       {/* Assign Button */}
       <Button
         onClick={handleAssign}
-        disabled={!degree || !department || !semester}
+        disabled={!batch || !subject || !semester}
         className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-medium py-2 rounded-lg"
       >
         Assign Teacher

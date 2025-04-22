@@ -5,12 +5,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import LabeledInput from "../shared/LabeledInput";
+import { TRole } from "@/zod/auth";
 
 export interface UpdateProps {
   email: string;
   address: string;
   phoneNo: string;
+  role: TRole;
   profileImg: string;
+  highestDegree?: string;
+  specialization?: string;
 }
 
 interface UpdateProfileProps {
@@ -24,6 +28,9 @@ function UpdateProfile({ userData, onUpdate }: UpdateProfileProps) {
     address: userData.address,
     phoneNo: userData.phoneNo,
     profileImg: userData.profileImg,
+    role: userData.role,
+    highestDegree: userData.highestDegree,
+    specialization: userData.specialization,
   });
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +87,25 @@ function UpdateProfile({ userData, onUpdate }: UpdateProfileProps) {
             value={updatableData.phoneNo}
             handleChange={handleUpdate}
           />
+
+          {userData.role !== "student" && (
+            <>
+              <LabeledInput
+                name="highestDegree"
+                type="string"
+                label="highestDegree"
+                value={updatableData.highestDegree || ""}
+                handleChange={handleUpdate}
+              />
+              <LabeledInput
+                name="specialization"
+                type="string"
+                label="specialization"
+                value={updatableData.specialization || ""}
+                handleChange={handleUpdate}
+              />
+            </>
+          )}
 
           <LabeledInput
             name="profileImg"

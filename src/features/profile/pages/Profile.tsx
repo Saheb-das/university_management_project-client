@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShowProfile from "../components/ui/ShowProfile";
 import UpdateProfile from "../components/ui/UpdateProfile";
 import ChangePassword from "../components/ui/ChangePassword";
+import { TRole } from "@/zod/auth";
 
 export interface IPassword {
   oldPassword: string;
@@ -18,6 +19,7 @@ export interface IProfile {
   email: string;
   phoneNo: string;
   address: string;
+  role: TRole;
   highestDegree: string;
   specialization: string;
   bankName: string;
@@ -32,6 +34,7 @@ const dummyProfile: IProfile = {
   email: "john.doe@example.com",
   phoneNo: "+1-202-555-0191",
   address: "1234 Elm Street, Springfield, IL, USA",
+  role: "accountant",
   highestDegree: "Master of Science",
   specialization: "Computer Science",
   bankName: "Bank of America",

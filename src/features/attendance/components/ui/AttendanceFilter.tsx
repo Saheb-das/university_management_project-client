@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/select";
 
 export interface IFilters {
+  batch: string;
   semester: string;
-  department: string;
-  degree: string;
+  subject: string;
 }
 
 interface AttendanceFormProps {
@@ -24,13 +24,13 @@ interface AttendanceFormProps {
 }
 
 function AttendanceFilter({ onGetStudents }: AttendanceFormProps) {
+  const [batch, setBatch] = useState("");
   const [semester, setSemester] = useState("");
-  const [department, setDepartment] = useState("");
-  const [degree, setDegree] = useState("");
+  const [subject, setSubject] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onGetStudents({ semester, department, degree });
+    onGetStudents({ semester, batch, subject });
   };
 
   return (
@@ -42,9 +42,23 @@ function AttendanceFilter({ onGetStudents }: AttendanceFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
+              <Label htmlFor="batch">Batch</Label>
+              <Select value={batch} onValueChange={setBatch}>
+                <SelectTrigger id="batch" className="w-full">
+                  <SelectValue placeholder="Select Batch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cs">Computer Science</SelectItem>
+                  <SelectItem value="ee">Electrical Engineering</SelectItem>
+                  <SelectItem value="me">Mechanical Engineering</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="semester">Semester</Label>
               <Select value={semester} onValueChange={setSemester}>
-                <SelectTrigger id="semester">
+                <SelectTrigger id="semester" className="w-full">
                   <SelectValue placeholder="Select semester" />
                 </SelectTrigger>
                 <SelectContent>
@@ -55,24 +69,12 @@ function AttendanceFilter({ onGetStudents }: AttendanceFormProps) {
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Select value={department} onValueChange={setDepartment}>
-                <SelectTrigger id="department">
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cs">Computer Science</SelectItem>
-                  <SelectItem value="ee">Electrical Engineering</SelectItem>
-                  <SelectItem value="me">Mechanical Engineering</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="degree">Degree</Label>
-              <Select value={degree} onValueChange={setDegree}>
-                <SelectTrigger id="degree">
-                  <SelectValue placeholder="Select degree" />
+              <Label htmlFor="subject">Subject</Label>
+              <Select value={subject} onValueChange={setSubject}>
+                <SelectTrigger id="subject" className="w-full">
+                  <SelectValue placeholder="Select Subject" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="btech">B.Tech</SelectItem>

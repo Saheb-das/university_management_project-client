@@ -1,5 +1,13 @@
 // internal import
+import { Label } from "@/components/ui/label";
 import NoteItem from "../components/shared/NoteItem";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const courses = [
   {
@@ -42,6 +50,21 @@ const courses = [
 const Notes = () => {
   return (
     <div className=" pt-6 px-2">
+      <div className="my-4 pb-6">
+        <Label className="text-base" htmlFor="semester">
+          Semester
+        </Label>
+        <Select>
+          <SelectTrigger id="semester" className="w-full">
+            <SelectValue placeholder="Select semester" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="1">sem 1</SelectItem>
+            <SelectItem value="2">sem 2</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="grid grid-cols-3   gap-4">
         {courses.map((item) => (
           <NoteItem
