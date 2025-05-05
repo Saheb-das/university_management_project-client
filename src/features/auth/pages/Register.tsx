@@ -1,7 +1,8 @@
 // external import
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useNavigate } from "react-router";
 
 // internal import
 import { registerSchema } from "@/zod/auth";
@@ -15,29 +16,70 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRegister } from "../hooks/useRegister";
+
+// import types
+import { IRegisterClient } from "../../../types/auth";
 
 type FormData = z.infer<typeof registerSchema>;
 
 function Register() {
+  const { mutate } = useRegister();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<FormData>({
     resolver: zodResolver(registerSchema),
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    try {
-      const result = console.log(data);
+    // transformation data here before calling mutate
+    const transaformData: IRegisterClient = {
+      user: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+        address: data.address,
+        phoneNo: data.phoneNo,
+        adhaarNo: data.adhaarNo,
+        highestDegree: data.highestDegree,
+        specializedIn: data.specialization,
+        accountNo: data.accountNo,
+        ifscCode: data.ifscCode,
+        bankName: data.bankName,
+        accountHolderName: data.accountHolderName,
+      },
+      collage: {
+        name: data.collageName,
+        address: data.collageAddress,
+        registrationNo: data.collageRegNo,
+        established: data.collageEstablishedYear,
+      },
+      collageBankDetails: {
+        accountNo: data.collageAccountNo,
+        ifscCode: data.collageIfscCode,
+        bankName: data.collageBankName,
+        accountHolderName: data.collageAccountHolderName,
+      },
+    };
 
-      console.log("result", result);
-    } catch (error) {
-      console.error("errors: ", error);
-    } finally {
-      reset();
-    }
+    mutate(transaformData, {
+      onSuccess: () => {
+        navigate("/");
+      },
+      onError: (error) => {
+        console.error("Error during registration: ", error);
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
   return (
     <>
@@ -54,20 +96,24 @@ function Register() {
             <div>
               <h3 className="text-lg font-semibold mb-3">User Details</h3>
 
-              <Select
-                value={"superadmin"}
-                // {...register("role")}
-              >
-                <SelectTrigger className="mb-4 w-full">
-                  <SelectValue placeholder="select your role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="superadmin">Super Admin</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <input type="hidden" {...register("role")} />
+              <Controller
+                name="role"
+                control={control}
+                defaultValue="superadmin"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="mb-4 w-full">
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="superadmin">Super Admin</SelectItem>
+                        {/* Add more roles if needed */}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
 
               <div className="mb-4">
                 <Input
@@ -300,6 +346,20 @@ function Register() {
                 <Input
                   className="mb-1"
                   type="text"
+                  placeholder="College Established Year"
+                  {...register("collageEstablishedYear")}
+                />
+                {errors.collageEstablishedYear && (
+                  <p className="text-red-500 text-sm">
+                    {errors.collageEstablishedYear.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <Input
+                  className="mb-1"
+                  type="text"
                   placeholder="Account No"
                   {...register("collageAccountNo")}
                 />
@@ -356,7 +416,7 @@ function Register() {
 
           {/* Submit Button */}
           <div className="flex justify-center mt-6">
-            <Button type="submit" className="w-full max-w-xs">
+            <Button type="submit" className="w-full max-w-xs cursor-pointer">
               Register
             </Button>
           </div>

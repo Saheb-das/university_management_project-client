@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ErrorBoundary } from "react-error-boundary";
 import {
   XAxis,
   YAxis,
@@ -18,6 +19,7 @@ interface ChartProps<T> {
 
 function LineChartStats<T>({ title, data, xKey, children }: ChartProps<T>) {
   return (
+    // <ErrorBoundary fallback={<div>Something went wrong</div>}>
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
@@ -35,6 +37,7 @@ function LineChartStats<T>({ title, data, xKey, children }: ChartProps<T>) {
         </ResponsiveContainer>
       </CardContent>
     </Card>
+    // </ErrorBoundary>
   );
 }
 

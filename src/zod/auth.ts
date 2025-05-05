@@ -32,6 +32,7 @@ export const registerSchema = z.object({
   collageName: z.string().min(10, "atleast 10 char"),
   collageAddress: z.string().min(10, "atleast 10 char"),
   collageRegNo: z.string().min(6, "6 char required"),
+  collageEstablishedYear: z.string().min(4, "year required. ( yyyy )"),
   collageAccountNo: z.string(),
   collageIfscCode: z.string(),
   collageBankName: z.string(),

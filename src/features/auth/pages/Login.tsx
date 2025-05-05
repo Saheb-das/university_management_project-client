@@ -2,6 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 
 // internal import
@@ -16,12 +17,25 @@ import {
 } from "@/components/ui/select";
 import { loginSchema, TRole } from "@/zod/auth";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { useLogin } from "../hooks/useLogin";
+import { setAuthToken } from "@/utils/authToken";
 
 type FormData = z.infer<typeof loginSchema>;
+type TApiResponse = {
+  success: boolean;
+  message: string;
+  token: string;
+  user: {
+    id: string;
+    role: TRole;
+    email: string;
+  };
+};
 
 function Login() {
   const [role, setRole] = useState<TRole>("student");
+  const { mutate } = useLogin();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -43,15 +57,18 @@ function Login() {
   };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    try {
-      const result = console.log(data);
+    mutate(data, {
+      onSuccess: (res: TApiResponse) => {
+        const { user, token } = res;
 
-      console.log("result", result);
-    } catch (error) {
-      console.error("errors: ", error);
-    } finally {
-      reset();
-    }
+        setAuthToken(token.split(" ")[1]);
+
+        navigate(`/${user.role}s/${user.id}`);
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
   return (
     <>
@@ -61,11 +78,7 @@ function Login() {
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* role field */}
-          <Select
-            value={role}
-            onValueChange={handleChange}
-            // {...register("role")}
-          >
+          <Select value={role} onValueChange={handleChange}>
             <SelectTrigger className="mb-4 w-full">
               <SelectValue placeholder="select your role" />
             </SelectTrigger>

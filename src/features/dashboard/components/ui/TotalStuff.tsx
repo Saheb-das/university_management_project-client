@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface IStaff {
-  accountants: number;
-  examCellWorkers: number;
-  counsellors: number;
+interface IStuff {
+  [key: string]: number;
 }
 
-const TotalStuff = ({ staffData }: { staffData: IStaff }) => {
+const TotalStuff = ({ stuffData }: { stuffData: IStuff[] }) => {
+  const data = stuffData.reduce((acc, cur) => {
+    return { ...acc, ...cur };
+  }, {});
+
   return (
     <Card className=" shadow-xl  ">
       <CardHeader>
@@ -16,15 +18,15 @@ const TotalStuff = ({ staffData }: { staffData: IStaff }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center">
             <h3 className="text-lg font-semibold">Accountants</h3>
-            <p className="text-3xl font-bold">{staffData.accountants}</p>
+            <p className="text-3xl font-bold">{data["accountant"]}</p>
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold">Exam Cell Workers</h3>
-            <p className="text-3xl font-bold">{staffData.examCellWorkers}</p>
+            <p className="text-3xl font-bold">{data["examceller"]}</p>
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold">Counsellors</h3>
-            <p className="text-3xl font-bold">{staffData.counsellors}</p>
+            <p className="text-3xl font-bold">{data["counsellor"]}</p>
           </div>
         </div>
       </CardContent>
