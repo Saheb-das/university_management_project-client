@@ -1,6 +1,3 @@
-// external import
-import { ErrorBoundary } from "react-error-boundary";
-
 // internal import
 import {
   Card,
@@ -34,7 +31,6 @@ function BarChartStats<T>({
   children,
 }: ChartProps<T>) {
   return (
-    // <ErrorBoundary fallback={<div>Something went wrong</div>}>
     <Card>
       <CardHeader>
         <CardTitle className="text-lg capitalize">{title}</CardTitle>
@@ -52,7 +48,6 @@ function BarChartStats<T>({
         </ResponsiveContainer>
       </CardContent>
     </Card>
-    // </ErrorBoundary>
   );
 }
 

@@ -1,11 +1,27 @@
+// external improt
+import { Outlet, useParams } from "react-router";
+
 // internal import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TransactionLists from "../components/ui/TransactionLists";
-import { Outlet } from "react-router";
 import Container from "@/components/shared/Container";
+import { useSalary } from "../hooks/useSalary";
 
 const Salary = () => {
-  // TODO: here api call for fetching transaction list for a particular user
+  const { userRole, userId } = useParams();
+
+  if (!userRole || !userId) {
+    return (
+      <p>
+        userRole:{userRole} or userId:{userId} possibliy undefined
+      </p>
+    );
+  }
+
+  const { error, isLoading, getTransactionById } = useSalary(
+    userRole.slice(0, -1),
+    userId
+  );
 
   return (
     <>
@@ -19,13 +35,15 @@ const Salary = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
+              {isLoading && <p>Loading ...</p>}
+              {error && <p>{error.message}</p>}
               <TransactionLists />
             </CardContent>
           </Card>
 
           {/* right side */}
           <div className="col-span-5">
-            <Outlet />
+            <Outlet context={getTransactionById} />
           </div>
         </div>
       </Container>

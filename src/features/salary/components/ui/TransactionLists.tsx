@@ -1,3 +1,8 @@
+// external import
+import { useNavigate, useParams } from "react-router";
+import { useRecoilValue } from "recoil";
+
+// internal import
 import {
   Table,
   TableBody,
@@ -6,27 +11,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useNavigate, useParams } from "react-router";
-
-const transactions = [
-  { id: 1, date: "2023-07-01", amount: 5000, status: "Paid" },
-  { id: 2, date: "2023-06-01", amount: 5000, status: "Paid" },
-  { id: 3, date: "2023-05-01", amount: 4800, status: "Paid" },
-  { id: 4, date: "2023-04-01", amount: 4800, status: "Paid" },
-  { id: 5, date: "2023-03-01", amount: 4800, status: "Paid" },
-];
+import { salariesTransAtom } from "../../recoil/salaryAtom";
 
 const TransactionLists = () => {
   const { userRole, userId } = useParams();
-  const baseUrl = `/${userRole}/${userId}`;
   const navigate = useNavigate();
+  const transactions = useRecoilValue(salariesTransAtom);
+
+  const baseUrl = `/${userRole}/${userId}`;
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Date</TableHead>
           <TableHead>Amount</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Mode</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,8 +37,8 @@ const TransactionLists = () => {
               className={`text-base cursor-pointer hover:bg-muted `}
             >
               <TableCell>{transaction.date}</TableCell>
-              <TableCell>${transaction.amount.toFixed(2)}</TableCell>
-              <TableCell>{transaction.status}</TableCell>
+              <TableCell>${transaction.amount}</TableCell>
+              <TableCell>{transaction.mode}</TableCell>
             </TableRow>
           ))
         ) : (

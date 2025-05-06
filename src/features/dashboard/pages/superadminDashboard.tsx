@@ -15,15 +15,6 @@ import {
   formattedStuffStatsSelector,
   formattedTeacherStatsSelector,
 } from "../recoil/superadmin/dashboardSelector";
-import { ErrorBoundary } from "react-error-boundary";
-
-const collegeGrowthData = [
-  { year: 2018, students: 1000 },
-  { year: 2019, students: 1200 },
-  { year: 2020, students: 1350 },
-  { year: 2021, students: 1500 },
-  { year: 2022, students: 1580 },
-];
 
 const SuperAdminDashboard = () => {
   const { error, loading } = useSuperAdminDashboard();
@@ -35,71 +26,69 @@ const SuperAdminDashboard = () => {
 
   return (
     <>
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
-        <Container>
-          <div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* student data */}
-            <div>
-              {loading.student && <p>Loading ...</p>}
-              {error.student && <p>something went wrong</p>}
-              <BarChartStats
-                title="Student Distribution by Department"
-                data={studentStats}
-                xKey={"department"}
-              >
-                <Bar dataKey="count" fill="#0d9488" radius={6} />
-              </BarChartStats>
-            </div>
-
-            {/* teacher data */}
-            <div>
-              {loading.teacher && <p>Loading ...</p>}
-              {error.teacher && <p>something went wrong</p>}
-              <BarChartStats
-                title="Teacher Distribution by Department"
-                data={teacherStats}
-                xKey={"department"}
-              >
-                <Bar dataKey="count" fill="#f97316" radius={6} />
-              </BarChartStats>
-            </div>
+      <Container>
+        <div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* student data */}
+          <div>
+            {loading.student && <p>Loading ...</p>}
+            {error.student && <p>something went wrong</p>}
+            <BarChartStats
+              title="Student Distribution by Department"
+              data={studentStats}
+              xKey={"department"}
+            >
+              <Bar dataKey="count" fill="#0d9488" radius={6} />
+            </BarChartStats>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* collage growth data */}
-            <div>
-              {loading.growth && <p>Loading ...</p>}
-              {error.growth && <p>something went wrong</p>}
-              <LineChartStats
-                xKey="year"
-                title="College Growth Year by Year"
-                data={growthStats}
-              >
-                <Line type="monotone" dataKey="students" stroke="#5753a3" />
-              </LineChartStats>
-            </div>
+          {/* teacher data */}
+          <div>
+            {loading.teacher && <p>Loading ...</p>}
+            {error.teacher && <p>something went wrong</p>}
+            <BarChartStats
+              title="Teacher Distribution by Department"
+              data={teacherStats}
+              xKey={"department"}
+            >
+              <Bar dataKey="count" fill="#f97316" radius={6} />
+            </BarChartStats>
+          </div>
+        </div>
 
-            {/* placement stats */}
-            <div>
-              {loading.placement && <p>Loading ...</p>}
-              {error.placement && <p>something went wrong</p>}
-              <BarChartStats
-                title="Placement Statistics by Department"
-                data={placementStats}
-                xKey={"department"}
-              >
-                <Bar dataKey="total" fill="#15803d" name="Total Students" />
-                <Bar dataKey="placed" fill="#84cc16" name="Placed Students" />
-              </BarChartStats>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* collage growth data */}
+          <div>
+            {loading.growth && <p>Loading ...</p>}
+            {error.growth && <p>something went wrong</p>}
+            <LineChartStats
+              xKey="year"
+              title="College Growth Year by Year"
+              data={growthStats}
+            >
+              <Line type="monotone" dataKey="students" stroke="#5753a3" />
+            </LineChartStats>
           </div>
 
-          {/* stuff stats */}
-          {loading.stuff && <p>Loading ...</p>}
-          {error.stuff && <p>something went wrong</p>}
-          {stuffStats && <TotalStuff stuffData={stuffStats} />}
-        </Container>
-      </ErrorBoundary>
+          {/* placement stats */}
+          <div>
+            {loading.placement && <p>Loading ...</p>}
+            {error.placement && <p>something went wrong</p>}
+            <BarChartStats
+              title="Placement Statistics by Department"
+              data={placementStats}
+              xKey={"department"}
+            >
+              <Bar dataKey="total" fill="#15803d" name="Total Students" />
+              <Bar dataKey="placed" fill="#84cc16" name="Placed Students" />
+            </BarChartStats>
+          </div>
+        </div>
+
+        {/* stuff stats */}
+        {loading.stuff && <p>Loading ...</p>}
+        {error.stuff && <p>something went wrong</p>}
+        {stuffStats && <TotalStuff stuffData={stuffStats} />}
+      </Container>
     </>
   );
 };
