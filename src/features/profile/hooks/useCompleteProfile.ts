@@ -2,7 +2,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useEffect } from "react";
-import { useParams } from "react-router";
 
 // internal import
 import { getCompleteProfile } from "@/api/services/profile";

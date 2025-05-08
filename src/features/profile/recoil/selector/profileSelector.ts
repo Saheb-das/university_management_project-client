@@ -3,12 +3,7 @@ import { selector } from "recoil";
 
 // internal import
 import { completeProfileAtom } from "../atom/completeProfileAtom";
-import {
-  TBaseProfile,
-  TStudentProfile,
-  TStuffProfile,
-  TStuffRoles,
-} from "../../types/profile";
+import { TBaseProfile, TStuffRoles } from "../../types/profile";
 
 export const formattedCompleteProfileSelector = selector({
   key: "formattedCompleteProfileSelector",
