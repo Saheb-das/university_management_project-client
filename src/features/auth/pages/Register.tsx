@@ -1,11 +1,9 @@
-// external import
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import { useState } from "react";
 import { useNavigate } from "react-router";
-
-// internal import
+import { z } from "zod";
 import { registerSchema } from "@/zod/auth";
+
+// UI Components
 import {
   Select,
   SelectContent,
@@ -17,414 +15,189 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRegister } from "../hooks/useRegister";
-
-// import types
 import { IRegisterClient } from "../../../types/auth";
 
-type FormData = z.infer<typeof registerSchema>;
-
 function Register() {
-  const { mutate } = useRegister();
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    control,
-  } = useForm<FormData>({
-    resolver: zodResolver(registerSchema),
+  const { mutate, isPending } = useRegister();
+
+  const [formData, setFormData] = useState({
+    role: "superadmin",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    address: "",
+    phoneNo: "",
+    adhaarNo: "",
+    highestDegree: "",
+    specialization: "",
+    accountNo: "",
+    ifscCode: "",
+    bankName: "",
+    accountHolderName: "",
+    collageName: "",
+    collageAddress: "",
+    collageRegNo: "",
+    collageEstablishedYear: "",
+    collageAccountNo: "",
+    collageIfscCode: "",
+    collageBankName: "",
+    collageAccountHolderName: "",
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // transformation data here before calling mutate
-    const transaformData: IRegisterClient = {
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleRoleChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, role: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const result = registerSchema.safeParse(formData);
+
+    if (!result.success) {
+      const fieldErrors: { [key: string]: string } = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as string;
+        fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({}); // Clear previous errors
+
+    const transformedData: IRegisterClient = {
       user: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: data.password,
-        role: data.role,
-        address: data.address,
-        phoneNo: data.phoneNo,
-        adhaarNo: data.adhaarNo,
-        highestDegree: data.highestDegree,
-        specializedIn: data.specialization,
-        accountNo: data.accountNo,
-        ifscCode: data.ifscCode,
-        bankName: data.bankName,
-        accountHolderName: data.accountHolderName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: "superadmin",
+        address: formData.address,
+        phoneNo: formData.phoneNo,
+        adhaarNo: formData.adhaarNo,
+        highestDegree: formData.highestDegree,
+        specializedIn: formData.specialization,
+        accountNo: formData.accountNo,
+        ifscCode: formData.ifscCode,
+        bankName: formData.bankName,
+        accountHolderName: formData.accountHolderName,
       },
       collage: {
-        name: data.collageName,
-        address: data.collageAddress,
-        registrationNo: data.collageRegNo,
-        established: data.collageEstablishedYear,
+        name: formData.collageName,
+        address: formData.collageAddress,
+        registrationNo: formData.collageRegNo,
+        established: formData.collageEstablishedYear,
       },
       collageBankDetails: {
-        accountNo: data.collageAccountNo,
-        ifscCode: data.collageIfscCode,
-        bankName: data.collageBankName,
-        accountHolderName: data.collageAccountHolderName,
+        accountNo: formData.collageAccountNo,
+        ifscCode: formData.collageIfscCode,
+        bankName: formData.collageBankName,
+        accountHolderName: formData.collageAccountHolderName,
       },
     };
 
-    mutate(transaformData, {
-      onSuccess: () => {
-        navigate("/");
-      },
-      onError: (error) => {
-        console.error("Error during registration: ", error);
-      },
-      onSettled: () => {
-        reset();
-      },
+    mutate(transformedData, {
+      onSuccess: () => navigate("/"),
+      onError: (err) => console.error("Registration failed", err),
     });
   };
+
+  const renderInput = (
+    name: keyof typeof formData,
+    placeholder: string,
+    type = "text"
+  ) => (
+    <div className="mb-4">
+      <Input
+        type={type}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="mb-1"
+      />
+      {errors[name] && <p className="text-red-500 text-sm">{errors[name]}</p>}
+    </div>
+  );
+
   return (
-    <>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl"
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl"
+      >
+        <h2 className="text-3xl font-semibold mb-6 text-center">Register</h2>
+
+        <div className="grid grid-cols-2 gap-6">
+          {/* User Details */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3">User Details</h3>
+
+            <Select value={formData.role} onValueChange={handleRoleChange}>
+              <SelectTrigger className="mb-4 w-full">
+                <SelectValue placeholder="Select your role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="superadmin">Super Admin</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            {renderInput("firstName", "First Name")}
+            {renderInput("lastName", "Last Name")}
+            {renderInput("email", "Email", "email")}
+            {renderInput("password", "Password", "password")}
+            {renderInput("address", "Address")}
+            {renderInput("phoneNo", "Phone Number")}
+            {renderInput("adhaarNo", "Adhaar No")}
+            {renderInput("highestDegree", "Highest Degree")}
+            {renderInput("specialization", "Specialization")}
+            {renderInput("accountNo", "Account No")}
+            {renderInput("ifscCode", "IFSC Code")}
+            {renderInput("bankName", "Bank Name")}
+            {renderInput("accountHolderName", "Account Holder Name")}
+          </div>
+
+          {/* College Details */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3">College Details</h3>
+
+            {renderInput("collageName", "College Name")}
+            {renderInput("collageAddress", "College Address")}
+            {renderInput("collageRegNo", "College Reg No")}
+            {renderInput("collageEstablishedYear", "College Established Year")}
+            {renderInput("collageAccountNo", "College Account No")}
+            {renderInput("collageIfscCode", "College IFSC Code")}
+            {renderInput("collageBankName", "College Bank Name")}
+            {renderInput(
+              "collageAccountHolderName",
+              "College Account Holder Name"
+            )}
+          </div>
+        </div>
+
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="mt-6 w-full cursor-pointer"
         >
-          <h2 className="text-3xl font-semibold mb-6 text-center">Register</h2>
-
-          {/* Form Grid */}
-          <div className="grid grid-cols-2 gap-6">
-            {/* Left Side: User Details */}
-            <div>
-              <h3 className="text-lg font-semibold mb-3">User Details</h3>
-
-              <Controller
-                name="role"
-                control={control}
-                defaultValue="superadmin"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="mb-4 w-full">
-                      <SelectValue placeholder="Select your role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="superadmin">Super Admin</SelectItem>
-                        {/* Add more roles if needed */}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="First Name"
-                  {...register("firstName")}
-                />
-                {errors.firstName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.firstName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Last Name"
-                  {...register("lastName")}
-                />
-                {errors.lastName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.lastName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="email"
-                  placeholder="Email"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="password"
-                  placeholder="Password"
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-sm">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Address"
-                  {...register("address")}
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-sm">
-                    {errors.address.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Phone Number"
-                  {...register("phoneNo")}
-                />
-                {errors.phoneNo && (
-                  <p className="text-red-500 text-sm">
-                    {errors.phoneNo.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Adhaar No"
-                  {...register("adhaarNo")}
-                />
-                {errors.adhaarNo && (
-                  <p className="text-red-500 text-sm">
-                    {errors.adhaarNo.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Highest Degree"
-                  {...register("highestDegree")}
-                />
-                {errors.highestDegree && (
-                  <p className="text-red-500 text-sm">
-                    {errors.highestDegree.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Specialization"
-                  {...register("specialization")}
-                />
-                {errors.specialization && (
-                  <p className="text-red-500 text-sm">
-                    {errors.specialization.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Account No"
-                  {...register("accountNo")}
-                />
-                {errors.accountNo && (
-                  <p className="text-red-500 text-sm">
-                    {errors.accountNo.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="IFSC Code"
-                  {...register("ifscCode")}
-                />
-                {errors.ifscCode && (
-                  <p className="text-red-500 text-sm">
-                    {errors.ifscCode.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Bank Name"
-                  {...register("bankName")}
-                />
-                {errors.bankName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.bankName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Account Holder Name"
-                  {...register("accountHolderName")}
-                />
-                {errors.accountHolderName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.accountHolderName.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Right Side: College Details */}
-            <div>
-              <h3 className="text-lg font-semibold mb-3">College Details</h3>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="College Name"
-                  {...register("collageName")}
-                />
-                {errors.collageName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="College Address"
-                  {...register("collageAddress")}
-                />
-                {errors.collageAddress && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageAddress.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="College Reg No"
-                  {...register("collageRegNo")}
-                />
-                {errors.collageRegNo && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageRegNo.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="College Established Year"
-                  {...register("collageEstablishedYear")}
-                />
-                {errors.collageEstablishedYear && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageEstablishedYear.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Account No"
-                  {...register("collageAccountNo")}
-                />
-                {errors.collageAccountNo && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageAccountNo.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="IFSC Code"
-                  {...register("collageIfscCode")}
-                />
-                {errors.collageIfscCode && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageIfscCode.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Bank Name"
-                  {...register("collageBankName")}
-                />
-                {errors.collageBankName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageBankName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <Input
-                  className="mb-1"
-                  type="text"
-                  placeholder="Account Holder Name"
-                  {...register("collageAccountHolderName")}
-                />
-                {errors.collageAccountHolderName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.collageAccountHolderName.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-center mt-6">
-            <Button type="submit" className="w-full max-w-xs cursor-pointer">
-              Register
-            </Button>
-          </div>
-        </form>
-      </div>
-    </>
+          {isPending ? "Submiting..." : "Register"}
+        </Button>
+      </form>
+    </div>
   );
 }
 
-// export
 export default Register;

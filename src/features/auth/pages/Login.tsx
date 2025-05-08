@@ -1,26 +1,30 @@
 // external import
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
-import { z } from "zod";
+import { useNavigate, Link } from "react-router";
+import { useSetRecoilState } from "recoil";
 
 // internal import
+import { loginSchema, TRole } from "@/zod/auth";
+import { useLogin } from "../hooks/useLogin";
+import { setAuthToken, setStorage } from "@/utils/localStorage";
+import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
+  SelectTrigger,
+  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
-import { loginSchema, TRole } from "@/zod/auth";
-import { Button } from "@/components/ui/button";
-import { useLogin } from "../hooks/useLogin";
-import { setAuthToken } from "@/utils/authToken";
 
-type FormData = z.infer<typeof loginSchema>;
+type FormData = {
+  email: string;
+  password: string;
+  role: TRole;
+};
+
 type TApiResponse = {
   success: boolean;
   message: string;
@@ -29,58 +33,82 @@ type TApiResponse = {
     id: string;
     role: TRole;
     email: string;
+    collageId: string;
   };
 };
 
-function Login() {
-  const [role, setRole] = useState<TRole>("student");
-  const { mutate } = useLogin();
-  const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
-    resolver: zodResolver(loginSchema),
+export default function Login() {
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+    role: "student",
   });
 
-  // initial set role
-  setValue("role", role);
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {}
+  );
 
-  const handleChange = (value: TRole) => {
-    setRole(value);
-    setValue("role", value || role);
-    reset();
+  const { mutate, isPending } = useLogin();
+  const navigate = useNavigate();
+  const setBasicUser = useSetRecoilState(userBasicAtom);
+
+  const validate = () => {
+    const result = loginSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      const formattedErrors: typeof errors = {};
+      if (fieldErrors.email) formattedErrors.email = fieldErrors.email[0];
+      if (fieldErrors.password)
+        formattedErrors.password = fieldErrors.password[0];
+      if (fieldErrors.role) formattedErrors.role = fieldErrors.role[0];
+      setErrors(formattedErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
   };
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    mutate(data, {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRoleChange = (value: TRole) => {
+    setFormData((prev) => ({ ...prev, role: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    mutate(formData, {
       onSuccess: (res: TApiResponse) => {
         const { user, token } = res;
-
         setAuthToken(token.split(" ")[1]);
-
+        setBasicUser(user);
         navigate(`/${user.role}s/${user.id}`);
       },
       onSettled: () => {
-        reset();
+        setFormData({ email: "", password: "", role: "student" });
       },
     });
   };
+
   return (
-    <>
-      <div className="w-[370px] md:w-[400px] h-auto mx-auto py-4 px-7 mt-5 border rounded">
-        <h1 className=" font-semibold text-center text-2xl md:text-3xl mb-5">
-          Log In
-        </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* role field */}
-          <Select value={role} onValueChange={handleChange}>
-            <SelectTrigger className="mb-4 w-full">
-              <SelectValue placeholder="select your role" />
+    <div className="w-[370px] md:w-[400px] mx-auto py-4 px-7 mt-5 border rounded">
+      <h1 className="text-2xl md:text-3xl font-semibold text-center mb-5">
+        Log In
+      </h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Role */}
+        <div>
+          <label className="block font-medium mb-1">Role</label>
+          <Select onValueChange={handleRoleChange} defaultValue={formData.role}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select your role" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -94,48 +122,53 @@ function Login() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <input type="hidden" {...register("role")} />
+          {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
+        </div>
 
-          {/* email field */}
-          <div className="mb-4">
-            <Input
-              className="mb-1 text-lg"
-              type="email"
-              placeholder="Email"
-              {...register("email")}
-            />
-            {errors["email"]?.message && (
-              <p className="err_msg">{errors["email"]?.message}</p>
-            )}
-          </div>
+        {/* Email */}
+        <div>
+          <label className="block font-medium mb-1">Email</label>
+          <Input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email}</p>
+          )}
+        </div>
 
-          {/* create Password field */}
-          <div className="mb-4">
-            <Input
-              className="mb-1"
-              type="password"
-              placeholder=" Password"
-              {...register("password")}
-            />
-            {errors["password"]?.message && (
-              <p className="err_msg">{errors["password"]?.message}</p>
-            )}
-          </div>
+        {/* Password */}
+        <div>
+          <label className="block font-medium mb-1">Password</label>
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password}</p>
+          )}
+        </div>
 
-          <Button type="submit" variant="default" className="block ml-auto ">
-            register
-          </Button>
-          <p className="text-center my-3">
-            password forgotten. &nbsp;
-            <Link className=" font-bold text-blue-800 " to={"/forgot-password"}>
-              forgot password
-            </Link>
-          </p>
-        </form>
-      </div>
-    </>
+        <Button type="submit" disabled={isPending} className="ml-auto block">
+          {isPending ? "Logging in..." : "Login"}
+        </Button>
+
+        <p className="text-center my-3 text-sm">
+          Password forgotten?{" "}
+          <Link
+            to="/forgot-password"
+            className="font-bold text-blue-700 hover:underline"
+          >
+            Reset here
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }
-
-// export
-export default Login;

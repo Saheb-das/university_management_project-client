@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import LabeledInput from "../shared/LabeledInput";
 import { TRole } from "@/zod/auth";
+import UploadAvatar from "@/features/upload/pages/UploadAvatar";
+import { useRecoilValue } from "recoil";
+import { completeProfileAtom } from "../../recoil/atom/completeProfileAtom";
+import { useUpdateProfile } from "../../hooks/useUpdateProfile";
+import { toast } from "sonner";
 
 export interface UpdateProps {
   email: string;
@@ -17,58 +22,56 @@ export interface UpdateProps {
   specialization?: string;
 }
 
-interface UpdateProfileProps {
-  userData: UpdateProps;
-  onUpdate: (updatable: UpdateProps) => void;
-}
-
-function UpdateProfile({ userData, onUpdate }: UpdateProfileProps) {
-  const [updatableData, setUpdatableData] = useState<UpdateProps>({
-    email: userData.email,
-    address: userData.address,
-    phoneNo: userData.phoneNo,
-    profileImg: userData.profileImg,
-    role: userData.role,
-    highestDegree: userData.highestDegree,
-    specialization: userData.specialization,
+function UpdateProfile() {
+  const userInfo = useRecoilValue(completeProfileAtom);
+  const [updatableData, setUpdatableData] = useState({
+    email: userInfo?.email,
+    address: userInfo?.profile.address,
+    phoneNo: userInfo?.profile.phoneNo,
+    highestDegree: userInfo?.profile.stuff?.highestDegree,
+    specialization: userInfo?.profile.stuff?.specializedIn,
   });
 
+  const { mutate, isPending } = useUpdateProfile();
+
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name: key, value, files } = e.target;
+    const { name: key, value } = e.target;
 
-    if (key === "image" && files) {
-      const file = files[0];
-
-      setUpdatableData((prev) => {
-        return {
-          ...prev,
-          [key]: file,
-        };
-      });
-    } else {
-      setUpdatableData((prev) => {
-        return {
-          ...prev,
-          [key]: value,
-        };
-      });
-    }
+    setUpdatableData((prev) => {
+      return {
+        ...prev,
+        [key]: value,
+      };
+    });
   };
 
-  const handleSubmit = () => {
-    onUpdate(updatableData);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate(
+      { id: userInfo?.id!, data: updatableData },
+      {
+        onSuccess: () => {
+          toast.success("profile update successfully");
+        },
+        onError: () => {
+          toast.error("profile update fails");
+        },
+      }
+    );
   };
 
   return (
     <Card className="mt-4">
       <CardHeader>{/* <CardTitle>Edit Profile</CardTitle> */}</CardHeader>
       <CardContent>
+        <UploadAvatar />
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <LabeledInput
             name="email"
             type="email"
             label="email"
-            value={updatableData.email}
+            value={updatableData.email || ""}
             handleChange={handleUpdate}
           />
 
@@ -76,7 +79,7 @@ function UpdateProfile({ userData, onUpdate }: UpdateProfileProps) {
             name="address"
             type="text"
             label="address"
-            value={updatableData.address}
+            value={updatableData.address || ""}
             handleChange={handleUpdate}
           />
 
@@ -84,11 +87,11 @@ function UpdateProfile({ userData, onUpdate }: UpdateProfileProps) {
             name="phoneNo"
             type="string"
             label="phone number"
-            value={updatableData.phoneNo}
+            value={updatableData.phoneNo || ""}
             handleChange={handleUpdate}
           />
 
-          {userData.role !== "student" && (
+          {userInfo?.role !== "student" && (
             <>
               <LabeledInput
                 name="highestDegree"
@@ -107,15 +110,9 @@ function UpdateProfile({ userData, onUpdate }: UpdateProfileProps) {
             </>
           )}
 
-          <LabeledInput
-            name="profileImg"
-            type="file"
-            label="profile image"
-            value={updatableData.profileImg}
-            handleChange={handleUpdate}
-          />
-
-          <Button type="submit">Update Profile</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Updating..." : "Update Profile"}
+          </Button>
         </form>
       </CardContent>
     </Card>

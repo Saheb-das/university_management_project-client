@@ -9,11 +9,13 @@ interface LabeledValue {
 function InfoRow({ label, name }: LabeledValue) {
   return (
     <>
-      <div>
-        <Label className="capitalize text-lg text-muted-foreground ">
+      <div className="bg-muted p-4 rounded-2xl shadow-sm space-y-1">
+        <Label className="capitalize text-sm text-muted-foreground tracking-wide">
           {label}
         </Label>
-        <p className="text-foreground font-medium">{name}</p>
+        <p className="text-lg font-semibold text-foreground break-words">
+          {name}
+        </p>
       </div>
     </>
   );

@@ -45,24 +45,40 @@ export const useSuperAdminDashboard = () => {
    * here data pass to selector and transform data and store it in atom
    */
   useEffect(() => {
-    if (studentQ.data) setStudent(studentQ.data);
-  }, [studentQ.data]);
+    if (studentQ.isSuccess && studentQ.data) {
+      const { studentStats } = studentQ.data;
+
+      setStudent(studentStats);
+    }
+  }, [studentQ.data, studentQ.isSuccess]);
 
   useEffect(() => {
-    if (teacherQ.data) setTeacher(teacherQ.data);
-  }, [teacherQ.data]);
+    if (teacherQ.isSuccess && teacherQ.data) {
+      const { teacherStats } = teacherQ.data;
+      setTeacher(teacherStats);
+    }
+  }, [teacherQ.data, teacherQ.isSuccess]);
 
   useEffect(() => {
-    if (growthQ.data) setGrowth(growthQ.data);
-  }, [growthQ.data]);
+    if (growthQ.isSuccess && growthQ.data) {
+      const { growth } = growthQ.data;
+      setGrowth(growth);
+    }
+  }, [growthQ.data, growthQ.isSuccess]);
 
   useEffect(() => {
-    if (placementQ.data) setPlacement(placementQ.data);
-  }, [placementQ.data]);
+    if (placementQ.isSuccess && placementQ.data) {
+      const { collagePlacements } = placementQ.data;
+      setPlacement(collagePlacements);
+    }
+  }, [placementQ.isSuccess, placementQ.data]);
 
   useEffect(() => {
-    if (stuffQ.data) setStuff(stuffQ.data);
-  }, [stuffQ.data]);
+    if (studentQ.isSuccess && stuffQ.data) {
+      const { stuffStats } = stuffQ.data;
+      setStuff(stuffStats);
+    }
+  }, [stuffQ.data, stuffQ.isSuccess]);
 
   return {
     loading: {

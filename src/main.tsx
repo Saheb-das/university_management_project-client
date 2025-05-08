@@ -8,12 +8,14 @@ import { RecoilRoot } from "recoil";
 import "./index.css";
 import App from "./App.tsx";
 import queryClient from "./react-query/client.ts";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
         <App />
+        <Toaster />
       </QueryClientProvider>
     </RecoilRoot>
   </StrictMode>

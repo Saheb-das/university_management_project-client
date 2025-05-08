@@ -1,17 +1,15 @@
-// external import
+// external imports
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
-// internal import
+// internal imports
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-// types import
-import { IPassword } from "../../pages/Profile";
+// types
 
 // Zod schema
 const schema = z
@@ -25,12 +23,9 @@ const schema = z
       .min(8, "Confirm password must be at least 8 characters"),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
-    path: ["confirmNewPassword"], // Error message applied to confirmNewPassword field
+    path: ["confirmNewPassword"],
     message: "Passwords must match",
   });
-
-// Infer TypeScript types
-type FormValues = z.infer<typeof schema>;
 
 export interface IChangedPassword {
   oldPassword: string;
@@ -38,81 +33,69 @@ export interface IChangedPassword {
   confirmNewPassword: string;
 }
 
-interface ChangePasswordProps {
-  onChangePassword: (passwordInfo: IPassword) => void;
-}
-
-const ChangePassword = ({ onChangePassword }: ChangePasswordProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IChangedPassword>({
-    resolver: zodResolver(schema),
+const ChangePassword = () => {
+  const [formData, setFormData] = useState<IChangedPassword>({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
-  const onSubmit = (data: FormValues) => {
-    const changedPassObj = {
-      oldPassword: data.oldPassword,
-      newPassword: data.newPassword,
-    };
-    onChangePassword(changedPassObj);
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof IChangedPassword, string>>
+  >({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const result = schema.safeParse(formData);
+    if (!result.success) {
+      const newErrors: Partial<Record<keyof IChangedPassword, string>> = {};
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as keyof IChangedPassword;
+        newErrors[field] = issue.message;
+      }
+      setErrors(newErrors);
+      return;
+    }
+
+    // Optionally reset the form
+    setFormData({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
+    setErrors({});
+  };
+
   return (
     <Card className="mt-4">
-      <CardHeader></CardHeader>
+      <CardHeader />
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4 ">
-            <Label className="text-base mb-2" htmlFor="oldPassword">
-              Old Password
-            </Label>
-            <Input
-              type="password"
-              id="oldPassword"
-              {...register("oldPassword")}
-              className={cn(errors.oldPassword && "border-red-500")}
-            />
-            {errors.oldPassword && (
-              <p className="text-red-500 text-sm">
-                {errors.oldPassword.message}
-              </p>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <Label className="text-base mb-2" htmlFor="newPassword">
-              New Password
-            </Label>
-            <Input
-              type="password"
-              id="newPassword"
-              {...register("newPassword")}
-              className={cn(errors.newPassword && "border-red-500")}
-            />
-            {errors.newPassword && (
-              <p className="text-red-500 text-sm">
-                {errors.newPassword.message}
-              </p>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <Label className="text-base mb-2" htmlFor="confirmNewPassword">
-              Confirm New Password
-            </Label>
-            <Input
-              type="password"
-              id="confirmNewPassword"
-              {...register("confirmNewPassword")}
-              className={cn(errors.confirmNewPassword && "border-red-500")}
-            />
-            {errors.confirmNewPassword && (
-              <p className="text-red-500 text-sm">
-                {errors.confirmNewPassword.message}
-              </p>
-            )}
-          </div>
+        <form onSubmit={handleSubmit}>
+          {["oldPassword", "newPassword", "confirmNewPassword"].map((field) => (
+            <div key={field} className="mb-4">
+              <Label htmlFor={field} className="text-base mb-2 capitalize">
+                {field.replace(/([A-Z])/g, " $1")}
+              </Label>
+              <Input
+                id={field}
+                name={field}
+                type="password"
+                value={formData[field as keyof IChangedPassword]}
+                onChange={handleChange}
+                className={cn(
+                  errors[field as keyof IChangedPassword] && "border-red-500"
+                )}
+              />
+              {errors[field as keyof IChangedPassword] && (
+                <p className="text-red-500 text-sm">
+                  {errors[field as keyof IChangedPassword]}
+                </p>
+              )}
+            </div>
+          ))}
 
           <Button type="submit" className="w-full">
             Submit
@@ -123,5 +106,4 @@ const ChangePassword = ({ onChangePassword }: ChangePasswordProps) => {
   );
 };
 
-// export
 export default ChangePassword;

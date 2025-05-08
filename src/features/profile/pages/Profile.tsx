@@ -1,6 +1,3 @@
-// external import
-import { useState } from "react";
-
 // internal import
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShowProfile from "../components/ui/ShowProfile";
@@ -28,30 +25,7 @@ export interface IProfile {
   profileImg: string;
 }
 
-const dummyProfile: IProfile = {
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@example.com",
-  phoneNo: "+1-202-555-0191",
-  address: "1234 Elm Street, Springfield, IL, USA",
-  role: "accountant",
-  highestDegree: "Master of Science",
-  specialization: "Computer Science",
-  bankName: "Bank of America",
-  accountNo: "123456789012",
-  ifscCode: "BOFA0001234",
-  profileImg:
-    "https://i.pinimg.com/736x/50/c3/f7/50c3f70a5ff4fa2b8a235bfbf6bf9fa9.jpg",
-};
-
 const Profile = () => {
-  const [userData, setUserData] = useState(dummyProfile);
-  // TODO: fetch user data
-
-  const handleUpdate = () => {};
-
-  const handlePassword = () => {};
-
   return (
     <>
       <div className="container mx-auto p-4">
@@ -68,15 +42,13 @@ const Profile = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="view">
-            {userData && <ShowProfile data={userData} role={"student"} />}
+            <ShowProfile />
           </TabsContent>
           <TabsContent value="update">
-            {userData && (
-              <UpdateProfile userData={userData} onUpdate={handleUpdate} />
-            )}
+            <UpdateProfile />
           </TabsContent>
           <TabsContent value="change-password">
-            <ChangePassword onChangePassword={handlePassword} />
+            <ChangePassword />
           </TabsContent>
         </Tabs>
       </div>

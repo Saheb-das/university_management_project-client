@@ -32,26 +32,30 @@ const SuperAdminDashboard = () => {
           <div>
             {loading.student && <p>Loading ...</p>}
             {error.student && <p>something went wrong</p>}
-            <BarChartStats
-              title="Student Distribution by Department"
-              data={studentStats}
-              xKey={"department"}
-            >
-              <Bar dataKey="count" fill="#0d9488" radius={6} />
-            </BarChartStats>
+            {studentStats && (
+              <BarChartStats
+                title="Student Distribution by Department"
+                data={studentStats}
+                xKey={"department"}
+              >
+                <Bar dataKey="count" fill="#0d9488" radius={6} />
+              </BarChartStats>
+            )}
           </div>
 
           {/* teacher data */}
           <div>
             {loading.teacher && <p>Loading ...</p>}
             {error.teacher && <p>something went wrong</p>}
-            <BarChartStats
-              title="Teacher Distribution by Department"
-              data={teacherStats}
-              xKey={"department"}
-            >
-              <Bar dataKey="count" fill="#f97316" radius={6} />
-            </BarChartStats>
+            {teacherStats && (
+              <BarChartStats
+                title="Teacher Distribution by Department"
+                data={teacherStats}
+                xKey={"department"}
+              >
+                <Bar dataKey="count" fill="#f97316" radius={6} />
+              </BarChartStats>
+            )}
           </div>
         </div>
 
@@ -60,27 +64,31 @@ const SuperAdminDashboard = () => {
           <div>
             {loading.growth && <p>Loading ...</p>}
             {error.growth && <p>something went wrong</p>}
-            <LineChartStats
-              xKey="year"
-              title="College Growth Year by Year"
-              data={growthStats}
-            >
-              <Line type="monotone" dataKey="students" stroke="#5753a3" />
-            </LineChartStats>
+            {growthStats && (
+              <LineChartStats
+                xKey="year"
+                title="College Growth Year by Year"
+                data={growthStats}
+              >
+                <Line type="monotone" dataKey="students" stroke="#5753a3" />
+              </LineChartStats>
+            )}
           </div>
 
           {/* placement stats */}
           <div>
             {loading.placement && <p>Loading ...</p>}
             {error.placement && <p>something went wrong</p>}
-            <BarChartStats
-              title="Placement Statistics by Department"
-              data={placementStats}
-              xKey={"department"}
-            >
-              <Bar dataKey="total" fill="#15803d" name="Total Students" />
-              <Bar dataKey="placed" fill="#84cc16" name="Placed Students" />
-            </BarChartStats>
+            {placementStats && (
+              <BarChartStats
+                title="Placement Statistics by Department"
+                data={placementStats}
+                xKey={"department"}
+              >
+                <Bar dataKey="total" fill="#15803d" name="Total Students" />
+                <Bar dataKey="placed" fill="#84cc16" name="Placed Students" />
+              </BarChartStats>
+            )}
           </div>
         </div>
 
