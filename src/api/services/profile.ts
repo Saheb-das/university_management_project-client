@@ -1,7 +1,13 @@
 // internal import
-import { IUserProfileRes } from "@/features/profile/types/profile";
 import apiClient from "../client";
 import { HttpMethod, ProfileAPIs } from "../endpoints";
+
+// types import
+import {
+  IUpdatePasswordRes,
+  IUserProfileRes,
+  TChangePasswordInfo,
+} from "@/features/profile/types/profile";
 
 export async function getCompleteProfile(
   id: string,
@@ -14,9 +20,21 @@ export async function getCompleteProfile(
 
 export async function updateProfile(
   id: string,
-  data: any
+  data: any,
+  role: string
 ): Promise<IUserProfileRes | null> {
   const { method, url } = ProfileAPIs.update_profile;
+  const response = await apiClient[method as HttpMethod](url(id), data, {
+    params: { role },
+  });
+  return response.data;
+}
+
+export async function updatePassword(
+  id: string,
+  data: TChangePasswordInfo
+): Promise<IUpdatePasswordRes | null> {
+  const { method, url } = ProfileAPIs.update_password;
   const response = await apiClient[method as HttpMethod](url(id), data);
   return response.data;
 }

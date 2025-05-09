@@ -1,33 +1,45 @@
 // external import
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { toast } from "sonner";
 
 // internal import
 import { useAvatar } from "../hooks/useAvatar";
-import UploadInput from "@/components/shared/UploadInput";
-import { completeProfileAtom } from "@/features/profile/recoil/atom/completeProfileAtom";
+import { completeProfileAtom } from "@/features/profile/recoil/atom/profileAtom";
+import { Label } from "@/components/ui/label";
+import { ImagePlus, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const apiUrl = import.meta.env.VITE_SERVER_BASE_URL;
 
 function UploadAvatar() {
   const setUser = useSetRecoilState(completeProfileAtom);
   const user = useRecoilValue(completeProfileAtom);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { mutate } = useAvatar();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
-  const handleFileSelect = (file: File) => {
-    setIsLoading(true);
+  const { mutate, isPending } = useAvatar(user?.profile.avatar || "");
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onloadend = () => {
+      setPreview(reader.result as string); // show preview
+      handleUpload(file);
+    };
+  };
+
+  const handleUpload = (file: File) => {
     mutate(file, {
       onSuccess: (res) => {
         const updateRes = res?.profile;
         setUser((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
+          if (!prev) return prev;
           return {
             ...prev,
             profile: {
@@ -41,26 +53,54 @@ function UploadAvatar() {
       onError: () => {
         toast.error("Error uploading avatar.");
       },
-      onSettled: () => {
-        setIsLoading(false);
-      },
     });
   };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const imageToShow = preview
+    ? preview
+    : user?.profile.avatar
+    ? `${apiUrl}/${user.profile.avatar.replace(/\\/g, "/")}`
+    : null;
   return (
-    <div className="flex flex-col items-center gap-6">
-      {user?.profile.avatar ? (
-        <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-sm bg-background">
+    <div className="flex flex-col items-center gap-6 mb-4">
+      <Label className="text-lg font-semibold text-foreground">
+        Profile Picture
+      </Label>
+
+      <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-sm bg-background">
+        {imageToShow ? (
           <img
-            src={`${apiUrl}/${user.profile.avatar.replace(/\\/g, "/")}`}
-            alt="Current Avatar"
+            src={imageToShow}
+            alt="Avatar Preview"
             className="object-cover w-full h-full"
           />
-        </div>
-      ) : (
-        <p className="text-muted-foreground">No avatar selected</p>
-      )}
-      <UploadInput onFileSelect={handleFileSelect} />
-      {isLoading && <p className="text-muted-foreground">Uploading...</p>}
+        ) : (
+          <div className="flex items-center justify-center w-full h-full text-muted-foreground">
+            <ImagePlus className="w-8 h-8" />
+          </div>
+        )}
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
+      <Button
+        onClick={handleUploadClick}
+        variant="secondary"
+        className="gap-2 cursor-pointer"
+      >
+        <Upload className="w-4 h-4" />
+        {isPending ? "Uploading..." : "Upload New Photo"}
+      </Button>
     </div>
   );
 }

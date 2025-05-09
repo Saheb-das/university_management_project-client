@@ -8,7 +8,7 @@ import LabeledInput from "../shared/LabeledInput";
 import { TRole } from "@/zod/auth";
 import UploadAvatar from "@/features/upload/pages/UploadAvatar";
 import { useRecoilValue } from "recoil";
-import { completeProfileAtom } from "../../recoil/atom/completeProfileAtom";
+import { completeProfileAtom } from "../../recoil/atom/profileAtom";
 import { useUpdateProfile } from "../../hooks/useUpdateProfile";
 import { toast } from "sonner";
 
@@ -24,6 +24,7 @@ export interface UpdateProps {
 
 function UpdateProfile() {
   const userInfo = useRecoilValue(completeProfileAtom);
+
   const [updatableData, setUpdatableData] = useState({
     email: userInfo?.email,
     address: userInfo?.profile.address,
@@ -32,6 +33,7 @@ function UpdateProfile() {
     specialization: userInfo?.profile.stuff?.specializedIn,
   });
 
+  const role = userInfo?.role;
   const { mutate, isPending } = useUpdateProfile();
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,10 +49,17 @@ function UpdateProfile() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!role) {
+      toast.error("User role is missing. Cannot update profile.");
+      return;
+    }
+
     mutate(
-      { id: userInfo?.id!, data: updatableData },
+      { id: userInfo?.id!, data: updatableData, role: role },
       {
         onSuccess: () => {
+          // TODO: client state
           toast.success("profile update successfully");
         },
         onError: () => {
@@ -63,7 +72,7 @@ function UpdateProfile() {
   return (
     <Card className="mt-4">
       <CardHeader>{/* <CardTitle>Edit Profile</CardTitle> */}</CardHeader>
-      <CardContent>
+      <CardContent className="grid lg:grid-cols-2 ">
         <UploadAvatar />
 
         <form onSubmit={handleSubmit} className="space-y-4">

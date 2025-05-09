@@ -17,30 +17,21 @@ const LabeledInput = ({
   handleChange,
 }: InputFieldProps) => {
   return (
-    <div>
-      <Label className="capitalize" htmlFor={name}>
+    <div className="grid w-full max-w-sm items-center gap-2">
+      <Label
+        htmlFor={name}
+        className="capitalize text-sm font-medium text-foreground"
+      >
         {label}
       </Label>
-      {type === "file" ? (
-        <Input
-          className="bg-secondary text-secondary-foreground"
-          type={type}
-          id={name}
-          name={name}
-          onChange={handleChange}
-          required
-        />
-      ) : (
-        <Input
-          className="bg-secondary text-secondary-foreground"
-          type={type}
-          id={name}
-          name={name}
-          value={value}
-          onChange={handleChange}
-          required
-        />
-      )}
+      <Input
+        id={name}
+        name={name}
+        type={type}
+        value={value}
+        onChange={handleChange}
+        className="bg-muted/20 border border-border focus-visible:ring-2 focus-visible:ring-primary transition-colors"
+      />
     </div>
   );
 };

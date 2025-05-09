@@ -6,7 +6,7 @@ import { updateProfile } from "@/api/services/profile";
 
 export const useUpdateProfile = () => {
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
-      updateProfile(id, data),
+    mutationFn: ({ id, data, role }: { id: string; data: any; role: string }) =>
+      updateProfile(id, data, role),
   });
 };

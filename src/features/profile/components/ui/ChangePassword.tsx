@@ -1,5 +1,4 @@
 // external imports
-import { z } from "zod";
 import { useState } from "react";
 
 // internal imports
@@ -8,24 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { changePasswordSchema } from "@/zod/user";
+import { useUpdatePassword } from "../../hooks/useUpdatePassword";
+import { useParams } from "react-router";
+import { TChangePasswordInfo } from "../../types/profile";
+import { toast } from "sonner";
 
 // types
 
 // Zod schema
-const schema = z
-  .object({
-    oldPassword: z.string().min(1, "Old password is required"),
-    newPassword: z
-      .string()
-      .min(8, "New password must be at least 8 characters"),
-    confirmNewPassword: z
-      .string()
-      .min(8, "Confirm password must be at least 8 characters"),
-  })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    path: ["confirmNewPassword"],
-    message: "Passwords must match",
-  });
 
 export interface IChangedPassword {
   oldPassword: string;
@@ -34,15 +24,22 @@ export interface IChangedPassword {
 }
 
 const ChangePassword = () => {
+  const params = useParams<{ userRole: string; userId: string }>();
   const [formData, setFormData] = useState<IChangedPassword>({
     oldPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
+  const userId = params.userId;
+  if (!userId) {
+    return;
+  }
 
   const [errors, setErrors] = useState<
     Partial<Record<keyof IChangedPassword, string>>
   >({});
+
+  const { mutate, isPending } = useUpdatePassword(userId);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,7 +50,7 @@ const ChangePassword = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = schema.safeParse(formData);
+    const result = changePasswordSchema.safeParse(formData);
     if (!result.success) {
       const newErrors: Partial<Record<keyof IChangedPassword, string>> = {};
       for (const issue of result.error.issues) {
@@ -64,9 +61,28 @@ const ChangePassword = () => {
       return;
     }
 
-    // Optionally reset the form
-    setFormData({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
-    setErrors({});
+    const info: TChangePasswordInfo = {
+      oldPass: result.data.oldPassword,
+      newPass: result.data.newPassword,
+      confirmNewPass: result.data.confirmNewPassword,
+    };
+
+    mutate(info, {
+      onSuccess: (data) => {
+        if (data?.changedPassword) {
+          toast.success("password updated successfully");
+        }
+        setFormData({
+          oldPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        });
+        setErrors({});
+      },
+      onError: () => {
+        toast.error("password update failed");
+      },
+    });
   };
 
   return (
@@ -97,8 +113,8 @@ const ChangePassword = () => {
             </div>
           ))}
 
-          <Button type="submit" className="w-full">
-            Submit
+          <Button type="submit" disabled={isPending} className="w-full">
+            {isPending ? "Submiting..." : "Submit"}
           </Button>
         </form>
       </CardContent>

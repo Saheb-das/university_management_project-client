@@ -98,3 +98,13 @@ export type TStuffProfile = TBaseProfile & {
   highestDegree: string;
   specializedIn: string;
 };
+
+export type TChangePasswordInfo = {
+  oldPass: string;
+  newPass: string;
+  confirmNewPass: string;
+};
+
+export interface IUpdatePasswordRes extends IApiRes {
+  changedPassword: boolean;
+}

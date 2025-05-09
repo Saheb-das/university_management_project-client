@@ -2,7 +2,7 @@
 import { selector } from "recoil";
 
 // internal import
-import { completeProfileAtom } from "../atom/completeProfileAtom";
+import { completeProfileAtom } from "../atom/profileAtom";
 import { TBaseProfile, TStuffRoles } from "../../types/profile";
 
 export const formattedCompleteProfileSelector = selector({

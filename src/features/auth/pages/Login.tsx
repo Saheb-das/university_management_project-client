@@ -6,7 +6,7 @@ import { useSetRecoilState } from "recoil";
 // internal import
 import { loginSchema, TRole } from "@/zod/auth";
 import { useLogin } from "../hooks/useLogin";
-import { setAuthToken, setStorage } from "@/utils/localStorage";
+import { setAuthToken } from "@/utils/localStorage";
 import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

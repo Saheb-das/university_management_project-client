@@ -6,7 +6,7 @@ import { useEffect } from "react";
 // internal import
 import { getCompleteProfile } from "@/api/services/profile";
 import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
-import { completeProfileAtom } from "../recoil/atom/completeProfileAtom";
+import { completeProfileAtom } from "../recoil/atom/profileAtom";
 
 export const useCompleteProfile = () => {
   const basicUser = useRecoilValue(userBasicAtom);

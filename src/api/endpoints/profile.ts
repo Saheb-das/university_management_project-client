@@ -7,4 +7,8 @@ export const ProfileAPIs = {
     url: (id: string) => `/users/${id}`,
     method: "patch",
   },
+  update_password: {
+    url: (id: string) => `/users/${id}/change-password`,
+    method: "patch",
+  },
 };

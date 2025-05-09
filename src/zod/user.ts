@@ -61,3 +61,18 @@ export const studentSchema = z.object({
 });
 
 export type TStudentClient = z.infer<typeof studentSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, "Old password is required"),
+    newPassword: z
+      .string()
+      .min(8, "New password must be at least 8 characters"),
+    confirmNewPassword: z
+      .string()
+      .min(8, "Confirm password must be at least 8 characters"),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    path: ["confirmNewPassword"],
+    message: "Passwords must match",
+  });
