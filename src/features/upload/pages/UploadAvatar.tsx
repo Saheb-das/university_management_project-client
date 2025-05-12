@@ -9,8 +9,7 @@ import { completeProfileAtom } from "@/features/profile/recoil/atom/profileAtom"
 import { Label } from "@/components/ui/label";
 import { ImagePlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const apiUrl = import.meta.env.VITE_SERVER_BASE_URL;
+import { convertFilePathUrl } from "@/utils/convertPath";
 
 function UploadAvatar() {
   const setUser = useSetRecoilState(completeProfileAtom);
@@ -34,6 +33,7 @@ function UploadAvatar() {
     };
   };
 
+  // this function can be props
   const handleUpload = (file: File) => {
     mutate(file, {
       onSuccess: (res) => {
@@ -63,7 +63,7 @@ function UploadAvatar() {
   const imageToShow = preview
     ? preview
     : user?.profile.avatar
-    ? `${apiUrl}/${user.profile.avatar.replace(/\\/g, "/")}`
+    ? convertFilePathUrl(user.profile.avatar)
     : null;
   return (
     <div className="flex flex-col items-center gap-6 mb-4">

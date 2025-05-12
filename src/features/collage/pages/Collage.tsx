@@ -15,6 +15,8 @@ import CollageInfoCard from "../components/shared/CollageInfoCard";
 import { collageAtom } from "../recoil/collageAtom";
 import { useCollageInfo } from "../hooks/useCollageInfo";
 import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
+import { convertFilePathUrl } from "@/utils/convertPath";
+import ImageViewer from "@/components/shared/ImageViewer";
 
 const collegeData = {
   name: "Swami Vivekananda University",
@@ -27,18 +29,26 @@ const collegeData = {
 };
 
 const Collage = () => {
-  const collageInfo = useRecoilValue(collageAtom);
   const basicUser = useRecoilValue(userBasicAtom);
-  const { isError, isLoading } = useCollageInfo(basicUser?.collageId!);
+  if (!basicUser) return null;
+
+  const { isError, isLoading } = useCollageInfo(basicUser.collageId);
+
+  const collageInfo = useRecoilValue(collageAtom);
+  if (!collageInfo) return null;
+
+  const collageLogo = collageInfo.avatar
+    ? convertFilePathUrl(collageInfo.avatar)
+    : "";
+
   return (
     <Container>
       {isLoading && <p>Loading ...</p>}
       {isError && <p>something went wrong</p>}
       {collageInfo && (
         <>
-          <div className="w-28 h-28 rounded-full bg-secondary mx-auto mt-3">
-            <img src="" alt="collage logo" />
-          </div>
+          <ImageViewer srcUrl={collageLogo} altText={"collage logo"} />
+
           <div className="min-h-screen  p-8">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-4xl font-bold mb-8 text-center text-secondary-foreground">
@@ -79,9 +89,9 @@ const Collage = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="list-disc list-inside grid grid-cols-2 gap-2">
-                      {collageInfo.departments.map((item) => (
-                        <li key={item.id} className="text-lg">
-                          {item.type}
+                      {collageInfo.programs.map((item, index) => (
+                        <li key={index} className="text-lg capitalize">
+                          {item}
                         </li>
                       ))}
                     </ul>

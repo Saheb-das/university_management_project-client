@@ -2,9 +2,9 @@
 import { atom } from "recoil";
 
 // types import
-import { TCollageRes } from "../types/collage";
+import { TCollage } from "../types/collage";
 
-export const collageAtom = atom<TCollageRes | null>({
+export const collageAtom = atom<TCollage | null>({
   key: "collageAtom",
   default: null,
 });

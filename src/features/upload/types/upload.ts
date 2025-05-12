@@ -22,3 +22,21 @@ export interface IUploadAvatar extends IApiRes {
     updatedAt: string;
   };
 }
+
+export interface IUploadLogo extends IApiRes {
+  collageLogo: {
+    id: string;
+    name: string;
+    address: string;
+    registrationNo: string;
+    approvedBy?: string;
+    avatar?: string;
+    ranking?: string;
+    established: string;
+    programs: string[];
+    campusSize?: string;
+    bankAccountId: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+}

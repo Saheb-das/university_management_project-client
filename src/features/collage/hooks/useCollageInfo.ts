@@ -5,6 +5,7 @@ import { useSetRecoilState } from "recoil";
 // internal import
 import { getCollageById } from "@/api/services/collage";
 import { collageAtom } from "../recoil/collageAtom";
+import { useEffect } from "react";
 
 export const useCollageInfo = (id: string) => {
   const setCollageInfo = useSetRecoilState(collageAtom);
@@ -14,9 +15,12 @@ export const useCollageInfo = (id: string) => {
     queryFn: () => getCollageById(id),
   });
 
-  if (isSuccess) {
-    setCollageInfo(data);
-  }
+  useEffect(() => {
+    if (isSuccess && data) {
+      const { collage } = data;
+      setCollageInfo(collage);
+    }
+  }, [isSuccess, data]);
 
   return { isError, isLoading };
 };

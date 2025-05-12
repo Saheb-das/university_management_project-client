@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Program } from "@/zod/collage";
 
 interface ProgramListProps {
-  programs: Program[];
-  onChange: (programs: Program[]) => void;
+  programs: Program;
+  onChange: (programs: Program) => void;
 }
 
 export function ProgramList({ programs, onChange }: ProgramListProps) {
@@ -19,30 +19,31 @@ export function ProgramList({ programs, onChange }: ProgramListProps) {
 
   const addProgram = () => {
     if (newProgram.trim()) {
-      onChange([...programs, { name: newProgram.trim() }]);
+      onChange([...(programs ? programs : ""), newProgram]);
       setNewProgram("");
     }
   };
 
   const removeProgram = (index: number) => {
-    onChange(programs.filter((_, i) => i !== index));
+    onChange(programs?.filter((_, i) => i !== index));
   };
 
   return (
     <div className="space-y-2">
-      {programs.map((program, index) => (
-        <div key={index} className="flex items-center space-x-2">
-          <Input value={program.name} readOnly />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => removeProgram(index)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
+      {programs &&
+        programs.map((program, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <Input value={program} readOnly />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeProgram(index)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
       <div className="flex items-center space-x-2">
         <Input
           value={newProgram}

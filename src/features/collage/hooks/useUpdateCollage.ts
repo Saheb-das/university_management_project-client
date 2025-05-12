@@ -4,8 +4,11 @@ import { useMutation } from "@tanstack/react-query";
 // internal import
 import { updateCollage } from "@/api/services/collage";
 
-export const useUpdateCollage = () => {
+// types import
+import { ICollageUpdatePayload } from "../types/collage";
+
+export const useUpdateCollage = (id: string) => {
   return useMutation({
-    mutationFn: updateCollage,
+    mutationFn: (payload: ICollageUpdatePayload) => updateCollage(id, payload),
   });
 };

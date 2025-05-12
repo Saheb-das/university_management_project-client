@@ -5,9 +5,11 @@ import { Upload, ImagePlus } from "lucide-react"; // Icons for UI
 
 interface UploadInputProps {
   onFileSelect: (file: File) => void; // callback function to handle the selected file
+  title: string;
+  prevImg: string;
 }
 
-const UploadInput = ({ onFileSelect }: UploadInputProps) => {
+const UploadInput = ({ onFileSelect, title, prevImg }: UploadInputProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -28,16 +30,18 @@ const UploadInput = ({ onFileSelect }: UploadInputProps) => {
     fileInputRef.current?.click();
   };
 
+  const imageToShow = preview ? preview : prevImg ? prevImg : null;
+
   return (
-    <div className="flex flex-col items-center gap-4 p-6  rounded-2xl shadow-md w-full max-w-sm">
-      <Label className="text-lg font-semibold text-foreground">
-        Profile Picture
+    <div className="mx-auto flex flex-col bg-secondary items-center gap-4 p-6  rounded-2xl shadow-md w-full max-w-sm">
+      <Label className="text-lg font-semibold text-foreground capitalize">
+        {title}
       </Label>
       <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-sm bg-background">
-        {preview ? (
+        {imageToShow ? (
           <img
-            src={preview}
-            alt="Preview"
+            src={imageToShow}
+            alt={`${title} Preview`}
             className="object-cover w-full h-full"
           />
         ) : (
@@ -55,7 +59,7 @@ const UploadInput = ({ onFileSelect }: UploadInputProps) => {
         onChange={handleFileChange}
       />
 
-      <Button onClick={handleUploadClick} variant="secondary" className="gap-2">
+      <Button onClick={handleUploadClick} variant="outline" className="gap-2">
         <Upload className="w-4 h-4" />
         Upload New Photo
       </Button>
