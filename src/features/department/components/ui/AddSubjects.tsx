@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Trash } from "lucide-react";
 import { ISemester } from "../shared/AddSubjectInCourse";
+import { useCreateSubjects } from "../../hooks/useCreateSubjects";
+import { toast } from "sonner";
 
 interface Subject {
   name: string;
@@ -12,6 +14,7 @@ interface Subject {
 
 const AddSubjects = ({ semesters }: { semesters: ISemester[] }) => {
   const [subjects, setSubjects] = useState<{ [key: string]: Subject[] }>({});
+  const { mutate, isPending } = useCreateSubjects();
 
   const handleSubjectChange = (
     semesterId: string,
@@ -45,8 +48,17 @@ const AddSubjects = ({ semesters }: { semesters: ISemester[] }) => {
   };
 
   const handleClick = () => {
-    // TODO: here api call to create subject for each semester
-    console.log("subjects", subjects);
+    mutate(subjects, {
+      onSuccess: (res) => {
+        const count = res?.subjects.count;
+        if (count) {
+          toast.success(res.message || "subjects created successfully");
+        }
+      },
+      onError: (err) => {
+        toast.error(err.message || "subjects not created");
+      },
+    });
   };
   return (
     <div className="space-y-4 p-6 bg-card rounded-lg shadow-2xl">
@@ -117,10 +129,10 @@ const AddSubjects = ({ semesters }: { semesters: ISemester[] }) => {
 
       <Button
         onClick={handleClick}
-        disabled={semesters.length === 0}
+        disabled={semesters.length === 0 || isPending}
         className="capitalize ml-auto mt-5 cursor-pointer"
       >
-        submit
+        {isPending ? "submitting..." : "submit"}
       </Button>
     </div>
   );

@@ -1,5 +1,6 @@
 // external import
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
 
 // internal import
 import { Input } from "@/components/ui/input";
@@ -12,29 +13,55 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { degreeOptions } from "../shared/NewDepartment";
+import { departmentsAtom } from "../../recoil/departmentAtom";
+import { TCourseClient } from "../../types/course";
+import { toast } from "sonner";
+import { useCreateCourse } from "../../hooks/useCreateCourse";
 
-const departmentTypes = [
-  "science",
-  "arts",
-  "commerce",
-  "engineering",
-  "medical",
-];
+const initCourse = {
+  name: "",
+  duration: "",
+  semesters: "",
+  totalFees: "",
+  degree: "",
+  departmentType: "",
+};
 
 const AddNewCourse = () => {
-  const [course, setCourse] = useState({
-    name: "",
-    duration: "",
-    semesters: "",
-    totalFees: "",
-    degree: "",
-    departmentType: "",
-  });
+  const deptInfo = useRecoilValue(departmentsAtom);
+  const [course, setCourse] = useState(initCourse);
+
+  const { mutate, isPending } = useCreateCourse();
 
   const handleCourseChange = (field: string, value: string) => {
     setCourse((prev) => ({ ...prev, [field]: value }));
   };
+
+  const handleSubmit = () => {
+    const payload: TCourseClient = {
+      degree: course.degree,
+      duration: course.duration,
+      name: course.name,
+      semesters: course.semesters,
+      totalFees: course.totalFees,
+    };
+
+    mutate(payload, {
+      onSuccess: (res) => {
+        toast.success(res?.message || "course create successfully");
+      },
+      onError: (err) => {
+        toast.error(err.message || "course not created");
+      },
+      onSettled: () => {
+        setCourse(initCourse);
+      },
+    });
+  };
+
+  const avalableDegrees =
+    course.departmentType &&
+    deptInfo.find((d) => course.departmentType === d.type)?.degrees;
 
   return (
     <div className="space-y-4 p-4 bg-background text-foreground">
@@ -52,9 +79,9 @@ const AddNewCourse = () => {
           <SelectValue placeholder="Select department type" />
         </SelectTrigger>
         <SelectContent>
-          {departmentTypes.map((type) => (
-            <SelectItem key={type} value={type} className="capitalize">
-              {type}
+          {deptInfo.map((dept) => (
+            <SelectItem key={dept.id} value={dept.type} className="capitalize">
+              {dept.type}
             </SelectItem>
           ))}
         </SelectContent>
@@ -85,15 +112,23 @@ const AddNewCourse = () => {
           <SelectValue placeholder="Select degree" />
         </SelectTrigger>
         <SelectContent>
-          {degreeOptions.map((degree) => (
-            <SelectItem key={degree} value={degree}>
-              {degree}
-            </SelectItem>
-          ))}
+          {avalableDegrees &&
+            avalableDegrees.map((deg) => (
+              <SelectItem key={deg.id} value={deg.id}>
+                {deg.type}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
 
-      <Button className="w-full">Create Course</Button>
+      <Button
+        type="submit"
+        disabled={isPending}
+        className="w-full"
+        onClick={handleSubmit}
+      >
+        {isPending ? "Creating..." : "Create Course"}
+      </Button>
     </div>
   );
 };

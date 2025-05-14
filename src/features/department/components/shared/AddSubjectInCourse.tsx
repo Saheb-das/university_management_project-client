@@ -20,7 +20,7 @@ const AddSubjectInCourse = () => {
   return (
     <div className="space-y-4">
       <div className="bg-background text-foreground p-4">
-        <FilterForCourse onFilter={handleFilter} />
+        <FilterForCourse onFilter={handleFilter} mode={"semesters"} />
       </div>
       <AddSubjects semesters={semesters} />
     </div>

@@ -5,3 +5,4 @@ export * from "./transaction";
 export * from "./collage";
 export * from "./profile";
 export * from "./upload";
+export * from "./department";

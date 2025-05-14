@@ -12,3 +12,13 @@ export const collegeUpdateSchema = z.object({
 
 export type CollegeUpdateFormData = z.infer<typeof collegeUpdateSchema>;
 export type Program = z.infer<typeof programSchema>;
+
+// department
+export const departmentSchema = z.object({
+  type: z.enum(["engineering", "medical", "law", "management"]),
+  degree: z
+    .array(z.enum(["bachelor", "master", "phd", "diploma"]))
+    .min(1, { message: "At least one degree must be selected" }),
+});
+
+export type DepartmentFormData = z.infer<typeof departmentSchema>;
