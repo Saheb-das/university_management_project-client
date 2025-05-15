@@ -27,7 +27,7 @@ export type TUser = {
   updatedAt: string;
 };
 
-type TProfile = {
+export type TProfile = {
   id: string;
   address: string;
   phoneNo: string;
@@ -42,7 +42,7 @@ type TProfile = {
   updatedAt: string;
 };
 
-type TStuff = {
+export type TStuff = {
   id: string;
   highestDegree: string;
   specializedIn: string;

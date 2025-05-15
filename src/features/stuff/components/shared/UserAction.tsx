@@ -1,5 +1,5 @@
 // external import
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // internal import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,40 +12,69 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { IUser } from "./Users";
+import { IUser, IUserProfile } from "../../types/stuff";
+import { useUpdateStatus } from "../../hooks/useUpdateStatus";
+import { toast } from "sonner";
+import { useSetRecoilState } from "recoil";
+import { selectUserDetailsAtom, usersAtom } from "../../recoil/usersAtom";
 
 interface UserDetailsProps {
-  user: IUser;
-  onStatusChange: (userId: number, newStatus: IUser["status"]) => void;
+  user: IUserProfile;
 }
 
-const UserActions = ({ user, onStatusChange }: UserDetailsProps) => {
-  const [userStatus, setUserStatus] = useState<IUser["status"]>(user.status);
+const UserActions = ({ user }: UserDetailsProps) => {
+  const [userStatus, setUserStatus] = useState<IUser["activeStatus"]>(
+    user.activeStatus
+  );
+  const setDetailsUser = useSetRecoilState(selectUserDetailsAtom);
+  const setUsers = useSetRecoilState(usersAtom);
 
-  useEffect(() => {
-    setUserStatus(user.status);
-  }, [user]);
+  const { mutate, isPending } = useUpdateStatus(user.id, user.role);
 
-  const handleStatus = (newStatus: IUser["status"]) => {
-    setUserStatus(newStatus);
-  };
+  const handleStatus = () => {
+    mutate(userStatus, {
+      onSuccess: (res) => {
+        if (!res) return res;
 
-  const handleStatusUpdate = () => {
-    onStatusChange(user.id, userStatus);
+        const user = res.user;
+
+        setUsers((prev) => {
+          return prev.map((item) =>
+            item.id === user.id
+              ? { ...item, activeStatus: user.activeStatus }
+              : item
+          );
+        });
+
+        setDetailsUser((prev) => ({
+          ...prev,
+          activeStatus: user.activeStatus,
+        }));
+
+        if (res.success) {
+          toast.success(res.message || "update successfull");
+        }
+      },
+      onError: (err) => {
+        toast.error(err.message || "updation failed");
+      },
+    });
   };
 
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg capitalize">{user.name}</CardTitle>
+          <CardTitle className="text-lg capitalize">
+            {user.firstName} {user.lastName}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {/* some details */}
           <dl className="space-y-2">
             <div className="flex gap-2">
               <dt className="font-semibold ">Qualification:</dt>
-              <dd>{user.qualification}</dd>
+              <dd>{user.profile.stuff.highestDegree}</dd>
             </div>
 
             <div className="flex gap-2">
@@ -53,21 +82,24 @@ const UserActions = ({ user, onStatusChange }: UserDetailsProps) => {
               <dd>
                 <Badge
                   variant={
-                    user.status === "regular"
+                    user.activeStatus === "regular"
                       ? "default"
-                      : user.status === "suspend"
+                      : user.activeStatus === "suspend"
                       ? "outline"
                       : "destructive"
                   }
                 >
-                  {user.status}
+                  {user.activeStatus}
                 </Badge>
               </dd>
             </div>
             <div className="pt-4">
               <dt className="font-semibold mb-2">Change Status:</dt>
               <dd>
-                <Select onValueChange={handleStatus} value={userStatus}>
+                <Select
+                  onValueChange={(v: IUser["activeStatus"]) => setUserStatus(v)}
+                  value={userStatus}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select new status" />
                   </SelectTrigger>
@@ -80,11 +112,8 @@ const UserActions = ({ user, onStatusChange }: UserDetailsProps) => {
               </dd>
             </div>
             <div className="pt-2">
-              <Button
-                onClick={handleStatusUpdate}
-                disabled={userStatus === user.status}
-              >
-                Update Status
+              <Button onClick={handleStatus} disabled={isPending}>
+                {isPending ? "Updating..." : "Update Status"}
               </Button>
             </div>
           </dl>

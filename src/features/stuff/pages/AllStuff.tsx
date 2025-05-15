@@ -1,3 +1,8 @@
+// external import
+import { useState } from "react";
+import { useRecoilValue } from "recoil";
+
+// internal import
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -6,51 +11,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
 import UsersWithDetails from "../components/ui/UsersWithDetails";
-import { IUser } from "../components/shared/Users";
+import { useUsersByRole } from "../hooks/useUsersByRole";
 
-type Role = "examceller" | "counsellor" | "accountant" | "teacher" | "student";
-
-const initialUser = [
-  {
-    id: 1,
-    name: "John Doe",
-    qualification: "PhD",
-
-    status: "regular",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    qualification: "MSc",
-
-    status: "suspend",
-  },
-  {
-    id: 3,
-    name: "Bob Johnson",
-    qualification: "PhD",
-
-    status: "regular",
-  },
-  {
-    id: 4,
-    name: "Alice Brown",
-    qualification: "MEd",
-
-    status: "blocked",
-  },
-];
+// types import
+import { usersAtom } from "../recoil/usersAtom";
+import { TStuffRole } from "../types/stuff";
 
 const AllStuff = ({ admin }: { admin: Boolean }) => {
-  const [role, setRole] = useState<Role | string>("");
-  const [users, setUsers] = useState<IUser[] | []>([]);
-  const handleRoleList = () => {
-    setUsers(initialUser);
+  const [role, setRole] = useState<string>("");
+  const [userRole, setUserRole] = useState("");
+  const users = useRecoilValue(usersAtom);
+
+  useUsersByRole(userRole as TStuffRole);
+
+  const handleGet = () => {
+    setUserRole(role);
   };
-  const handleStatus = () => {};
-  const handleDelete = () => {};
+
   return (
     <div className="">
       <div className="flex gap-3 mt-4">
@@ -73,19 +51,16 @@ const AllStuff = ({ admin }: { admin: Boolean }) => {
             )}
           </SelectContent>
         </Select>
-        <Button className="capitalize cursor-pointer" onClick={handleRoleList}>
+        <Button className="capitalize cursor-pointer" onClick={handleGet}>
           get
         </Button>
       </div>
 
       <div>
-        {users.length !== 0 && (
-          <UsersWithDetails
-            role={role as Role}
-            onDelete={handleDelete}
-            onStatusChange={handleStatus}
-            usersData={users}
-          />
+        {users.length > 0 && (
+          <>
+            <UsersWithDetails usersData={users} />
+          </>
         )}
       </div>
     </div>

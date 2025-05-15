@@ -1,62 +1,44 @@
 // external import
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
 
 // internal import
-import Users, { IUser } from "../shared/Users";
+import UsersTable from "../shared/Users";
 import UserActions from "../shared/UserAction";
 
-type Role = "examceller" | "counsellor" | "accountant" | "teacher" | "student";
+// types import
+import { IUser } from "../../types/stuff";
+import { useUserDetails } from "../../hooks/useUserDetails";
+import { useRecoilValue } from "recoil";
+import { selectUserDetailsAtom } from "../../recoil/usersAtom";
 
 interface UsersWithDetailsProps {
-  role: Role;
   usersData: IUser[];
-  onStatusChange: (userId: number, newStatus: IUser["status"]) => void;
-  onDelete: (userId: number) => void;
 }
 
-const UsersWithDetails = ({
-  role,
-  usersData,
-  onStatusChange,
-  onDelete,
-}: UsersWithDetailsProps) => {
+const UsersWithDetails = ({ usersData }: UsersWithDetailsProps) => {
   const [selectedUser, setSelectedUser] = useState<IUser | null>();
+  const detailedUser = useRecoilValue(selectUserDetailsAtom);
 
-  useEffect(() => {
-    if (selectedUser) {
-      setSelectedUser(() =>
-        usersData.find((user) => user.id === selectedUser.id)
-      );
-    }
-  }, [usersData]);
+  useUserDetails(selectedUser?.id || "");
 
-  const handleClick = async (userId: number) => {
-    try {
-      // TODO: API call
-      // const user = await fetch(`${apiUrl}/${userId}`)
-      // TODO: Check user
-      setSelectedUser(() => usersData.find((item) => item.id === userId));
-    } catch (error) {
-      toast("user fetching problem");
-    }
+  const handleClick = (user: IUser) => {
+    setSelectedUser(user);
   };
 
-  // for ui updation
+  const handleDelete = (userId: string) => {};
 
   return (
     <div className="w-full flex gap-4 ">
       <div className=" basis-[60%] bg-background text-foreground p-2 rounded-lg">
-        <Users
-          role={role}
+        <UsersTable
           users={usersData}
-          handleClick={handleClick}
-          handleDelete={onDelete}
+          onClick={handleClick}
+          onDelete={handleDelete}
         />
       </div>
       <div className=" flex-grow bg-background text-foreground p-2">
-        {selectedUser ? (
-          <UserActions user={selectedUser} onStatusChange={onStatusChange} />
+        {detailedUser ? (
+          <UserActions user={detailedUser} />
         ) : (
           <h1 className="text-2xl mt-10 text-center capitalize font-medium">
             click list item to show details

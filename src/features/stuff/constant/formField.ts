@@ -1,0 +1,25 @@
+export const formFields = [
+  { id: 1, name: "firstName", placeholder: "First Name", type: "text" },
+  { id: 2, name: "lastName", placeholder: "Last Name", type: "text" },
+  { id: 3, name: "email", placeholder: "Email", type: "email" },
+  { id: 4, name: "password", placeholder: "Password", type: "password" },
+  { id: 5, name: "address", placeholder: "Address", type: "text" },
+  { id: 6, name: "phoneNo", placeholder: "Phone Number", type: "tel" },
+  { id: 7, name: "adhaarNo", placeholder: "Aadhar Number", type: "text" },
+  { id: 8, name: "highestDegree", placeholder: "Highest Degree", type: "text" },
+  {
+    id: 9,
+    name: "specializedIn",
+    placeholder: "Specialization",
+    type: "text",
+  },
+  { id: 10, name: "bankName", placeholder: "Bank Name", type: "text" },
+  { id: 11, name: "ifscCode", placeholder: "IFSC Code", type: "text" },
+  { id: 12, name: "accountNo", placeholder: "Account Number", type: "text" },
+  {
+    id: 13,
+    name: "accountHolderName",
+    placeholder: "Account Holder Name",
+    type: "text",
+  },
+];

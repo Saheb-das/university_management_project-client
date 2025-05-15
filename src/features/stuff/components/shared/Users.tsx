@@ -10,98 +10,66 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-type Role = "examceller" | "counsellor" | "accountant" | "teacher" | "student";
-
-export interface IUser {
-  id: number;
-  name: string;
-  qualification?: string;
-  admissionYear?: string;
-  departments?: string[];
-  status: string;
-}
+// types import
+import { IUser } from "../../types/stuff";
 
 interface UserTableProps {
-  role: Role;
   users: IUser[];
-  handleClick: (user: number) => void;
-  handleDelete: (userId: number) => void;
+  onClick: (user: IUser) => void;
+  onDelete: (userId: string) => void;
 }
 
-const Users = ({ role, users, handleClick, handleDelete }: UserTableProps) => {
-  let rowItems;
-  if (role === "student") {
-    rowItems = ["name", "department", "admission year", "status", "action"];
-  } else if (role === "teacher") {
-    rowItems = ["name", "department", "qualification", "status", "action"];
-  } else {
-    rowItems = ["name", "qualification", "status", "action"];
-  }
-
+const UsersTable = ({ users, onClick, onDelete }: UserTableProps) => {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {rowItems.map((rowItem) => (
-            <TableHead key={rowItem} className="capitalize">
-              {rowItem}
-            </TableHead>
-          ))}
+          <TableHead className="capitalize">name</TableHead>
+          <TableHead className="capitalize">role</TableHead>
+          <TableHead className="capitalize">status</TableHead>
+          <TableHead className="capitalize">action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users &&
-          users.map((user) => (
-            <TableRow
-              key={user.id}
-              onClick={() => handleClick(user.id)}
-              className="cursor-pointer text-base"
-            >
-              <TableCell>{user.name}</TableCell>
-              {role === "student" ? (
-                <>
-                  <TableCell>{user.departments?.join(",")}</TableCell>
-                  <TableCell>{user.admissionYear}</TableCell>
-                </>
-              ) : role === "teacher" ? (
-                <>
-                  <TableCell className="capitalize">
-                    {user.departments?.join(", ")}
-                  </TableCell>
-                  <TableCell>{user.qualification}</TableCell>
-                </>
-              ) : (
-                <TableCell>{user.qualification}</TableCell>
-              )}
-
-              <TableCell>
-                <Badge
-                  variant={
-                    user.status === "regular"
-                      ? "default"
-                      : user.status === "suspend"
-                      ? "outline"
-                      : "destructive"
-                  }
-                >
-                  {user.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+        {users.map((user) => (
+          <TableRow
+            key={user.id}
+            onClick={() => onClick(user)}
+            className="cursor-pointer text-base"
+          >
+            <TableCell>
+              {user.firstName} {user.lastName}
+            </TableCell>
+            <TableCell>{user.role}</TableCell>
+            <TableCell>
+              <Badge
+                variant={
+                  user.activeStatus === "regular"
+                    ? "default"
+                    : user.activeStatus === "suspend"
+                    ? "outline"
+                    : "destructive"
+                }
+              >
+                {user.activeStatus}
+              </Badge>
+            </TableCell>
+            {/* TODO: delete functionalities added later  */}
+            <TableCell>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onDelete(user.id)}
+              >
+                Delete
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
 };
 
 // export
-export default Users;
+export default UsersTable;

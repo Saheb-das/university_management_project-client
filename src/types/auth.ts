@@ -1,4 +1,4 @@
-type TRole =
+export type TRole =
   | "admin"
   | "examceller"
   | "counsellor"
