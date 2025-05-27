@@ -7,3 +7,6 @@ export * from "./profile";
 export * from "./upload";
 export * from "./department";
 export * from "./user";
+export * from "./student";
+export * from "./asign-teacher";
+export * from "./admission";

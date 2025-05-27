@@ -9,23 +9,21 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Student } from "../../pages/FilteredStudents";
+import { useRecoilValue } from "recoil";
+import { studentsListAtom } from "../../recoil/studentAtom";
 
 interface StudentTableProps {
-  students: Student[];
-  onStudentClick: (studentId: number) => void;
-  onDelete: (id: number) => void;
+  onStudentClick: (studentId: string) => void;
+  onDelete: (id: string) => void;
 }
 
-const StudentsTable = ({
-  students,
-  onStudentClick,
-  onDelete,
-}: StudentTableProps) => {
+const StudentsTable = ({ onStudentClick, onDelete }: StudentTableProps) => {
+  const studentsInfo = useRecoilValue(studentsListAtom);
   const [searchRollNo, setSearchRollNo] = useState("");
 
-  const filteredStudents = students.filter((student) =>
-    student.rollNo.toLowerCase().includes(searchRollNo.toLowerCase())
+  // TODO: search functionality added later
+  const filteredStudents = studentsInfo.filter((student) =>
+    student.rollNo?.toLowerCase().includes(searchRollNo.toLowerCase())
   );
 
   const coloredStatus = (status: string) => {
@@ -43,6 +41,8 @@ const StudentsTable = ({
         return "text-gray-500";
     }
   };
+
+  console.log("students", studentsInfo);
 
   return (
     <div className="bg-background text-foreground py-4 px-3">
@@ -64,34 +64,39 @@ const StudentsTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredStudents.map((student) => (
-            <TableRow
-              key={student.id}
-              onClick={() => onStudentClick(student.id)}
-              className="cursor-pointer"
-            >
-              <TableCell>{student.name}</TableCell>
-              <TableCell>{student.rollNo}</TableCell>
-              <TableCell>{student.registrationNo}</TableCell>
-              <TableCell
-                className={`${coloredStatus(student.status)} font-medium`}
+          {studentsInfo &&
+            studentsInfo.map((item) => (
+              <TableRow
+                key={item.id}
+                onClick={() => onStudentClick(item.id)}
+                className="cursor-pointer"
               >
-                {student.status}
-              </TableCell>
-
-              <TableCell>
-                <Button
-                  variant="destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(student.id);
-                  }}
+                <TableCell>
+                  {item.profile.user.firstName} {item.profile.user.lastName}
+                </TableCell>
+                <TableCell>{item.rollNo}</TableCell>
+                <TableCell>{item.registretionNo}</TableCell>
+                <TableCell
+                  className={`${coloredStatus(
+                    item.profile.user.activeStatus
+                  )} font-medium`}
                 >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+                  {item.profile.user.activeStatus}
+                </TableCell>
+
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(item.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

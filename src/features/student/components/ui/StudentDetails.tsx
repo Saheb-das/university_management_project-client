@@ -1,5 +1,5 @@
 // external import
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // internal import
 import { Button } from "@/components/ui/button";
@@ -12,29 +12,62 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Student } from "../../pages/FilteredStudents";
+import { IStudent, TStatus } from "../../types/student";
+import { useUpdateStatus } from "../../hooks/useUpdateStatus";
+import { toast } from "sonner";
+import { useSetRecoilState } from "recoil";
+import { studentsListAtom } from "../../recoil/studentAtom";
 
 interface StudentDetailProps {
-  student: Student;
-  onStatusChange: (id: number, newStatus: string) => void;
+  student: IStudent;
 }
 
-function StudentDetails({ student, onStatusChange }: StudentDetailProps) {
-  const [status, setStatus] = useState(student.status);
-
-  useEffect(() => {
-    if (student) {
-      setStatus(student.status);
-    }
-  }, [student]);
+function StudentDetails({ student }: StudentDetailProps) {
+  const [status, setStatus] = useState(
+    student.profile.user.activeStatus as TStatus
+  );
+  const setStudents = useSetRecoilState(studentsListAtom);
+  const { mutate, isPending } = useUpdateStatus(student.id);
 
   const handleStatusUpdate = () => {
-    onStatusChange(student.id, status);
+    mutate(status, {
+      onSuccess: (res) => {
+        if (!res) return res;
+        const updatedstudent = res.student;
+
+        setStudents((prev) => {
+          const updated = prev.map((item) => {
+            if (item.id === updatedstudent.id) {
+              return {
+                ...item,
+                profile: {
+                  ...item.profile,
+                  user: {
+                    ...item.profile.user,
+                    activeStatus: updatedstudent.profile.user.activeStatus,
+                  },
+                },
+              };
+            } else {
+              return item;
+            }
+          });
+          return updated;
+        });
+
+        toast.success(res?.message || "status updated successfully");
+      },
+      onError: (err) => {
+        toast.error(err.message || "status not updated");
+      },
+    });
   };
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg  ">{student.name}</CardTitle>
+        <CardTitle className="text-lg  ">
+          {student.profile.user.firstName} {student.profile.user.lastName}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <dl className="space-y-2">
@@ -44,7 +77,7 @@ function StudentDetails({ student, onStatusChange }: StudentDetailProps) {
           </div>
           <div className="flex gap-2">
             <dt className="font-semibold ">Registration No:</dt>
-            <dd>{student.registrationNo}</dd>
+            <dd>{student.registretionNo}</dd>
           </div>
 
           <div className="flex gap-2">
@@ -52,28 +85,31 @@ function StudentDetails({ student, onStatusChange }: StudentDetailProps) {
             <dd>
               <Badge
                 variant={
-                  student.status === "regular"
+                  student.profile.user.activeStatus === "regular"
                     ? "default"
-                    : student.status === "suspend"
+                    : student.profile.user.activeStatus === "suspend"
                     ? "outline"
                     : "destructive"
                 }
               >
-                {student.status}
+                {student.profile.user.activeStatus}
               </Badge>
             </dd>
           </div>
           <div className="pt-4">
             <dt className="font-semibold mb-2">Change Status:</dt>
             <dd>
-              <Select onValueChange={setStatus} value={status}>
+              <Select
+                onValueChange={(val: TStatus) => setStatus(val)}
+                value={status}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select new status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="regular">Regular</SelectItem>
                   <SelectItem value="suspend">Suspend</SelectItem>
-                  <SelectItem value="block">Blocked</SelectItem>
+                  <SelectItem value="blocked">Blocked</SelectItem>
                 </SelectContent>
               </Select>
             </dd>
@@ -81,9 +117,11 @@ function StudentDetails({ student, onStatusChange }: StudentDetailProps) {
           <div className="pt-2">
             <Button
               onClick={handleStatusUpdate}
-              disabled={status === student.status}
+              disabled={
+                status === student.profile.user.activeStatus || isPending
+              }
             >
-              Update Status
+              {isPending ? "Updating..." : "Update Status"}
             </Button>
           </div>
         </dl>

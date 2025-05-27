@@ -1,3 +1,9 @@
+// external import
+import { useState } from "react";
+import { useParams } from "react-router";
+import { useRecoilValue } from "recoil";
+
+// internal import
 import {
   Table,
   TableBody,
@@ -14,69 +20,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useState } from "react";
-
-// Mock data for admitted students
-const admittedStudentsList = [
-  {
-    id: 1,
-    name: "John Doe",
-    department: "Computer Science",
-    course: "Software Engineering",
-    degree: "Bachelor",
-    admissionYear: 2023,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    department: "Business",
-    course: "Marketing",
-    degree: "Master",
-    admissionYear: 2023,
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    department: "Engineering",
-    course: "Mechanical Engineering",
-    degree: "Bachelor",
-    admissionYear: 2022,
-  },
-  {
-    id: 4,
-    name: "Bob Brown",
-    department: "Arts",
-    course: "Fine Arts",
-    degree: "Bachelor",
-    admissionYear: 2022,
-  },
-  {
-    id: 5,
-    name: "Charlie Davis",
-    department: "Science",
-    course: "Physics",
-    degree: "PhD",
-    admissionYear: 2023,
-  },
-];
+import { useAdmittedStudent } from "../../hooks/useAdmittedStudent";
+import { admissionListAtom } from "../../recoil/admissionAtom";
 
 const AdmittedStudents = () => {
-  const [filteredStudents, setFilteredStudents] =
-    useState(admittedStudentsList);
+  const { userId } = useParams();
+  const admissionsListInfo = useRecoilValue(admissionListAtom);
+
+  const [filteredStudents, setFilteredStudents] = useState(admissionsListInfo);
   const [filters, setFilters] = useState({
-    department: "",
-    degree: "",
-    year: "",
+    department: "all",
+    degree: "all",
+    year: "all",
   });
 
+  if (!userId) return;
+
+  useAdmittedStudent(userId);
+
   const uniqueDepartments = [
-    ...new Set(admittedStudentsList.map((student) => student.department)),
+    ...new Set(admissionsListInfo.map((student) => student.department.type)),
   ];
   const uniqueDegrees = [
-    ...new Set(admittedStudentsList.map((student) => student.degree)),
+    ...new Set(admissionsListInfo.map((student) => student.degree.type)),
   ];
   const uniqueYears = [
-    ...new Set(admittedStudentsList.map((student) => student.admissionYear)),
+    ...new Set(admissionsListInfo.map((student) => student.inYear.toString())),
   ];
 
   const handleFilterChange = (
@@ -86,13 +55,14 @@ const AdmittedStudents = () => {
     const newFilters = { ...filters, [filterType]: value };
     setFilters(newFilters);
 
-    const newFilteredStudents = admittedStudentsList.filter(
+    const newFilteredStudents = admissionsListInfo.filter(
       (student) =>
         (newFilters.department === "all" ||
-          student.department === newFilters.department) &&
-        (newFilters.degree === "all" || student.degree === newFilters.degree) &&
+          student.department.type === newFilters.department) &&
+        (newFilters.degree === "all" ||
+          student.degree.type === newFilters.degree) &&
         (newFilters.year === "all" ||
-          student.admissionYear.toString() === newFilters.year)
+          student.inYear.toString() === newFilters.year)
     );
 
     setFilteredStudents(newFilteredStudents);
@@ -160,15 +130,26 @@ const AdmittedStudents = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredStudents.map((student) => (
-              <TableRow key={student.id}>
-                <TableCell>{student.name}</TableCell>
-                <TableCell>{student.department}</TableCell>
-                <TableCell>{student.course}</TableCell>
-                <TableCell>{student.degree}</TableCell>
-                <TableCell>{student.admissionYear}</TableCell>
+            {filteredStudents.length > 0 ? (
+              filteredStudents.map((item) => (
+                <TableRow className="capitalize" key={item.id}>
+                  <TableCell>
+                    {item.student.profile.user.firstName}{" "}
+                    {item.student.profile.user.lastName}
+                  </TableCell>
+                  <TableCell>{item.department.type}</TableCell>
+                  <TableCell>{item.course.name}</TableCell>
+                  <TableCell>{item.degree.type}</TableCell>
+                  <TableCell>{item.inYear.toString()}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No students found.
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </CardContent>

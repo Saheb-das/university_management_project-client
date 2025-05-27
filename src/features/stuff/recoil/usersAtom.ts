@@ -6,7 +6,7 @@ export const usersAtom = atom<IUser[] | []>({
   default: [],
 });
 
-export const selectUserDetailsAtom = atom<IUserProfile>({
+export const selectUserDetailsAtom = atom<IUserProfile | undefined>({
   key: "selectUserDetailsAtom",
   default: undefined,
 });

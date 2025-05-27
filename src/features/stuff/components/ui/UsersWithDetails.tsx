@@ -1,5 +1,5 @@
 // external import
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // internal import
 import UsersTable from "../shared/Users";
@@ -8,7 +8,7 @@ import UserActions from "../shared/UserAction";
 // types import
 import { IUser } from "../../types/stuff";
 import { useUserDetails } from "../../hooks/useUserDetails";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { selectUserDetailsAtom } from "../../recoil/usersAtom";
 
 interface UsersWithDetailsProps {
@@ -17,9 +17,13 @@ interface UsersWithDetailsProps {
 
 const UsersWithDetails = ({ usersData }: UsersWithDetailsProps) => {
   const [selectedUser, setSelectedUser] = useState<IUser | null>();
-  const detailedUser = useRecoilValue(selectUserDetailsAtom);
+  const [detailedUser, setDetailedUser] = useRecoilState(selectUserDetailsAtom);
 
   useUserDetails(selectedUser?.id || "");
+
+  useEffect(() => {
+    setDetailedUser(undefined);
+  }, [usersData, selectedUser]);
 
   const handleClick = (user: IUser) => {
     setSelectedUser(user);

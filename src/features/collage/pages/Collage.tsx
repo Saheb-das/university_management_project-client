@@ -105,8 +105,8 @@ const Collage = () => {
                   <CardContent>
                     <dl className="grid grid-cols-2 gap-4">
                       <div>
-                        <dt className="font-semibold">Acceptance Rate</dt>
-                        <dd>{}</dd>
+                        <dt className="font-semibold">Approved By</dt>
+                        <dd>{collageInfo.approvedBy}</dd>
                       </div>
                       <div>
                         <dt className="font-semibold">Student-Faculty Ratio</dt>
@@ -114,7 +114,7 @@ const Collage = () => {
                       </div>
                       <div>
                         <dt className="font-semibold">Campus Size</dt>
-                        <dd>500 acres</dd>
+                        <dd>{collageInfo.campusSize} acres</dd>
                       </div>
                       <div>
                         <dt className="font-semibold">Mascot</dt>

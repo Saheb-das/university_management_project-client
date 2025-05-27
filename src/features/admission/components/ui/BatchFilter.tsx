@@ -1,6 +1,3 @@
-// external import
-import { useEffect, useState } from "react";
-
 // internal import
 import { Button } from "@/components/ui/button";
 import {
@@ -12,46 +9,25 @@ import {
 } from "@/components/ui/select";
 import BatchList from "./BatchList";
 import BatchForm from "./BatchForm";
-
-export type TBatch = {
-  id: string;
-  title: string;
-};
-
-const departments = ["CSE", "ECE", "ME"];
-const degreesMap: Record<string, string[]> = {
-  CSE: ["B.Tech", "M.Tech"],
-  ECE: ["B.Tech"],
-  ME: ["B.Tech", "Diploma"],
-};
-const coursesMap: Record<string, string[]> = {
-  "B.Tech": ["DSA", "DBMS", "OS"],
-  "M.Tech": ["ML", "AI"],
-  Diploma: ["Workshop", "Mechanics"],
-};
-
-const batchList = [
-  { title: "bachelor_CSE_2021", id: "batch1" },
-  { title: "master_DS_2021", id: "batch2" },
-];
+import { useBatchFilter } from "../../hooks/useBatchFilter";
 
 const BatchSelector = () => {
-  const [department, setDepartment] = useState("");
-  const [degree, setDegree] = useState("");
-  const [course, setCourse] = useState("");
-  const [isGet, setIsGet] = useState(false);
-  const [batches, setBatches] = useState<TBatch[]>([]);
-
-  const fetchBatch = async () => {
-    // TODO: if batch is undefined, then setIsGet is true
-    setIsGet(true);
-  };
-
-  const handleCreateBatch = (year: string) => {
-    // TODO: create new batch
-  };
-
-  useEffect(() => {}, []);
+  const {
+    department,
+    setDepartment,
+    degree,
+    setDegree,
+    course,
+    setCourse,
+    degrees,
+    deptInfo,
+    coursesInfo,
+    fetchBatch,
+    handleCreateBatch,
+    batches,
+    isGet,
+    isDisabled,
+  } = useBatchFilter();
 
   return (
     <div className="space-y-4 p-6 border rounded-lg mb-6">
@@ -61,11 +37,12 @@ const BatchSelector = () => {
             <SelectValue placeholder="Select Department" />
           </SelectTrigger>
           <SelectContent>
-            {departments.map((dept) => (
-              <SelectItem key={dept} value={dept}>
-                {dept}
-              </SelectItem>
-            ))}
+            {deptInfo.length > 0 &&
+              deptInfo.map((dept) => (
+                <SelectItem key={dept.id} value={dept.id}>
+                  {dept.type}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
 
@@ -74,11 +51,12 @@ const BatchSelector = () => {
             <SelectValue placeholder="Select Degree" />
           </SelectTrigger>
           <SelectContent>
-            {degreesMap[department]?.map((deg) => (
-              <SelectItem key={deg} value={deg}>
-                {deg}
-              </SelectItem>
-            ))}
+            {degrees &&
+              degrees.map((deg) => (
+                <SelectItem key={deg.id} value={deg.id}>
+                  {deg.type}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
 
@@ -87,27 +65,30 @@ const BatchSelector = () => {
             <SelectValue placeholder="Select Course" />
           </SelectTrigger>
           <SelectContent>
-            {coursesMap[degree]?.map((c) => (
-              <SelectItem key={c} value={c}>
-                {c}
-              </SelectItem>
-            ))}
+            {coursesInfo.length > 0 &&
+              coursesInfo.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
 
         <Button
           className="col-span-2 col-start-11 cursor-pointer"
           onClick={fetchBatch}
-          disabled={!department || !degree || !course}
+          disabled={isDisabled}
         >
           Get Batch
         </Button>
       </div>
-      {isGet && batches.length === 0 ? (
-        <BatchForm onGetYear={handleCreateBatch} />
-      ) : (
+
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-4">
+          {isGet && <BatchForm onGetYear={handleCreateBatch} />}
+        </div>
         <BatchList list={batches} />
-      )}
+      </div>
     </div>
   );
 };

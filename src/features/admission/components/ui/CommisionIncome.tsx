@@ -1,4 +1,8 @@
+// external import
 import { useState, useMemo } from "react";
+import { useRecoilValue } from "recoil";
+
+// internal import
 import {
   Table,
   TableBody,
@@ -15,71 +19,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
-
-// Mock data for commission income
-const commissionData = [
-  {
-    id: 1,
-    name: "John Doe",
-    department: "Computer Science",
-    course: "Software Engineering",
-    admissionYear: 2023,
-    commission: 1000,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    department: "Business",
-    course: "Marketing",
-    admissionYear: 2023,
-    commission: 1200,
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    department: "Engineering",
-    course: "Mechanical Engineering",
-    admissionYear: 2022,
-    commission: 900,
-  },
-  {
-    id: 4,
-    name: "Bob Brown",
-    department: "Arts",
-    course: "Fine Arts",
-    admissionYear: 2022,
-    commission: 800,
-  },
-  {
-    id: 5,
-    name: "Charlie Davis",
-    department: "Science",
-    course: "Physics",
-    admissionYear: 2023,
-    commission: 1100,
-  },
-];
+import { admissionListAtom } from "../../recoil/admissionAtom";
 
 const CommisionIncome = () => {
   const [selectedYear, setSelectedYear] = useState<string>("");
 
+  const admissionListsInfo = useRecoilValue(admissionListAtom);
+
   const filteredData = useMemo(
     () =>
       selectedYear === "all" || !selectedYear
-        ? commissionData
-        : commissionData.filter(
-            (data) => data.admissionYear.toString() === selectedYear
+        ? admissionListsInfo
+        : admissionListsInfo.filter(
+            (data) => data.inYear.toString() === selectedYear
           ),
     [selectedYear]
   );
 
   const totalCommission = useMemo(
-    () => filteredData.reduce((sum, data) => sum + data.commission, 0),
+    () => filteredData.reduce((sum, data) => sum + Number(data.commission), 0),
     [filteredData]
   );
 
   const uniqueYears = [
-    ...new Set(commissionData.map((data) => data.admissionYear)),
+    ...new Set(admissionListsInfo.map((data) => data.inYear.toString())),
   ];
 
   return (
@@ -103,7 +66,7 @@ const CommisionIncome = () => {
             </SelectContent>
           </Select>
           <div className="text-xl font-bold">
-            Total Commission: ${totalCommission}
+            Total Commission: ₹ {totalCommission}
           </div>
         </div>
         <Table>
@@ -117,13 +80,16 @@ const CommisionIncome = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.map((data) => (
-              <TableRow key={data.id}>
-                <TableCell>{data.name}</TableCell>
-                <TableCell>{data.department}</TableCell>
-                <TableCell>{data.course}</TableCell>
-                <TableCell>{data.admissionYear}</TableCell>
-                <TableCell>${data.commission}</TableCell>
+            {filteredData.map((item) => (
+              <TableRow className="capitalize" key={item.id}>
+                <TableCell>
+                  {item.student.profile.user.firstName}{" "}
+                  {item.student.profile.user.lastName}
+                </TableCell>
+                <TableCell>{item.department.type}</TableCell>
+                <TableCell>{item.course.name}</TableCell>
+                <TableCell>{item.inYear}</TableCell>
+                <TableCell>₹ {item.commission}</TableCell>
               </TableRow>
             ))}
           </TableBody>

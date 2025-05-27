@@ -159,7 +159,7 @@ const CollageForm = () => {
 
           {/* Approved By */}
           <div>
-            <Label className="text-lg block">Acceptance Rate (%)</Label>
+            <Label className="text-lg block">Approved By</Label>
             <Input
               type="text"
               name="approvedBy"

@@ -8,7 +8,7 @@ import Chat from "@/features/chats/pages/Chat";
 import Collage from "@/features/collage/pages/Collage";
 import CommonOffice from "@/features/office/pages/CommonOffice";
 import Profile from "@/features/profile/pages/Profile";
-import Transaction from "@/features/transactions.tsx/pages/Transactions";
+import Transaction from "@/features/transactions/pages/Transactions";
 import CheckTutionFees from "@/features/tution-fees/pages/CheckTutionFees";
 
 const accountantRoutes = (

@@ -1,15 +1,16 @@
+import { IBatch } from "../../types/admission";
 import BatchItem from "../shared/BatchItem";
-import { TBatch } from "./BatchFilter";
 
 interface IBatchListProps {
-  list: TBatch[];
+  list: IBatch[];
 }
 
 const BatchList = ({ list }: IBatchListProps) => {
   return (
-    <div className="grid grid-cols-12 gap-2 ">
-      {list ? (
-        list.map((item) => <BatchItem title={item.title} key={item.id} />)
+    <div className="col-span-8 ">
+      <h3 className="capitalize font-medium mb-4">batch lists</h3>
+      {list.length > 0 ? (
+        list.map((item) => <BatchItem title={item.name} key={item.id} />)
       ) : (
         <p>no batch</p>
       )}

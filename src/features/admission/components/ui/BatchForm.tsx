@@ -1,6 +1,9 @@
+// external import
+import { ChangeEvent, useState } from "react";
+
+// internal import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChangeEvent, useState } from "react";
 
 interface IBatchFormProps {
   onGetYear: (year: string) => void;
@@ -22,8 +25,11 @@ const BatchForm = ({ onGetYear }: IBatchFormProps) => {
         placeholder="admission year"
       />
       <Button
-        onClick={() => onGetYear(admissionYear)}
-        className="capitalize cursor-pointer"
+        onClick={() => {
+          onGetYear(admissionYear);
+          setAdmissionYear("");
+        }}
+        className="capitalize cursor-pointer mt-2"
       >
         create batch
       </Button>

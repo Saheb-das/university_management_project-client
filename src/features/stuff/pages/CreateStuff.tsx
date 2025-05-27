@@ -39,7 +39,7 @@ const CreateStuff = ({ admin }: { admin: Boolean }) => {
                 <>
                   <SelectItem value="teacher">Teacher</SelectItem>
                   <SelectItem value="examceller">Examceller</SelectItem>
-                  <SelectItem value="accountent">Accountent</SelectItem>
+                  <SelectItem value="accountant">Accountant</SelectItem>
                   <SelectItem value="counsellor">Counsellor</SelectItem>
                 </>
               )}

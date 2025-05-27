@@ -29,7 +29,7 @@ export interface IDeprtsRes extends IApiRes {
   departments: TDeprtWithDeg[];
 }
 
-type TDegree = {
+export type TDegree = {
   id: string;
   type: string;
 };

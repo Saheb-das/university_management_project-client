@@ -45,7 +45,7 @@ const AllStuff = ({ admin }: { admin: Boolean }) => {
               <>
                 <SelectItem value="teacher">Teacher</SelectItem>
                 <SelectItem value="examceller">Examceller</SelectItem>
-                <SelectItem value="accountent">Accountent</SelectItem>
+                <SelectItem value="accountant">Accountant</SelectItem>
                 <SelectItem value="counsellor">Counsellor</SelectItem>
               </>
             )}
@@ -57,10 +57,14 @@ const AllStuff = ({ admin }: { admin: Boolean }) => {
       </div>
 
       <div>
-        {users.length > 0 && (
+        {users.length > 0 ? (
           <>
             <UsersWithDetails usersData={users} />
           </>
+        ) : (
+          <p className="mt-6 capitalize text-lg font-semibold">
+            there are no users
+          </p>
         )}
       </div>
     </div>

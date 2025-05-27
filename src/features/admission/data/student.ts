@@ -1,5 +1,8 @@
-import { studentSchema } from "@/zod/user";
+// external import
 import { z } from "zod";
+
+// internal import
+import { studentSchema } from "@/zod/admission";
 
 type StudentFieldName = keyof z.infer<typeof studentSchema>;
 
@@ -11,7 +14,7 @@ export const studentFields: {
   { name: "firstName", type: "text", placeholder: "First Name" },
   { name: "lastName", type: "text", placeholder: "Last Name" },
   { name: "email", type: "email", placeholder: "Email" },
-  { name: "phone", type: "tel", placeholder: "Phone" },
+  { name: "phoneNo", type: "tel", placeholder: "Phone" },
   { name: "address", type: "text", placeholder: "Address" },
   { name: "adhaarNo", type: "text", placeholder: "Aadhaar Number" },
   { name: "dob", type: "text", placeholder: "Date of Birth (dd-mm-yyyy)" },

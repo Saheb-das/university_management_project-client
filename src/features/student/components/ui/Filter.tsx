@@ -1,5 +1,6 @@
 // external import
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
 
 // internal import
 import {
@@ -10,18 +11,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { useDepartments } from "@/features/department/hooks/useDepartments";
+import { departmentsAtom } from "@/features/department/recoil/departmentAtom";
+import { Input } from "@/components/ui/input";
+import { useStudents } from "../../hooks/useStudents";
 
-interface SearchFormProps {
-  onSearch: (department: string, degree: string, admissionYear: string) => void;
-}
+const Filter = () => {
+  const deptInfo = useRecoilValue(departmentsAtom);
 
-const Filter = ({ onSearch }: SearchFormProps) => {
   const [department, setDepartment] = useState("");
   const [degree, setDegree] = useState("");
   const [admissionYear, setAdmissionYear] = useState("");
 
+  const [filter, setFilter] = useState({ dept: "", deg: "", year: "" });
+
+  useDepartments("degree");
+  useStudents(filter.dept, filter.deg, filter.year);
+
+  const deg = deptInfo.find((item) => item.id === department)?.degrees || [];
+
   const handleSearch = () => {
-    onSearch(department, degree, admissionYear);
+    setFilter({ dept: department, deg: degree, year: admissionYear });
   };
 
   return (
@@ -31,36 +41,39 @@ const Filter = ({ onSearch }: SearchFormProps) => {
           <SelectValue placeholder="Select Department" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="cs">Computer Science</SelectItem>
-          <SelectItem value="ee">Electrical Engineering</SelectItem>
-          <SelectItem value="me">Mechanical Engineering</SelectItem>
+          {deptInfo &&
+            deptInfo.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.type}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
 
-      <Select onValueChange={setDegree}>
+      <Select onValueChange={setDegree} disabled={!department}>
         <SelectTrigger className="w-[200px]">
           <SelectValue placeholder="Select Degree" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="bs">BS</SelectItem>
-          <SelectItem value="ms">MS</SelectItem>
-          <SelectItem value="phd">PhD</SelectItem>
+          {deg.length > 0 &&
+            deg.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.type}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
 
-      <Select onValueChange={setAdmissionYear}>
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Admission Year" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="2020">2020</SelectItem>
-          <SelectItem value="2021">2021</SelectItem>
-          <SelectItem value="2022">2022</SelectItem>
-          <SelectItem value="2023">2023</SelectItem>
-        </SelectContent>
-      </Select>
+      <Input
+        className="w-[200px]"
+        placeholder="admission year"
+        value={admissionYear}
+        onChange={(e) => setAdmissionYear(e.target.value)}
+      />
 
-      <Button onClick={handleSearch}>Search</Button>
+      <Button className="cursor-pointer" onClick={handleSearch}>
+        Search
+      </Button>
     </div>
   );
 };

@@ -29,7 +29,7 @@ const TransactionLists = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {transactions ? (
+        {transactions.length > 0 ? (
           transactions.map((transaction) => (
             <TableRow
               key={transaction.id}
@@ -42,7 +42,9 @@ const TransactionLists = () => {
             </TableRow>
           ))
         ) : (
-          <h1 className="text-xl font-medium">there is no transactions</h1>
+          <h1 className="text-xl font-medium mt-6 capitalize ">
+            there is no transactions
+          </h1>
         )}
       </TableBody>
     </Table>
