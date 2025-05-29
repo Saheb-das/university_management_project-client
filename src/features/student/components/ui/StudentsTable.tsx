@@ -42,8 +42,6 @@ const StudentsTable = ({ onStudentClick, onDelete }: StudentTableProps) => {
     }
   };
 
-  console.log("students", studentsInfo);
-
   return (
     <div className="bg-background text-foreground py-4 px-3">
       <Input

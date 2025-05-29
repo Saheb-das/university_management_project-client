@@ -7,16 +7,20 @@ import {
   Tooltip,
 } from "recharts";
 
-const data = [
-  { year: 2018, commission: 25000 },
-  { year: 2019, commission: 32000 },
-  { year: 2020, commission: 38000 },
-  { year: 2021, commission: 42000 },
-  { year: 2022, commission: 48000 },
-  { year: 2023, commission: 54000 },
-];
+interface Data {
+  year: number;
+  totalAdmissions: number;
+  totalCommission: string;
+}
 
-function CommissionChart() {
+interface Props {
+  data: Data[];
+}
+
+function CommissionChart({ data }: Props) {
+  if (data.length === 0) {
+    return <p>there are no commission yet</p>;
+  }
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
@@ -35,7 +39,7 @@ function CommissionChart() {
           tickFormatter={(value) => `$${value}`}
         />
         <Tooltip />
-        <Bar dataKey="commission" fill="#8884d8" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="totalCommission" fill="#8884d8" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

@@ -8,9 +8,10 @@ interface ICardContainer {
   children: React.ReactNode;
   title: string;
   span: string;
+  loading?: boolean;
 }
 
-const CardContainer = ({ children, title, span }: ICardContainer) => {
+const CardContainer = ({ children, title, span, loading }: ICardContainer) => {
   return (
     <Card className={`${span}`}>
       <CardHeader>
@@ -18,7 +19,9 @@ const CardContainer = ({ children, title, span }: ICardContainer) => {
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="pl-2">{children}</CardContent>
+      <CardContent className="pl-2">
+        {loading ? <div>loading...</div> : <>{children}</>}
+      </CardContent>
     </Card>
   );
 };

@@ -46,10 +46,14 @@ const UserActions = ({ user }: UserDetailsProps) => {
           );
         });
 
-        setDetailsUser((prev) => ({
-          ...prev,
-          activeStatus: user.activeStatus,
-        }));
+        setDetailsUser((prev) => {
+          if (!prev) return prev;
+
+          return {
+            ...prev,
+            activeStatus: user.activeStatus,
+          };
+        });
 
         if (res.success) {
           toast.success(res.message || "update successfull");

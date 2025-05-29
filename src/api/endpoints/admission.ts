@@ -15,4 +15,16 @@ export const AdmissionAPIs = {
     url: "/admissions",
     method: "get",
   },
+  get_top_three: {
+    url: "/admissions/top-three",
+    method: "get",
+  },
+  get_total_admits_coms: {
+    url: (id: string) => `/admissions/${id}/admits-coms`,
+    method: "get",
+  },
+  get_prev_years_stats: {
+    url: (id: string) => `/admissions/${id}/stats`,
+    method: "get",
+  },
 };

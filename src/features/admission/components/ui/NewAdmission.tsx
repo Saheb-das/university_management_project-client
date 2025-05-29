@@ -50,7 +50,6 @@ const NewAdmission = () => {
     mutate(result.data, {
       onSuccess: (res) => {
         if (!res) return res;
-        console.log(res);
 
         if (res.success) {
           toast.success(res.message || "admission successfull");

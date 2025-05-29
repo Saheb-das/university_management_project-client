@@ -1,5 +1,6 @@
 // external import
 import { Users, GraduationCap, Smile, IndianRupee } from "lucide-react";
+import { useRecoilValue } from "recoil";
 
 // internal import
 import InfoCard from "../components/shared/InfoCard";
@@ -8,22 +9,17 @@ import Container from "@/components/shared/Container";
 import BarChartStats from "../components/shared/BarChartStats";
 import { Bar, Line } from "recharts";
 import LineChartStats from "../components/shared/LineChartStats";
-
-const admissionData = [
-  { year: 2018, admissions: 1200 },
-  { year: 2019, admissions: 1350 },
-  { year: 2020, admissions: 1100 },
-  { year: 2021, admissions: 1500 },
-  { year: 2022, admissions: 1650 },
-];
-
-const performanceData = [
-  { year: 2018, counsellor: 85, examcell: 78, accountant: 90 },
-  { year: 2019, counsellor: 88, examcell: 82, accountant: 92 },
-  { year: 2020, counsellor: 90, examcell: 85, accountant: 89 },
-  { year: 2021, counsellor: 92, examcell: 88, accountant: 94 },
-  { year: 2022, counsellor: 95, examcell: 90, accountant: 96 },
-];
+import { useAdminDashboard } from "../hooks/useAdminDashboard";
+import {
+  collageRevenueByRangeAtom,
+  studentsGrowthAtom,
+} from "../recoil/admin/dashboardAtom";
+import {
+  getAdmissionYearByYear,
+  getCurYearRevenue,
+  getRevenueYearByYear,
+  getTotalStudents,
+} from "@/utils/calc";
 
 const satisfactionData = [
   { name: "Very Satisfied", currentYear: 45, previousYear: 40 },
@@ -42,48 +38,50 @@ const collageActivitiesData = [
   { name: "Community Service", value: 25 },
 ];
 
-const collageInfo = [
-  {
-    title: "total students",
-    data: "1,650",
-    icon: <Users size={18} className="text-muted-foreground" />,
-    subtitle: "+10% from last year",
-  },
-  {
-    title: "Graduation Rate",
-    data: "92%",
-    icon: <GraduationCap size={18} className="text-muted-foreground" />,
-    subtitle: "+2% from last year",
-  },
-  {
-    title: "Student Satisfaction",
-    data: "75%",
-    icon: <Smile size={18} className="text-muted-foreground" />,
-    subtitle: "+5% from last year",
-  },
-  {
-    title: "Revenue",
-    data: "$5.2M",
-    icon: <IndianRupee size={18} className="text-muted-foreground" />,
-    subtitle: "+12% from last year",
-  },
-];
-
 function AdminDashboard() {
+  const studentGwothInfo = useRecoilValue(studentsGrowthAtom);
+  const revenuesInfo = useRecoilValue(collageRevenueByRangeAtom);
+
+  const { loading } = useAdminDashboard();
   return (
     <Container>
       {/* card info */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        {collageInfo &&
-          collageInfo.map((item) => (
-            <InfoCard
-              key={item.title}
-              title={item.title}
-              data={item.data}
-              icon={item.icon}
-              subTitle={item.subtitle}
-            />
-          ))}
+        {/* total students */}
+        <InfoCard
+          title="total students"
+          data={getTotalStudents(studentGwothInfo)}
+          icon={<Users size={18} className="text-muted-foreground" />}
+          subTitle={"+10% from last year"}
+          loading={loading.studentGrowth}
+        />
+
+        {/* graduation rate */}
+        <InfoCard
+          title={"Graduation Rate"}
+          data={"92%"}
+          icon={<GraduationCap size={18} className="text-muted-foreground" />}
+          subTitle={"+2% from last year"}
+          // loading={}
+        />
+
+        {/* student satisfation */}
+        <InfoCard
+          title={"Student Satisfaction"}
+          data={"75%"}
+          icon={<Smile size={18} className="text-muted-foreground" />}
+          subTitle={"+5% from last year"}
+          // loading={}
+        />
+
+        {/* revenue */}
+        <InfoCard
+          title={"Revenue"}
+          data={getCurYearRevenue(revenuesInfo)}
+          icon={<IndianRupee size={18} className="text-muted-foreground" />}
+          subTitle={"+12% from last year"}
+          loading={loading.revenueGrowth}
+        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 mb-6">
@@ -91,7 +89,7 @@ function AdminDashboard() {
         <BarChartStats
           title="students admission"
           desc="Year-by-year student admission trends"
-          data={admissionData}
+          data={getAdmissionYearByYear(studentGwothInfo)}
           xKey="year"
         >
           <Bar dataKey="admissions" fill="#eeb927" />
@@ -101,11 +99,9 @@ function AdminDashboard() {
         <LineChartStats
           xKey="year"
           title="College Growth Year by Year"
-          data={performanceData}
+          data={getRevenueYearByYear(revenuesInfo)}
         >
-          <Line type="monotone" dataKey="counsellor" stroke="#5f3cb1" />
-          <Line type="monotone" dataKey="examcell" stroke="#539ea3" />
-          <Line type="monotone" dataKey="accountant" stroke="#80a353" />
+          <Line type="monotone" dataKey="revenue" stroke="#b11738" />
         </LineChartStats>
       </div>
 
@@ -117,8 +113,8 @@ function AdminDashboard() {
           data={satisfactionData}
           xKey={"name"}
         >
-          <Bar dataKey="currentYear" fill="#1d4ed8" name="Total Students" />
-          <Bar dataKey="previousYear" fill="#60a5fa" name="Placed Students" />
+          <Bar dataKey="currentYear" fill="#1d4ed8" name="current year" />
+          <Bar dataKey="previousYear" fill="#60a5fa" name="previous year" />
         </BarChartStats>
 
         {/* collage other activities */}

@@ -1,4 +1,5 @@
 // internal import
+import { IRevenuesByRangeRes } from "@/features/dashboard/types/admin";
 import apiClient from "../client";
 import { HttpMethod, StatsAPIs } from "../endpoints";
 
@@ -35,7 +36,9 @@ export async function getStuffStats(
   return response.data;
 }
 
-export async function getRevenue(params: any = {}) {
+export async function getRevenuesByRange(
+  params: any = {}
+): Promise<IRevenuesByRangeRes | null> {
   const { method, url } = StatsAPIs.revenue;
   const response = await apiClient[method as HttpMethod](url, { params });
   return response.data;

@@ -1,6 +1,6 @@
 // external import
-import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 // internal import
 import { Button } from "@/components/ui/button";
@@ -15,19 +15,24 @@ import UsersWithDetails from "../components/ui/UsersWithDetails";
 import { useUsersByRole } from "../hooks/useUsersByRole";
 
 // types import
-import { usersAtom } from "../recoil/usersAtom";
+import { selectUserDetailsAtom, usersAtom } from "../recoil/usersAtom";
 import { TStuffRole } from "../types/stuff";
 
 const AllStuff = ({ admin }: { admin: Boolean }) => {
   const [role, setRole] = useState<string>("");
   const [userRole, setUserRole] = useState("");
   const users = useRecoilValue(usersAtom);
+  const setSelectedUser = useSetRecoilState(selectUserDetailsAtom);
 
   useUsersByRole(userRole as TStuffRole);
 
   const handleGet = () => {
     setUserRole(role);
   };
+
+  useEffect(() => {
+    setSelectedUser(undefined);
+  }, [userRole]);
 
   return (
     <div className="">

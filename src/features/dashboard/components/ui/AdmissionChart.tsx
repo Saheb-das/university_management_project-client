@@ -7,16 +7,20 @@ import {
   YAxis,
 } from "recharts";
 
-const data = [
-  { year: 2018, admissions: 320 },
-  { year: 2019, admissions: 380 },
-  { year: 2020, admissions: 420 },
-  { year: 2021, admissions: 450 },
-  { year: 2022, admissions: 520 },
-  { year: 2023, admissions: 580 },
-];
+interface Data {
+  year: number;
+  totalAdmissions: number;
+  totalCommission: string;
+}
 
-function AdmissionsChart() {
+interface Props {
+  data: Data[];
+}
+
+function AdmissionsChart({ data }: Props) {
+  if (data.length === 0) {
+    return <p>there are no admissions yet</p>;
+  }
   return (
     <ResponsiveContainer width="100%" height={350}>
       <LineChart data={data}>
@@ -37,7 +41,7 @@ function AdmissionsChart() {
         <Tooltip />
         <Line
           type="monotone"
-          dataKey="admissions"
+          dataKey="totalAdmissions"
           stroke="#8884d8"
           strokeWidth={2}
         />

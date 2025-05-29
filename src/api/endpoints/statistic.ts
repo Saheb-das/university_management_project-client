@@ -12,7 +12,7 @@ export const StatsAPIs = {
     method: "get",
   },
   revenue: {
-    url: "/stats/revenue",
+    url: "/stats/revenues-range",
     method: "get",
   },
   growth: {

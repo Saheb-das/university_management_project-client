@@ -1,5 +1,5 @@
 // external import
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // internal import
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,10 @@ function StudentDetails({ student }: StudentDetailProps) {
       },
     });
   };
+
+  useEffect(() => {
+    setStatus(student.profile.user.activeStatus as TStatus);
+  }, [student]);
   return (
     <Card>
       <CardHeader>
