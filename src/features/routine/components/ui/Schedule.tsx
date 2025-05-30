@@ -1,6 +1,8 @@
-import { Separator } from "@/components/ui/separator";
-import { LecturesList } from "./LecturesList";
-import { Label } from "@/components/ui/label";
+// external import
+import { Calendar, Clock, Trash2 } from "lucide-react";
+
+// internal import
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -8,44 +10,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar, Clock, Trash2 } from "lucide-react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Control,
-  UseFieldArrayRemove,
-  UseFormRegister,
-  UseFormWatch,
-} from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { FormValues } from "../../pages/RoutineCreator";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LecturesList from "./LecturesList";
+import { days } from "../../pages/RoutineCreator";
 
-const days = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-] as const;
+// types import
+import { ILecture, ISchedule, TDay } from "../../types/routine";
 
-interface ISchedule {
-  register: UseFormRegister<FormValues>;
-  watch: UseFormWatch<FormValues>;
-  control: Control<FormValues, any>;
-  removeSchedule: UseFieldArrayRemove;
+interface ScheduleProps {
+  schedule: ISchedule;
   scheduleIndex: number;
-  selectedDays: string[];
+  selectedDays: TDay[];
+  removeSchedule: (index: number) => void;
+  updateSchedule: (index: number, field: keyof ISchedule, value: any) => void;
+  addLecture: (scheduleIndex: number) => void;
+  removeLecture: (scheduleIndex: number, lectureIndex: number) => void;
+  updateLecture: (
+    scheduleIndex: number,
+    lectureIndex: number,
+    field: keyof ILecture,
+    value: string
+  ) => void;
+  errors: Record<string, string>;
 }
 
 const Schedule = ({
-  register,
-  watch,
-  control,
-  removeSchedule,
+  schedule,
   scheduleIndex,
   selectedDays,
-}: ISchedule) => {
+  removeSchedule,
+  updateSchedule,
+  addLecture,
+  removeLecture,
+  updateLecture,
+  errors,
+}: ScheduleProps) => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="bg-muted/50 pb-3">
@@ -53,13 +55,10 @@ const Schedule = ({
           <div className="flex items-center gap-2">
             <Calendar size={18} />
             <Select
-              {...register(`schedules.${scheduleIndex}.day`)}
-              onValueChange={(value) => {
-                register(`schedules.${scheduleIndex}.day`).onChange({
-                  target: { value },
-                });
-              }}
-              value={watch(`schedules.${scheduleIndex}.day`)}
+              onValueChange={(value) =>
+                updateSchedule(scheduleIndex, "day", value as string)
+              }
+              value={schedule.day}
             >
               <SelectTrigger className="w-[140px]">
                 <SelectValue />
@@ -69,10 +68,7 @@ const Schedule = ({
                   <SelectItem
                     key={d}
                     value={d}
-                    disabled={
-                      selectedDays.includes(d) &&
-                      d !== watch(`schedules.${scheduleIndex}.day`)
-                    }
+                    disabled={selectedDays.includes(d) && d !== schedule.day}
                   >
                     {d.charAt(0).toUpperCase() + d.slice(1)}
                   </SelectItem>
@@ -93,15 +89,14 @@ const Schedule = ({
       </CardHeader>
       <CardContent className="p-4 space-y-4">
         <div className="space-y-2">
-          <Label
-            htmlFor={`break-${scheduleIndex}`}
-            className="flex items-center gap-2"
-          >
+          <Label className="flex items-center gap-2">
             <Clock size={16} /> Break Time
           </Label>
           <Input
-            id={`break-${scheduleIndex}`}
-            {...register(`schedules.${scheduleIndex}.break`)}
+            value={schedule.break}
+            onChange={(e) =>
+              updateSchedule(scheduleIndex, "break", e.target.value)
+            }
             placeholder="e.g., 1:00 PM - 2:00 PM"
           />
         </div>
@@ -110,9 +105,11 @@ const Schedule = ({
 
         <LecturesList
           scheduleIndex={scheduleIndex}
-          control={control}
-          register={register}
-          watch={watch}
+          lectures={schedule.lectures}
+          addLecture={addLecture}
+          removeLecture={removeLecture}
+          updateLecture={updateLecture}
+          errors={errors}
         />
       </CardContent>
     </Card>

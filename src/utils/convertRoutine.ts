@@ -1,4 +1,4 @@
-import { DaySchedule } from "@/features/routine/pages/RoutineViewer";
+import { IGetSchedule } from "@/features/routine/types/routine";
 type TType = "day" | "break" | "class";
 
 export interface ILecture {
@@ -33,7 +33,7 @@ export function isDay(item: TSchedule): item is IDay {
   return item.type === "day";
 }
 
-export function convertRoutine(day: DaySchedule) {
+export function convertRoutine(day: IGetSchedule) {
   const today = day.day;
   const breakTime = day.break.split("-");
 

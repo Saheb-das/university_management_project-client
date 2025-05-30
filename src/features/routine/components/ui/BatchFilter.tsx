@@ -10,43 +10,77 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { useBatches } from "../../hooks/useBatches";
+import { useSemestersByBatchId } from "../../hooks/useSemestersByBatchId";
+import { useRoutine } from "../../hooks/useRoutine";
 
-interface FilterProps {
-  onGet: (value: string) => void;
-}
+const BatchFilter = () => {
+  const [info, setInfo] = useState({
+    batchId: "",
+    batchName: "",
+    semId: "",
+  });
 
-const batchList = [
-  { id: "1", batchName: "bachelor-CSE-2020" },
-  { id: "2", batchName: "bachelor-CSE-2021" },
-  { id: "3", batchName: "bachelor-ECE-2020" },
-  { id: "4", batchName: "bachelor-EEE-2019" },
-  { id: "5", batchName: "bachelor-MECH-2022" },
-  { id: "6", batchName: "bachelor-CIVIL-2023" },
-  { id: "7", batchName: "master-CSE-2022" },
-  { id: "8", batchName: "master-ECE-2021" },
-  { id: "9", batchName: "master-MATH-2020" },
-  { id: "10", batchName: "diploma-IT-2021" },
-];
+  const [selInfo, setSelInfo] = useState({
+    batchName: "",
+    semId: "",
+  });
 
-const BatchFilter = ({ onGet }: FilterProps) => {
-  const [batches, setBatches] = useState(batchList);
-  const [selected, setSelected] = useState(batchList[0].batchName || "");
+  const { data: batchData, isSuccess: isBatchSuccess } = useBatches();
+  const { data: semData, isSuccess: isSemSuccess } = useSemestersByBatchId(
+    info.batchId
+  );
+  // TODO: BATCH NAME AND BATCH ID
+  useRoutine(selInfo.batchName, selInfo.semId);
 
   const handleClick = () => {
-    if (selected) onGet(selected);
+    setSelInfo((prev) => ({
+      ...prev,
+      batchName: info.batchName,
+      semId: info.semId,
+    }));
+  };
+
+  const handleBatch = (val: string) => {
+    const batch = batchData?.batches.find((item) => item.id === val);
+
+    if (!batch) return;
+
+    setInfo((prev) => ({ ...prev, batchId: batch.id, batchName: batch.name }));
   };
 
   return (
     <div className="w-[50%] mb-6 flex items-center gap-4">
-      <Select value={selected} onValueChange={setSelected}>
+      <Select value={info.batchId} onValueChange={handleBatch}>
         <SelectTrigger className="w-[60%]">
           <SelectValue placeholder="select batch name" />
         </SelectTrigger>
         <SelectContent>
-          {batches &&
-            batches.map((batch) => (
-              <SelectItem key={batch.id} value={batch.batchName}>
-                {batch.batchName}
+          {isBatchSuccess &&
+            batchData &&
+            batchData.batches.length > 0 &&
+            batchData.batches.map((batch) => (
+              <SelectItem key={batch.id} value={batch.id}>
+                {batch.name}
+              </SelectItem>
+            ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={info.semId}
+        onValueChange={(v) => setInfo((p) => ({ ...p, semId: v }))}
+      >
+        <SelectTrigger className="w-[60%]">
+          <SelectValue placeholder="select batch name" />
+        </SelectTrigger>
+        <SelectContent>
+          {isSemSuccess &&
+            semData &&
+            semData.batchSemDetails.course.semesters.length > 0 &&
+            semData.batchSemDetails.course.semesters.map((sem) => (
+              <SelectItem key={sem.id} value={sem.id}>
+                semester {sem.semNo}
               </SelectItem>
             ))}
         </SelectContent>

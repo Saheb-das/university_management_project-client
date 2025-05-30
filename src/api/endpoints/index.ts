@@ -10,3 +10,6 @@ export * from "./user";
 export * from "./student";
 export * from "./asign-teacher";
 export * from "./admission";
+export * from "./batch";
+export * from "./subject";
+export * from "./routine";

@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoutineViewer from "./RoutineViewer";
-import { RoutineCreator } from "./RoutineCreator";
+import RoutineCreator from "./RoutineCreator";
 import Container from "@/components/shared/Container";
 
 const Routine = () => {
