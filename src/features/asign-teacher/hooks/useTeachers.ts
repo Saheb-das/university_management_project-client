@@ -1,10 +1,10 @@
 // external import
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSetRecoilState } from "recoil";
 
 // internal import
 import { getAllAsignTeacherUsers } from "@/api/services/asign-teacher";
-import { useSetRecoilState } from "recoil";
 import { asignTeacherUsersAtom } from "../recoil/asignTeacherAtom";
 
 export const useTeachers = () => {

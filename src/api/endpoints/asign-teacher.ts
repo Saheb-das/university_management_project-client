@@ -4,11 +4,15 @@ export const AsignTeacherAPIs = {
     method: "get",
   },
   asign_teacher: {
-    url: (id: string) => `/asign-teachers/${id}/subjects`,
+    url: (id: string) => `/asign-teachers/${id}`,
     method: "post",
   },
-  remove_teacher: {
+  remove_asigned_subject: {
     url: (id: string) => `/asign-teachers/${id}`,
     method: "delete",
+  },
+  get_all_asigned_subjects_by_teacher_id: {
+    url: (id: string) => `/asign-teachers/${id}/subjects`,
+    method: "get",
   },
 };

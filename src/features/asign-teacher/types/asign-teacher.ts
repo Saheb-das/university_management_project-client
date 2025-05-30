@@ -11,6 +11,14 @@ export type TAsignTeacherBody = {
   batchName: string;
 };
 
+interface ISubject {
+  id: string;
+  name: string;
+  subjectCode: string;
+  credit: number;
+  semesterId: string;
+}
+
 interface IAsignTeacher {
   department: {
     type: string;
@@ -19,7 +27,7 @@ interface IAsignTeacher {
     name: string;
   };
   lectures: {
-    subject: string;
+    subject: ISubject;
   }[];
   semester: {
     semNo: number;
@@ -48,4 +56,34 @@ export interface IAsignTeacherUser {
 
 export interface IAsignTeacherUsersRes extends IApiRes {
   teachers: IAsignTeacherUser[];
+}
+
+interface IAsigned {
+  id: string;
+  teacherId: string;
+  departmentId: string;
+  batchId: string;
+  semesterId: string;
+  subjectId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IAsignedRes extends IApiRes {
+  asigned: IAsigned;
+}
+
+interface IAsignedSubjectDetails extends IAsigned {
+  subject: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface IAsignedSubjectsRes extends IApiRes {
+  asignSubjects: IAsignedSubjectDetails[];
+}
+
+export interface IRemoveAsignSubjectRes extends IApiRes {
+  removedSubject: IAsigned;
 }

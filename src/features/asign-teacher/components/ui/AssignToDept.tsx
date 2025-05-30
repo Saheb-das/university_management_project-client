@@ -1,6 +1,7 @@
 // external import
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 // internal import
 import {
@@ -10,7 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useBatches } from "@/hooks/useBatches";
+import { useSemestersByBatchId } from "@/hooks/useSemesterByBatchId";
+import { useSubjectsBySemId } from "@/hooks/useSubjectsBySemId";
+import { useParams } from "react-router";
+import { useCreateAsignTeacher } from "../../hooks/useCreateAsignTeacher";
+import { TAsignTeacherBody } from "../../types/asign-teacher";
+import { toast } from "sonner";
 
 export type TDegreeData = {
   bachelor: { department: string; semester: number }[];
@@ -19,62 +26,52 @@ export type TDegreeData = {
   diploma: { department: string; semester: number }[];
 };
 
-const batchList = [
-  { id: "1", batchName: "bachelor-CSE-2020" },
-  { id: "2", batchName: "bachelor-CSE-2021" },
-  { id: "3", batchName: "bachelor-ECE-2020" },
-  { id: "4", batchName: "bachelor-EEE-2019" },
-  { id: "5", batchName: "bachelor-MECH-2022" },
-  { id: "6", batchName: "bachelor-CIVIL-2023" },
-  { id: "7", batchName: "master-CSE-2022" },
-  { id: "8", batchName: "master-ECE-2021" },
-  { id: "9", batchName: "master-MATH-2020" },
-  { id: "10", batchName: "diploma-IT-2021" },
-];
+function AssignToDept() {
+  const { teacherId } = useParams();
 
-const semesterList = [
-  { id: "sem-1", semNo: 1 },
-  { id: "sem-2", semNo: 2 },
-  { id: "sem-3", semNo: 3 },
-  { id: "sem-4", semNo: 4 },
-  { id: "sem-5", semNo: 5 },
-  { id: "sem-6", semNo: 6 },
-  { id: "sem-7", semNo: 7 },
-  { id: "sem-8", semNo: 8 },
-];
+  if (!teacherId) return;
 
-const subjectList = [
-  { id: "sub-1", subjectName: "Mathematics I" },
-  { id: "sub-2", subjectName: "Physics I" },
-  { id: "sub-3", subjectName: "Computer Fundamentals" },
-  { id: "sub-4", subjectName: "Programming in C" },
-  { id: "sub-5", subjectName: "English Communication" },
-  { id: "sub-6", subjectName: "Data Structures" },
-  { id: "sub-7", subjectName: "Digital Logic Design" },
-  { id: "sub-8", subjectName: "Discrete Mathematics" },
-  { id: "sub-9", subjectName: "Object-Oriented Programming" },
-  { id: "sub-10", subjectName: "Database Management Systems" },
-];
+  const [batchId, setBatchId] = useState<string>("");
+  const [semId, setSemId] = useState<string>("");
+  const [subId, setSubId] = useState("");
 
-export interface IAssignTeacher {
-  batch: string;
-  semester: string;
-  subject: string;
-}
+  const { data: batchData, isSuccess: isBatchSuccess } = useBatches();
+  const { data: semData, isSuccess: isSemSuccess } =
+    useSemestersByBatchId(batchId);
+  const { data: subData, isSuccess: isSubSuccess } = useSubjectsBySemId(semId);
 
-interface AssignTeacherProps {
-  onAssignTeacher: ({ batch, semester, subject }: IAssignTeacher) => void;
-}
+  const { mutate, isPending } = useCreateAsignTeacher(teacherId);
 
-function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
-  const [batch, setBatch] = useState<string>("");
-  const [semester, setSemester] = useState<string>("");
-  const [subject, setSubject] = useState("");
+  const handleAsign = () => {
+    const batch =
+      batchData && batchData.batches.find((item) => item.id === batchId);
 
-  const handleAssign = () => {
-    if (!batch || !subject || !semester) return;
+    if (!batch) return;
 
-    onAssignTeacher({ batch, subject, semester });
+    const payload: TAsignTeacherBody = {
+      batchName: batch.name,
+      semester: semId,
+      subject: subId,
+    };
+
+    mutate(payload, {
+      onSuccess: (res) => {
+        if (!res) return res;
+
+        const asigned = res.asigned;
+        if (asigned) {
+          toast.success(res.message || "asign successfull");
+        }
+      },
+      onError: (err) => {
+        toast.error(err.message || "asign failed");
+      },
+      onSettled: () => {
+        setBatchId("");
+        setSemId("");
+        setSubId("");
+      },
+    });
   };
 
   return (
@@ -88,16 +85,19 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
         <Label className="text-sm font-medium text-foreground">
           Batch Name
         </Label>
-        <Select value={batch} onValueChange={setBatch}>
+        <Select value={batchId} onValueChange={setBatchId}>
           <SelectTrigger className="w-full mt-1">
             <SelectValue placeholder="Select Batch" />
           </SelectTrigger>
           <SelectContent>
-            {batchList.map((batch) => (
-              <SelectItem key={batch.id} value={batch.batchName}>
-                {batch.batchName}
-              </SelectItem>
-            ))}
+            {isBatchSuccess &&
+              batchData &&
+              batchData.batches.length > 0 &&
+              batchData.batches.map((batch) => (
+                <SelectItem key={batch.id} value={batch.id}>
+                  {batch.name}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
@@ -105,14 +105,17 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
       {/* Select Semester */}
       <div>
         <Label className="text-sm font-medium text-foreground">Semester</Label>
-        <Select value={semester} onValueChange={setSemester} disabled={!batch}>
+        <Select value={semId} onValueChange={setSemId} disabled={!batchId}>
           <SelectTrigger className="w-full mt-1">
             <SelectValue placeholder="Select Semester" />
           </SelectTrigger>
           <SelectContent>
-            {batch &&
-              semesterList?.map((sem) => (
-                <SelectItem key={sem.id} value={sem.semNo.toString()}>
+            {batchId &&
+              isSemSuccess &&
+              semData &&
+              semData.batchSemDetails.course.semesters.length > 0 &&
+              semData.batchSemDetails.course.semesters.map((sem) => (
+                <SelectItem key={sem.id} value={sem.id}>
                   Semester {sem.semNo}
                 </SelectItem>
               ))}
@@ -124,19 +127,22 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
       <div>
         <Label className="text-sm font-medium text-foreground">Subject</Label>
         <Select
-          value={subject}
-          onValueChange={setSubject}
-          disabled={!batch || !semester}
+          value={subId}
+          onValueChange={setSubId}
+          disabled={!batchId || !semId}
         >
           <SelectTrigger className="w-full mt-1">
             <SelectValue placeholder="Select Subject" />
           </SelectTrigger>
           <SelectContent>
-            {batch &&
-              semester &&
-              subjectList?.map((sub) => (
-                <SelectItem key={sub.id} value={sub.subjectName}>
-                  {sub.subjectName}
+            {batchId &&
+              semId &&
+              isSubSuccess &&
+              subData &&
+              subData.subjects.length > 0 &&
+              subData.subjects.map((sub) => (
+                <SelectItem key={sub.id} value={sub.id}>
+                  {sub.name}
                 </SelectItem>
               ))}
           </SelectContent>
@@ -145,11 +151,11 @@ function AssignToDept({ onAssignTeacher }: AssignTeacherProps) {
 
       {/* Assign Button */}
       <Button
-        onClick={handleAssign}
-        disabled={!batch || !subject || !semester}
+        onClick={handleAsign}
+        disabled={!batchId || !subId || !semId}
         className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-medium py-2 rounded-lg"
       >
-        Assign Teacher
+        {isPending ? "Asigning..." : "Assign Teacher"}
       </Button>
     </div>
   );

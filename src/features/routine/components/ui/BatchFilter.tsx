@@ -10,9 +10,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useBatches } from "../../hooks/useBatches";
-import { useSemestersByBatchId } from "../../hooks/useSemestersByBatchId";
+
+import { useSemestersByBatchId } from "@/hooks/useSemesterByBatchId";
 import { useRoutine } from "../../hooks/useRoutine";
+import { useBatches } from "@/hooks/useBatches";
 
 const BatchFilter = () => {
   const [info, setInfo] = useState({

@@ -8,12 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useSemestersByBatchId } from "../../hooks/useSemestersByBatchId";
-import { useBatches } from "../../hooks/useBatches";
 
 // types import
 import { IFormValues } from "../../pages/RoutineCreator";
 import { useSubjectsBySemId } from "../../hooks/useSubjectsBySemId";
+import { useBatches } from "@/hooks/useBatches";
+import { useSemestersByBatchId } from "@/hooks/useSemesterByBatchId";
 
 interface RoutineMetaFormProps {
   formData: IFormValues;
