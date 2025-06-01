@@ -13,3 +13,4 @@ export * from "./admission";
 export * from "./batch";
 export * from "./subject";
 export * from "./routine";
+export * from "./event";

@@ -15,6 +15,7 @@ import TeachersList from "@/features/asign-teacher/components/ui/TeachersList";
 import Profile from "@/features/profile/pages/Profile";
 import FilteredStudents from "@/features/student/pages/FilteredStudents";
 import Routine from "@/features/routine/pages/Routine";
+import Activities from "@/features/activities/pages/Activities";
 
 const adminRoutes = (
   <>
@@ -30,6 +31,8 @@ const adminRoutes = (
       <Route index element={<TeachersList />} />
       <Route path=":teacherId" element={<AsignTeacher />} />
     </Route>
+
+    <Route path="activity" element={<Activities />} />
     <Route path="routine" element={<Routine />} />
     <Route path="office" element={<CommonOffice />} />
     <Route path="collage" element={<Collage />} />

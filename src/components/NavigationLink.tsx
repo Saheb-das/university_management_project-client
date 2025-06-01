@@ -15,6 +15,7 @@ function NavigationLink({ icon, label, linkPath, baseUrl }: NavIcon) {
   const navigationTo = linkPath === "" ? baseUrl : `${baseUrl}/${linkPath}`;
 
   const logout = () => {
+    console.log("linkpath", linkPath);
     removeStorage("auth_token");
     removeStorage("basicUser");
     navigate("/");

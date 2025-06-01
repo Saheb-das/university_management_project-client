@@ -10,6 +10,7 @@ import {
   Users,
   ClipboardList,
   CalendarClock,
+  Activity,
 } from "lucide-react";
 import { NavObj } from "../types";
 
@@ -58,22 +59,28 @@ export const adminNavLists: NavObj[] = [
   },
   {
     id: 8,
+    icon: <Activity size={20} />,
+    label: "activity",
+    linkPath: "activity",
+  },
+  {
+    id: 9,
     icon: <FileInput size={20} />,
     label: "office",
     linkPath: "office",
   },
   {
-    id: 9,
+    id: 10,
     icon: <School size={20} />,
     label: "collage",
     linkPath: "collage",
   },
   {
-    id: 10,
+    id: 11,
     icon: <UserRoundPen size={20} />,
     label: "profile",
     linkPath: "profile",
   },
 
-  { id: 11, icon: <LogOut size={20} />, label: "logout", linkPath: "logout" },
+  { id: 12, icon: <LogOut size={20} />, label: "logout", linkPath: "logout" },
 ];
