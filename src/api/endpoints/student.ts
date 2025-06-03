@@ -7,4 +7,12 @@ export const StudentAPIs = {
     url: (id: string) => `/students/${id}/status`,
     method: "patch",
   },
+  get_students_by_batch_id: {
+    url: "/students/batch",
+    method: "get",
+  },
+  update_roll_reg_by_student_id: {
+    url: (id: string) => `/students/${id}/set-identifier`,
+    method: "patch",
+  },
 };

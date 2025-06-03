@@ -9,10 +9,11 @@ import Collage from "@/features/collage/pages/Collage";
 import Profile from "@/features/profile/pages/Profile";
 import ExamcellerOffice from "@/features/office/pages/ExamcellerOffice";
 import Result from "@/features/result/pages/Result";
+import ExamcellerDashboard from "@/features/dashboard/pages/ExamcellerDashboard";
 
 const examcellerRoutes = (
   <>
-    <Route index element={<h1>examceller dashboard</h1>} />
+    <Route index element={<ExamcellerDashboard />} />
     <Route path="results" element={<Result />} />
     <Route path="salary" element={<Salary />}>
       <Route index element={<p>Select a transaction</p>} />

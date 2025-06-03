@@ -1,10 +1,9 @@
+// external import
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+
 // internal import
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import ResultFilter, { TFilters } from "../components/ui/ResultFilter";
-import FilteredList from "../components/ui/FilteredList";
-import MarksInput from "../components/shared/MarksInput";
-import Container from "@/components/shared/Container";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -13,203 +12,141 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ResultFilter from "../components/ui/ResultFilter";
+import FilteredList from "../components/ui/FilteredList";
+import MarksInput from "../components/shared/MarksInput";
+import Container from "@/components/shared/Container";
+import {
+  examsByCourseIdAtom,
+  subjectsBySemesterAtom,
+} from "../recoil/resultAtom";
 
-// dummy data
-export const students = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    rollNo: "A001",
-    regNo: "REG001",
-    degree: "BSc",
-    department: "Computer Science",
-    semester: 1,
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    rollNo: "A002",
-    regNo: "REG002",
-    degree: "BA",
-    department: "English",
-    semester: 2,
-  },
-  {
-    id: 3,
-    name: "Charlie Brown",
-    rollNo: "A003",
-    regNo: "REG003",
-    degree: "BEng",
-    department: "Mechanical",
-    semester: 1,
-  },
-  {
-    id: 4,
-    name: "Diana Prince",
-    rollNo: "A004",
-    regNo: "REG004",
-    degree: "BSc",
-    department: "Physics",
-    semester: 3,
-  },
-  {
-    id: 5,
-    name: "Ethan Hunt",
-    rollNo: "A005",
-    regNo: "REG005",
-    degree: "BA",
-    department: "History",
-    semester: 2,
-  },
-];
-
-export const subjects = [
-  {
-    id: 1,
-    name: "Introduction to Programming",
-    semester: 1,
-    department: "Computer Science",
-  },
-  { id: 2, name: "English Literature", semester: 2, department: "English" },
-  { id: 3, name: "Mechanics", semester: 1, department: "Mechanical" },
-  { id: 4, name: "Quantum Physics", semester: 3, department: "Physics" },
-  { id: 5, name: "World History", semester: 2, department: "History" },
-];
-
-const exams = [
-  { id: 1, examType: "1st internal" },
-  { id: 2, examType: "2nd internal" },
-  { id: 3, examType: "final" },
-  { id: 4, examType: "lab" },
-];
-
-export interface IStudent {
-  id: number;
-  name: string;
-  rollNo: string;
-  regNo: string;
-  degree: string;
-  department: string;
-  semester: number;
-}
-
-export interface ISubject {
-  id: number;
-  name: string;
-  semester: number;
-  department: string;
-}
-
-type ExamType = "1st internal" | "2nd internal" | "final" | "lab";
-
-export type TMarks = Record<number, Record<number, string>>;
+// types import
+import { IResultBody, ISemester } from "../types/result";
+import { useResultByStudentExamSem } from "../hooks/useResultByStudentExamSem";
+import { useExams } from "../hooks/useExams";
+import { useCreateResult } from "../hooks/useCreateResult";
+import { toast } from "sonner";
 
 function Result() {
-  const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<IStudent | null>(null);
-  const [marks, setMarks] = useState<TMarks>({});
-  const [exam, setExam] = useState<ExamType | string>("");
+  const [selSemInfo, setSelSemInfo] = useState<ISemester>({} as ISemester);
+  const [selStudentInfo, setSelStudentInfo] = useState({ id: "", name: "" });
+  const [exam, setExam] = useState<string>("");
+  const [marks, setMarks] = useState<Record<string, number>>({});
+  const examsInfo = useRecoilValue(examsByCourseIdAtom);
+  const subjectsInfo = useRecoilValue(subjectsBySemesterAtom);
 
-  const getStudents = (filters: TFilters) => {
-    const filtered = students.filter(
-      (student) =>
-        (!filters.degree || student.degree === filters.degree) &&
-        (!filters.department || student.department === filters.department) &&
-        (!filters.semester || student.semester === parseInt(filters.semester))
-    );
-    setFilteredStudents(filtered);
-    setSelectedStudent(null);
-  };
+  const { mutate, isPending } = useCreateResult();
+  const { data, isSuccess } = useResultByStudentExamSem(
+    selStudentInfo.id,
+    exam,
+    selSemInfo.id
+  );
+  useExams(selSemInfo.courseId);
 
-  const handleMarkChange = (subjectId: number, value: string) => {
-    if (selectedStudent) {
-      setMarks((prev) => ({
-        ...prev,
-        [selectedStudent.id]: {
-          ...prev[selectedStudent.id],
-          [subjectId]: value,
-        },
-      }));
+  useEffect(() => {
+    if (Object.values(selStudentInfo).every((item) => item !== "")) {
+      setMarks({});
     }
-  };
+  }, [selStudentInfo]);
 
-  const handleStudentClick = (student: IStudent) => {
-    setSelectedStudent(student);
-    if (!marks[student.id]) {
-      const studentSubjects = subjects.filter(
-        (subject) =>
-          subject.department === student.department &&
-          subject.semester === student.semester
-      );
-      const initialMarks: Record<number, string> = {};
-      studentSubjects.forEach((subject) => {
-        initialMarks[subject.id] = "";
-      });
-      setMarks((prev) => ({ ...prev, [student.id]: initialMarks }));
+  // TODO: functional bub
+  useEffect(() => {
+    if (isSuccess && data) {
+      const res = data.results;
+
+      if (res.length !== 0) {
+        const existMarks = res.reduce((acc, cur) => {
+          acc[cur.subjectId] = cur.marks;
+
+          return acc;
+        }, {} as Record<string, number>);
+
+        setMarks((prev) => ({ ...prev, ...existMarks }));
+      }
     }
-  };
+  }, [data, isSuccess, selStudentInfo.id]);
 
   const handleSubmit = () => {
-    if (selectedStudent) {
-      console.log("Submitted marks:", marks[selectedStudent.id]);
-      // Here you would typically send this data to your backend
-    }
+    const result = subjectsInfo.map((subject) => ({
+      id: subject.id,
+      name: subject.name,
+      marks: marks[subject.id] || 0, // default to 0 if not filled
+    }));
+
+    const resultPayload: IResultBody = {
+      studentId: selStudentInfo.id,
+      semesterId: selSemInfo.id,
+      examId: exam,
+      subjects: result,
+    };
+
+    mutate(resultPayload, {
+      onSuccess: (res) => {
+        if (!res) return res;
+
+        toast.success(res.message || "result create successfully");
+      },
+      onError: (err) => {
+        toast.error(err.message || "result creation failed");
+      },
+      onSettled: () => {
+        setMarks({});
+      },
+    });
   };
+
   return (
     <>
       <Container>
         {/* filter component */}
-        <ResultFilter onStudent={getStudents} />
+        <ResultFilter onSemester={setSelSemInfo} />
 
         <div className="grid grid-cols-12 gap-4">
           {/* student list table  */}
           <FilteredList
-            students={filteredStudents}
-            onClick={handleStudentClick}
+            selectSem={selSemInfo}
+            onStudentInfo={setSelStudentInfo}
           />
 
-          {selectedStudent && (
+          {Object.values(selStudentInfo).every((item) => item !== "") && (
             // marks input component
             <div className="col-span-4 bg-background text-foreground p-4">
-              <h2 className="text-xl font-bold mb-2">
-                {selectedStudent.name}'s Subjects
+              <h2 className="text-xl capitalize font-bold mb-2">
+                {selStudentInfo.name}'s Subjects
               </h2>
               {/* select exam type */}
               <div className="mb-4">
                 <Label className="text-base" htmlFor="exam">
                   Examination
                 </Label>
-                <Select onValueChange={setExam}>
+                <Select value={exam} onValueChange={setExam}>
                   <SelectTrigger className="mt-2 w-full" id="exam">
                     <SelectValue placeholder="Select Exam" />
                   </SelectTrigger>
                   <SelectContent>
-                    {exams &&
-                      exams.map((exam) => (
-                        <SelectItem key={exam.id} value={exam.examType}>
-                          {exam.examType}
+                    {examsInfo &&
+                      examsInfo.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.type}
                         </SelectItem>
                       ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {subjects
-                .filter(
-                  (subject) =>
-                    subject.department === selectedStudent.department &&
-                    subject.semester === selectedStudent.semester
-                )
-                .map((subject) => (
-                  <MarksInput
-                    subject={subject}
-                    student={selectedStudent}
-                    marks={marks}
-                    onMarks={handleMarkChange}
-                  />
-                ))}
-              <Button onClick={handleSubmit} className="mt-4">
-                Submit Marks
+              <MarksInput
+                subjects={subjectsInfo}
+                marks={marks}
+                onMarks={setMarks}
+              />
+
+              <Button
+                disabled={isPending}
+                onClick={handleSubmit}
+                className="mt-4"
+              >
+                {isPending ? "Submitting..." : "Submit Marks"}
               </Button>
             </div>
           )}

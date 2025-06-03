@@ -1,14 +1,11 @@
-// external import
-import { useQuery } from "@tanstack/react-query";
-import { useSetRecoilState } from "recoil";
-import { useEffect } from "react";
-
-// internal import
 import { getDepartments } from "@/api/services/department";
-import { departmentsAtom } from "../recoil/departmentAtom";
+import { departmentsWithDegreesAtom } from "@/recoil/atoms/filterAtom";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useSetRecoilState } from "recoil";
 
 export const useDepartments = (degree: string) => {
-  const setDeprts = useSetRecoilState(departmentsAtom);
+  const setDeprts = useSetRecoilState(departmentsWithDegreesAtom);
   const { data, isSuccess } = useQuery({
     queryKey: ["departments", degree],
     queryFn: () =>

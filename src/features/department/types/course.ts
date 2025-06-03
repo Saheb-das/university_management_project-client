@@ -49,6 +49,11 @@ interface ICourse {
   updatedAt: string;
 }
 
+export interface IExamBody {
+  course: string;
+  examTypes: string[];
+}
+
 export type TCourseClient = {
   degree: string;
   name: string;
@@ -67,4 +72,16 @@ export interface ICourseWithSems extends ICourse {
 
 export interface ICourseWithSemsRes extends IApiRes {
   courses: ICourseWithSems[];
+}
+
+export interface IExam {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  type: string;
+  courseId: string;
+}
+
+export interface ICreateExamsRes extends IApiRes {
+  exams: IExam[];
 }

@@ -1,4 +1,5 @@
 // internal import
+import { IStudentsByBatchIdRes } from "@/features/result/types/result";
 import apiClient from "../client";
 import { HttpMethod, StudentAPIs } from "../endpoints";
 
@@ -8,6 +9,7 @@ import {
   IStudentsRes,
   TStatus,
 } from "@/features/student/types/student";
+import { IIdentifierBody } from "@/features/dashboard/types/examceller";
 
 type TFilter = {
   deprt: string;
@@ -31,5 +33,24 @@ export async function updateStudentStatus(
   const response = await apiClient[method as HttpMethod](url(id), body, {
     params,
   });
+  return response.data;
+}
+
+export async function getStudentsByBatchId(params: {
+  batch: string;
+}): Promise<IStudentsByBatchIdRes | null> {
+  const { method, url } = StudentAPIs.get_students_by_batch_id;
+  const response = await apiClient[method as HttpMethod](url, {
+    params,
+  });
+  return response.data;
+}
+
+export async function updateRollRegByStudentId(
+  id: string,
+  body: IIdentifierBody
+): Promise<IStudentsByBatchIdRes | null> {
+  const { method, url } = StudentAPIs.update_roll_reg_by_student_id;
+  const response = await apiClient[method as HttpMethod](url(id), body);
   return response.data;
 }

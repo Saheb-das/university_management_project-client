@@ -7,4 +7,8 @@ export const BatchAPIs = {
     url: (id: string) => `/batches/${id}/semesters`,
     method: "get",
   },
+  get_batches_by_dept_deg: {
+    url: "/batches/dept-deg",
+    method: "get",
+  },
 };

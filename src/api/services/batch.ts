@@ -24,3 +24,12 @@ export async function getSemestersByBatchId(
   const response = await apiClient[method as HttpMethod](url(id), { params });
   return response.data;
 }
+
+export async function getAllBatchesByDeptIdAndDegId(params: {
+  deptId: string;
+  degId: string;
+}): Promise<IBatchesRes | null> {
+  const { method, url } = BatchAPIs.get_batches_by_dept_deg;
+  const response = await apiClient[method as HttpMethod](url, { params });
+  return response.data;
+}

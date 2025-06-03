@@ -5,6 +5,7 @@ import Container from "@/components/shared/Container";
 import AddNewCourse from "../components/ui/AddNewCourse";
 import AddSubjectInCourse from "../components/shared/AddSubjectInCourse";
 import ShowSubjects from "../components/ui/ShowSubjects";
+import AddExams from "../components/ui/AddExams";
 
 function Department() {
   return (
@@ -25,6 +26,9 @@ function Department() {
               <TabsTrigger className="text-base" value="show-subject">
                 Show Subjects
               </TabsTrigger>
+              <TabsTrigger className="text-base" value="add-exams">
+                Add Exams
+              </TabsTrigger>
             </TabsList>
             <TabsContent className="mt-6" value="public">
               <NewDepartment />
@@ -37,6 +41,9 @@ function Department() {
             </TabsContent>
             <TabsContent value="show-subject">
               <ShowSubjects />
+            </TabsContent>
+            <TabsContent value="add-exams">
+              <AddExams />
             </TabsContent>
           </Tabs>
         </div>

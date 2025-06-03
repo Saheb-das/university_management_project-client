@@ -14,3 +14,5 @@ export * from "./batch";
 export * from "./subject";
 export * from "./routine";
 export * from "./event";
+export * from "./exam";
+export * from "./result";
