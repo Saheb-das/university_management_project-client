@@ -1,6 +1,3 @@
-// external import
-import { useState } from "react";
-
 // internal import
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,21 +10,99 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
+import { IDocBody } from "@/features/upload/types/upload";
+import { INewMaterialBody } from "../../types/studyRoom";
+import { useNewMaterial } from "../../hooks/useNewMaterial";
 
 const NewMaterial = () => {
-  const [file, setFile] = useState<File | null>(null);
+  const {
+    filter,
+    file,
+    title,
+    setFilter,
+    setFile,
+    setTitle,
+    isConfirm,
+    setIsConfirm,
+    getSelections,
+    uploadDocMutate,
+    isPending,
+    materialMutate,
+    materialIsPending,
+    asignsWithBatchInfo,
+    semData,
+    subData,
+    handleFileChange,
+  } = useNewMaterial();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
+  const handleDocSubmit = () => {
+    if (!file) return alert("Invalid file");
+
+    const { asignWithBatch, sem, sub } = getSelections();
+    if (!asignWithBatch || !sem || !sub) return;
+
+    const payload: IDocBody = {
+      file,
+      batchName: asignWithBatch.batch.name,
+      semNo: String(sem.semNo),
+      subName: sub.name,
+    };
+
+    uploadDocMutate(payload, {
+      onSuccess: (res) => {
+        if (res?.success) {
+          toast.success(res.message || "Document uploaded");
+          setFilter((f) => ({ ...f, filePath: res.docPath }));
+          setIsConfirm(true);
+        }
+      },
+      onError: (err) => toast.error(err.message || "Document upload failed"),
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted");
+  const handleSubmit = () => {
+    if (!file) return alert("Select a file");
+
+    const { asignWithBatch, sem, sub } = getSelections();
+    if (!asignWithBatch || !sem || !sub) return;
+
+    const payload: INewMaterialBody = {
+      title,
+      filePath: filter.filePath,
+      batchName: asignWithBatch.batch.name,
+      semNo: String(sem.semNo),
+      subName: sub.name,
+    };
+
+    materialMutate(payload, {
+      onSuccess: (res) => {
+        if (res?.success) toast.success(res.message || "Material created");
+      },
+      onError: (err) => toast.error(err.message || "Creation failed"),
+      onSettled: () => {
+        setFilter({
+          batch: "",
+          sem: "",
+          sub: "",
+          filePath: "",
+        });
+        setFile(null);
+        setIsConfirm(false);
+        setTitle("");
+      },
+    });
   };
+
+  const batchMap = new Map();
+  asignsWithBatchInfo &&
+    asignsWithBatchInfo.forEach((item) => {
+      if (!batchMap.has(item.batchId)) {
+        batchMap.set(item.batchId, item);
+      }
+    });
+
+  const uniqueAsignBatch = Array.from(batchMap.values());
 
   return (
     <Card>
@@ -37,89 +112,95 @@ const NewMaterial = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div className="space-y-2">
-              <Label className="text-base" htmlFor="department">
-                Department
-              </Label>
-              <Select>
-                <SelectTrigger id="department" className="w-full">
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cs">Computer Science</SelectItem>
-                  <SelectItem value="ee">Electrical Engineering</SelectItem>
-                  <SelectItem value="me">Mechanical Engineering</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-base" htmlFor="degree">
-                Degree
-              </Label>
-              <Select>
-                <SelectTrigger id="degree" className="w-full">
-                  <SelectValue placeholder="Select degree" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="btech">B.Tech</SelectItem>
-                  <SelectItem value="mtech">M.Tech</SelectItem>
-                  <SelectItem value="phd">Ph.D</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* batch */}
             <div className="space-y-2">
               <Label className="text-base" htmlFor="batch">
-                Batch
+                Asigned Batch
               </Label>
-              <Select>
+              <Select
+                value={filter.batch}
+                onValueChange={(v) =>
+                  setFilter((prev) => ({ ...prev, batch: v }))
+                }
+              >
                 <SelectTrigger id="batch" className="w-full">
                   <SelectValue placeholder="Select Batch" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1st">bachelor-CSE-2021</SelectItem>
-                  <SelectItem value="2nd">bachelor-EEE-2021</SelectItem>
+                  {asignsWithBatchInfo &&
+                    uniqueAsignBatch.map((b) => (
+                      <SelectItem
+                        key={b.id}
+                        value={b.batchId}
+                        className="capitalize"
+                      >
+                        {b.batch?.name || ""}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
 
+            {/* semester */}
             <div className="space-y-2">
               <Label className="text-base" htmlFor="semester">
                 Semester
               </Label>
-              <Select>
+              <Select
+                value={filter.sem}
+                onValueChange={(v) =>
+                  setFilter((prev) => ({ ...prev, sem: v }))
+                }
+              >
                 <SelectTrigger id="semester" className="w-full">
                   <SelectValue placeholder="Select semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1st">1st Semester</SelectItem>
-                  <SelectItem value="2nd">2nd Semester</SelectItem>
-                  <SelectItem value="3rd">3rd Semester</SelectItem>
-                  <SelectItem value="4th">4th Semester</SelectItem>
+                  {semData &&
+                    semData.batchSemDetails.course.semesters.length > 0 &&
+                    semData.batchSemDetails.course.semesters.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        sem {s.semNo}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* subject */}
+            <div className="space-y-2">
+              <Label className="text-base" htmlFor="subject">
+                Subject
+              </Label>
+              <Select
+                value={filter.sub}
+                onValueChange={(v) =>
+                  setFilter((prev) => ({ ...prev, sub: v }))
+                }
+              >
+                <SelectTrigger id="subject" className="w-full">
+                  <SelectValue placeholder="Select subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subData &&
+                    subData.subjects.length > 0 &&
+                    subData.subjects.map((subj) => (
+                      <SelectItem
+                        key={subj.id}
+                        value={subj.id}
+                        className="capitalize"
+                      >
+                        {subj.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-base" htmlFor="subject">
-              Subject
-            </Label>
-            <Select>
-              <SelectTrigger id="subject" className="w-full">
-                <SelectValue placeholder="Select subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1st">subject 1</SelectItem>
-                <SelectItem value="2nd">subject 2</SelectItem>
-                <SelectItem value="3rd">subject 3</SelectItem>
-                <SelectItem value="4th">subject 4</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* title */}
           <div className="space-y-2">
             <Label className="text-base" htmlFor="title">
               Title
@@ -128,18 +209,45 @@ const NewMaterial = () => {
               className="text-[15px] "
               id="title"
               placeholder="Enter material title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
+
+          {/* upload document( .pdf, .txt) */}
           <div className="space-y-2">
             <Label className="text-base" htmlFor="document">
               Upload Document
             </Label>
-            <Input id="document" type="file" onChange={handleFileChange} />
+            <div className="w-full flex gap-2">
+              <Input
+                className=""
+                id="document"
+                type="file"
+                onChange={handleFileChange}
+              />
+              <Button
+                onClick={handleDocSubmit}
+                disabled={!file}
+                className="inline w-30"
+              >
+                {isConfirm
+                  ? "Confirm File"
+                  : isPending
+                  ? "Confirming..."
+                  : "is Confirm "}
+              </Button>
+            </div>
           </div>
-          <Button type="submit" className="capitalize">
-            upload
+
+          <Button
+            disabled={!isConfirm}
+            className="capitalize"
+            onClick={handleSubmit}
+          >
+            {materialIsPending ? "iploading..." : "upload"}
           </Button>
-        </form>
+        </div>
       </CardContent>
     </Card>
   );

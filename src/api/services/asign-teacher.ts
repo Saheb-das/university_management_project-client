@@ -4,6 +4,7 @@ import { AsignTeacherAPIs, HttpMethod } from "../endpoints";
 
 // types import
 import {
+  IAsignBatchesRes,
   IAsignedRes,
   IAsignedSubjectsRes,
   IAsignTeacherUsersRes,
@@ -37,6 +38,14 @@ export async function getAllAsignedSubjectsByTeacherId(
   const { method, url } =
     AsignTeacherAPIs.get_all_asigned_subjects_by_teacher_id;
   const response = await apiClient[method as HttpMethod](url(id));
+  return response.data;
+}
+
+export async function getAllBatchesByTeacherUserId(params: {
+  userId: string;
+}): Promise<IAsignBatchesRes | null> {
+  const { method, url } = AsignTeacherAPIs.get_all_batches_by_teacher_user_id;
+  const response = await apiClient[method as HttpMethod](url, { params });
   return response.data;
 }
 

@@ -8,5 +8,6 @@ export const useSubjectsBySemId = (semId: string) => {
   return useQuery({
     queryKey: ["subjects", semId],
     queryFn: () => getAllSubjectsBySemId({ sem: semId }),
+    enabled: !!semId,
   });
 };

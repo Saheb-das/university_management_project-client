@@ -10,6 +10,13 @@ interface IApiRes {
   message: string;
 }
 
+export interface IDocBody {
+  file: File;
+  batchName: string;
+  semNo: string;
+  subName: string;
+}
+
 export interface IUploadAvatar extends IApiRes {
   profile: {
     id: string;
@@ -39,4 +46,8 @@ export interface IUploadLogo extends IApiRes {
     createdAt: string;
     updatedAt: string;
   };
+}
+
+export interface IUploadDocRes extends IApiRes {
+  docPath: string;
 }

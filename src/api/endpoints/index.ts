@@ -16,3 +16,4 @@ export * from "./routine";
 export * from "./event";
 export * from "./exam";
 export * from "./result";
+export * from "./note";

@@ -10,7 +10,7 @@ import { getStudentsByBatchId } from "@/api/services/student";
 export const useStudentsListForRollReg = (batchId: string) => {
   const setStudents = useSetRecoilState(studentsListForRollRegAtom);
   const { data, isSuccess } = useQuery({
-    queryKey: ["students", batchId],
+    queryKey: ["students-roll-reg", batchId],
     queryFn: () => getStudentsByBatchId({ batch: batchId }),
     enabled: !!batchId,
   });

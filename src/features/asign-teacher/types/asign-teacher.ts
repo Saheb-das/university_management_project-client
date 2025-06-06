@@ -69,6 +69,21 @@ interface IAsigned {
   updatedAt: Date;
 }
 
+export interface IAsignWithBatch extends IAsigned {
+  batch: {
+    id: string;
+    name: string;
+  };
+  semester: {
+    id: string;
+    semNo: string;
+  };
+}
+
+export interface IAsignBatchesRes extends IApiRes {
+  batches: IAsignWithBatch[];
+}
+
 export interface IAsignedRes extends IApiRes {
   asigned: IAsigned;
 }

@@ -15,4 +15,8 @@ export const AsignTeacherAPIs = {
     url: (id: string) => `/asign-teachers/${id}/subjects`,
     method: "get",
   },
+  get_all_batches_by_teacher_user_id: {
+    url: "/asign-teachers/batches",
+    method: "get",
+  },
 };

@@ -7,4 +7,8 @@ export const UploadAPIs = {
     url: "/uploads/logo",
     method: "patch",
   },
+  upload_doc: {
+    url: "/uploads/document",
+    method: "post",
+  },
 };

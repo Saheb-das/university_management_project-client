@@ -13,7 +13,10 @@ import CheckTutionFees from "@/features/tution-fees/pages/CheckTutionFees";
 
 const accountantRoutes = (
   <>
-    <Route index element={<h1>accountant dashboard</h1>} />
+    <Route
+      index
+      element={<h1>accountant dashboard, here payment distribute by role</h1>}
+    />
     <Route path="check-fees" element={<CheckTutionFees />} />
     <Route path="salary" element={<Salary />}>
       <Route index element={<p>Select a transaction</p>} />
