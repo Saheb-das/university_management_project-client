@@ -17,3 +17,4 @@ export * from "./event";
 export * from "./exam";
 export * from "./result";
 export * from "./note";
+export * from "./attendance";

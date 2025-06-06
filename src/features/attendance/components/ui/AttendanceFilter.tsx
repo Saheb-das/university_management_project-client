@@ -1,5 +1,6 @@
 // external import
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 // internal import
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBatchesByTeacherUserId } from "@/hooks/useBatchesByTeacherUserId";
+import { getUniqueAsignBatch } from "@/features/studyroom/utils/util";
+import { useSemestersByBatchId } from "@/hooks/useSemesterByBatchId";
+import { useSubjectsBySemId } from "@/hooks/useSubjectsBySemId";
+import { useStudentsByBatchId } from "@/features/result/hooks/useStudentsByBatchId";
 
 export interface IFilters {
   batch: string;
@@ -21,17 +27,44 @@ export interface IFilters {
 
 interface AttendanceFormProps {
   onGetStudents: (filters: IFilters) => void;
+  isSubmit: boolean;
 }
 
-function AttendanceFilter({ onGetStudents }: AttendanceFormProps) {
+function AttendanceFilter({ isSubmit, onGetStudents }: AttendanceFormProps) {
+  const { userId } = useParams();
   const [batch, setBatch] = useState("");
   const [semester, setSemester] = useState("");
   const [subject, setSubject] = useState("");
+  const [selBatch, setSelBatch] = useState("");
+
+  const { data: asignWithBatchesdata } = useBatchesByTeacherUserId(
+    userId || ""
+  );
+  const { data: semData, isSuccess: isSemSuccess } =
+    useSemestersByBatchId(batch);
+
+  const { data: subData, isSuccess: isSubSuccess } =
+    useSubjectsBySemId(semester);
+
+  const uniqueBatches =
+    asignWithBatchesdata && getUniqueAsignBatch(asignWithBatchesdata.batches);
+
+  useStudentsByBatchId(selBatch);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onGetStudents({ semester, batch, subject });
+    setSelBatch(batch);
   };
+
+  useEffect(() => {
+    if (isSubmit) {
+      setBatch("");
+      setSemester("");
+      setSubject("");
+      setSelBatch("");
+    }
+  }, [isSubmit]);
 
   return (
     <Card className="mb-6">
@@ -41,6 +74,7 @@ function AttendanceFilter({ onGetStudents }: AttendanceFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* batch */}
             <div className="space-y-2">
               <Label htmlFor="batch">Batch</Label>
               <Select value={batch} onValueChange={setBatch}>
@@ -48,38 +82,69 @@ function AttendanceFilter({ onGetStudents }: AttendanceFormProps) {
                   <SelectValue placeholder="Select Batch" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cs">Computer Science</SelectItem>
-                  <SelectItem value="ee">Electrical Engineering</SelectItem>
-                  <SelectItem value="me">Mechanical Engineering</SelectItem>
+                  {uniqueBatches &&
+                    uniqueBatches.length > 0 &&
+                    uniqueBatches.map((item) => (
+                      <SelectItem
+                        key={item.batchId}
+                        value={item.batchId}
+                        className="capitalize"
+                      >
+                        {item.batch.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
 
+            {/* semester */}
             <div className="space-y-2">
               <Label htmlFor="semester">Semester</Label>
-              <Select value={semester} onValueChange={setSemester}>
+              <Select
+                disabled={!batch}
+                value={semester}
+                onValueChange={setSemester}
+              >
                 <SelectTrigger id="semester" className="w-full">
                   <SelectValue placeholder="Select semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1st">1st Semester</SelectItem>
-                  <SelectItem value="2nd">2nd Semester</SelectItem>
-                  <SelectItem value="3rd">3rd Semester</SelectItem>
-                  <SelectItem value="4th">4th Semester</SelectItem>
+                  {isSemSuccess &&
+                    semData &&
+                    semData.batchSemDetails.course.semesters.length > 0 &&
+                    semData.batchSemDetails.course.semesters.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        Semester {item.semNo}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
 
+            {/* subject */}
             <div className="space-y-2">
               <Label htmlFor="subject">Subject</Label>
-              <Select value={subject} onValueChange={setSubject}>
+              <Select
+                disabled={!semester}
+                value={subject}
+                onValueChange={setSubject}
+              >
                 <SelectTrigger id="subject" className="w-full">
                   <SelectValue placeholder="Select Subject" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="btech">B.Tech</SelectItem>
-                  <SelectItem value="mtech">M.Tech</SelectItem>
-                  <SelectItem value="phd">Ph.D</SelectItem>
+                  {isSubSuccess &&
+                    subData &&
+                    subData.subjects.length > 0 &&
+                    subData.subjects.map((item) => (
+                      <SelectItem
+                        key={item.id}
+                        value={item.id}
+                        className="capitalize"
+                      >
+                        {item.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
