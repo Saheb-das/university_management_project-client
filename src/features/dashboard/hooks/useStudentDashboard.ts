@@ -45,8 +45,7 @@ export const useStudentDashboard = () => {
   const userId = studentInfo?.profile?.user?.id || "";
   const studentId = studentInfo?.id || "";
   const batchId = studentInfo?.batchId || "";
-  const curSemId =
-    studentInfo?.currentSemester[0]?.semesterId || "cmb7ryzg00016ugxk2q2ctxyy";
+  const curSemId = studentInfo?.currentSemester[0]?.semesterId; // "cmb7ryzg00016ugxk2q2ctxyy"
 
   // fetch all data
   const queries = useQueries({
@@ -64,7 +63,7 @@ export const useStudentDashboard = () => {
         queryKey: ["routine-shcedule-lectures"],
         queryFn: () =>
           getScheduleByBatchIdAndDaySemId(batchId, {
-            day: "monday", //day.toLowerCase(),
+            day: day.toLowerCase(),
             semId: curSemId,
           }),
         enabled: !!batchId && !!curSemId,

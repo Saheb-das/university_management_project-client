@@ -10,7 +10,6 @@ type ProjectCardType = {
 
 function ProjectCardItem({
   imgPath,
-
   link,
   projectDate,
   projectTitle,

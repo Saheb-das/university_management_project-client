@@ -8,6 +8,12 @@ import { todayClassScheduleAtom } from "../../recoil/student/dashboardAtom";
 
 const SubjectsCard = () => {
   const scheduleInfo = useRecoilValue(todayClassScheduleAtom);
+  if (!scheduleInfo)
+    return (
+      <p className="text-lg text-blue-800 font-semibold">
+        No Data!!&nbsp;&nbsp;&nbsp;Please seed with new one
+      </p>
+    );
 
   return (
     <>
