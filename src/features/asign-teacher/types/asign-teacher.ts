@@ -99,6 +99,26 @@ export interface IAsignedSubjectsRes extends IApiRes {
   asignSubjects: IAsignedSubjectDetails[];
 }
 
+export interface ITeachersWithSub extends IAsigned {
+  subject: {
+    name: string;
+    id: string;
+  };
+  teacher: {
+    profile: {
+      avatar: string | null;
+      user: {
+        firstName: string;
+        lastName: string;
+        email: string;
+      };
+    };
+  };
+}
+export interface IAsignedTeachersByBatchSemRes extends IApiRes {
+  asignedTeachers: ITeachersWithSub[];
+}
+
 export interface IRemoveAsignSubjectRes extends IApiRes {
   removedSubject: IAsigned;
 }

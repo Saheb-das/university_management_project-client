@@ -1,6 +1,9 @@
 // internal import
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import TeacherCardItem from "../shared/TeacherCardItem";
+import { useRecoilValue } from "recoil";
+import { myTeachersAtom } from "../../recoil/student/dashboardAtom";
+import { transformMyTeacherSelector } from "../../recoil/student/dashboardSelector";
 
 const teachersLists = [
   {
@@ -27,20 +30,24 @@ const teachersLists = [
 ];
 
 function TeachersCard() {
+  const teachersInfo = useRecoilValue(transformMyTeacherSelector);
+
   return (
     <ScrollArea className="">
       <div className=" flex w-max space-x-4  p-4">
-        {teachersLists.map(
-          ({ id, teacherName, subject, imgPath, mailLink }) => (
-            <TeacherCardItem
-              key={id}
-              teacherName={teacherName}
-              subject={subject}
-              imgPath={imgPath}
-              mailLink={mailLink}
-            />
-          )
-        )}
+        {teachersInfo &&
+          teachersInfo.length > 0 &&
+          teachersInfo.map(
+            ({ id, teacherName, subject, imgPath, mailLink }) => (
+              <TeacherCardItem
+                key={id}
+                teacherName={teacherName}
+                subject={subject}
+                imgPath={imgPath}
+                mailLink={mailLink}
+              />
+            )
+          )}
       </div>
       <ScrollBar orientation="horizontal" />
     </ScrollArea>

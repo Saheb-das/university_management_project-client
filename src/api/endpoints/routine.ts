@@ -7,4 +7,8 @@ export const RoutineAPIs = {
     url: (batchName: string) => `/routines/batch/${batchName}`,
     method: "get",
   },
+  get_schedule_by_batch_id_and_day: {
+    url: (id: string) => `/routines/batch/${id}/schedule`,
+    method: "get",
+  },
 };

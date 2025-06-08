@@ -7,6 +7,7 @@ import {
   IRoutineBody,
   IRoutineByBatchAndSemRes,
   IRoutineRes,
+  IScheduleLecturesBatchAndSemRes,
 } from "@/features/routine/types/routine";
 
 export async function createRoutine(
@@ -25,6 +26,16 @@ export async function getRoutineByBatchIdAndSemId(
   const response = await apiClient[method as HttpMethod](url(batchName), {
     params,
   });
+  return response.data;
+}
 
+export async function getScheduleByBatchIdAndDaySemId(
+  id: string,
+  params: { day: string; semId: string }
+): Promise<IScheduleLecturesBatchAndSemRes | null> {
+  const { method, url } = RoutineAPIs.get_schedule_by_batch_id_and_day;
+  const response = await apiClient[method as HttpMethod](url(id), {
+    params,
+  });
   return response.data;
 }

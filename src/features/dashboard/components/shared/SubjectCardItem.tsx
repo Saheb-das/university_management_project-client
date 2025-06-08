@@ -1,14 +1,35 @@
 type SubjectCardType = {
   subject: string;
-  classTime: string;
+  startTime: string;
+  endTime: string;
   classDate: string;
-  classStatus: string;
 };
+
+function getStatusFromTime(
+  startTime: string,
+  endTime: string
+): "pending" | "running" | "completed" {
+  const now = new Date();
+
+  const [startHour, startMin] = startTime.split(":").map(Number);
+  const [endHour, endMin] = endTime.split(":").map(Number);
+
+  const startDate = new Date(now);
+  startDate.setHours(startHour, startMin, 0, 0);
+
+  const endDate = new Date(now);
+  endDate.setHours(endHour, endMin, 0, 0);
+
+  if (now < startDate) return "pending";
+  if (now >= startDate && now <= endDate) return "running";
+  return "completed";
+}
 
 function SubjectCardItem({
   subject,
-  classTime,
-  classStatus,
+  startTime,
+  endTime,
+
   classDate,
 }: SubjectCardType) {
   const getStatusColor = (status: string) => {
@@ -23,6 +44,7 @@ function SubjectCardItem({
         return "bg-gray-500";
     }
   };
+
   return (
     <div className="bg-background relative w-72 px-4 py-4 rounded-lg shadow-md transition-all hover:shadow-lg list-view-card">
       {/* Subject Title */}
@@ -33,13 +55,15 @@ function SubjectCardItem({
       {/* Status Indicator */}
       <div
         className={`absolute top-4 right-3 w-4 h-4 border-2 border-white rounded-full ${getStatusColor(
-          classStatus
+          getStatusFromTime(startTime, endTime)
         )}`}
       ></div>
 
       {/* Class Time & Date */}
       <div className="flex justify-between items-center mt-2">
-        <p className="text-muted-foreground font-medium text-sm">{classTime}</p>
+        <p className="text-muted-foreground font-medium text-sm">
+          {startTime} - {endTime}
+        </p>
         <p className="text-muted-foreground font-medium text-sm">{classDate}</p>
       </div>
     </div>

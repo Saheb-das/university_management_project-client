@@ -15,4 +15,8 @@ export const StudentAPIs = {
     url: (id: string) => `/students/${id}/set-identifier`,
     method: "patch",
   },
+  get_student_user_by_user_id: {
+    url: (id: string) => `/students/user/${id}`,
+    method: "get",
+  },
 };

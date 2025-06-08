@@ -1,5 +1,5 @@
 // external import
-import { Link } from "react-router";
+import { convertFilePathUrl } from "@/utils/convertPath";
 import { CircleUserRound, MailOpen } from "lucide-react";
 
 type TeacherCardType = {
@@ -21,7 +21,7 @@ function TeacherCardItem({
       <div className="p-2 bg-secondary rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
         {imgPath ? (
           <img
-            src={imgPath}
+            src={convertFilePathUrl(imgPath)}
             alt="profile picture"
             className="w-full h-full object-cover rounded-full"
           />
@@ -40,9 +40,9 @@ function TeacherCardItem({
 
       {/* Mailbox Icon */}
       <div className="p-2 rounded-full hover:bg-background transition-all">
-        <Link to={mailLink}>
+        <a href={`mailto:${mailLink}`}>
           <MailOpen className="text-primary w-6 h-6" />
-        </Link>
+        </a>
       </div>
     </div>
   );

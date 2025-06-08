@@ -20,13 +20,6 @@ import { makeAttendanceSheet } from "../../utils/util";
 import { useCreateAttendances } from "../../hook/useCreateAttendances";
 import { toast } from "sonner";
 
-export interface IStudent {
-  id: number;
-  name: string;
-  rollNumber: string;
-  registrationNumber: string;
-}
-
 interface StudentListProps {
   filter: IFilters;
   onSubmit: React.Dispatch<SetStateAction<boolean>>;

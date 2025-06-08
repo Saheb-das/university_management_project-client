@@ -19,4 +19,9 @@ export const AsignTeacherAPIs = {
     url: "/asign-teachers/batches",
     method: "get",
   },
+  get_asigned_teachers_by_batch_sem_ids: {
+    url: (batchId: string, semId: string) =>
+      `/asign-teachers/batches/${batchId}/sems/${semId}`,
+    method: "get",
+  },
 };

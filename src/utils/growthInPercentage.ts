@@ -1,3 +1,5 @@
+import { IAttendCount } from "@/features/attendance/types/attendance";
+
 interface IPrevFiveYearsStats {
   year: number;
   totalAdmissions: number;
@@ -57,4 +59,14 @@ export function calculateGrowth(stats: IPrevFiveYearsStats[]) {
 
   const growth = ((present - previous) / previous) * 100;
   return growth.toFixed(2) + "%";
+}
+
+export function calcAttendance(data: IAttendCount): string {
+  const { total, present } = data;
+
+  if (total === undefined) return "";
+
+  if (total === 0) return "class not started";
+
+  return String(((present % total) * 100).toFixed(2));
 }

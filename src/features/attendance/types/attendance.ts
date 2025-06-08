@@ -21,10 +21,19 @@ export interface IAttendanceQuery {
   batch: string;
 }
 
+export interface IAttendCount {
+  total: number;
+  present: number;
+}
+
 export interface IAttendancesBody {
   [key: string]: boolean;
 }
 
 export interface ICreateAttendancesRes extends IApiRes {
   newAttendances: IAttendance[];
+}
+
+export interface IAttendanceCountRes extends IApiRes {
+  attendanceCount: IAttendCount;
 }

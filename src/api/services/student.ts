@@ -10,6 +10,7 @@ import {
   TStatus,
 } from "@/features/student/types/student";
 import { IIdentifierBody } from "@/features/dashboard/types/examceller";
+import { IStudentWithAcademicDetailsRes } from "@/features/dashboard/types/student";
 
 type TFilter = {
   deprt: string;
@@ -43,6 +44,14 @@ export async function getStudentsByBatchId(params: {
   const response = await apiClient[method as HttpMethod](url, {
     params,
   });
+  return response.data;
+}
+
+export async function getStudentDetailsByUserId(
+  id: string
+): Promise<IStudentWithAcademicDetailsRes | null> {
+  const { method, url } = StudentAPIs.get_student_user_by_user_id;
+  const response = await apiClient[method as HttpMethod](url(id));
   return response.data;
 }
 

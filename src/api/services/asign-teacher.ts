@@ -7,6 +7,7 @@ import {
   IAsignBatchesRes,
   IAsignedRes,
   IAsignedSubjectsRes,
+  IAsignedTeachersByBatchSemRes,
   IAsignTeacherUsersRes,
   IRemoveAsignSubjectRes,
   TAsignTeacherBody,
@@ -46,6 +47,16 @@ export async function getAllBatchesByTeacherUserId(params: {
 }): Promise<IAsignBatchesRes | null> {
   const { method, url } = AsignTeacherAPIs.get_all_batches_by_teacher_user_id;
   const response = await apiClient[method as HttpMethod](url, { params });
+  return response.data;
+}
+
+export async function getAsignedTeachersByBatchAndSemIds(
+  batchId: string,
+  semId: string
+): Promise<IAsignedTeachersByBatchSemRes | null> {
+  const { method, url } =
+    AsignTeacherAPIs.get_asigned_teachers_by_batch_sem_ids;
+  const response = await apiClient[method as HttpMethod](url(batchId, semId));
   return response.data;
 }
 

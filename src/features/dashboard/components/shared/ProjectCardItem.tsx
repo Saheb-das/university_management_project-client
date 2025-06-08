@@ -2,7 +2,7 @@ import { CircleChevronRight } from "lucide-react";
 import { Link } from "react-router";
 type ProjectCardType = {
   imgPath: string;
-  desc: string;
+
   link: string;
   projectDate: string;
   projectTitle: string;
@@ -10,7 +10,7 @@ type ProjectCardType = {
 
 function ProjectCardItem({
   imgPath,
-  desc,
+
   link,
   projectDate,
   projectTitle,
@@ -22,7 +22,7 @@ function ProjectCardItem({
         <img
           className="w-auto h-auto max-h-[60px] object-contain"
           src={imgPath}
-          alt={desc}
+          alt={projectTitle}
         />
       </div>
 

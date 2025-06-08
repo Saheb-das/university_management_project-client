@@ -113,7 +113,7 @@ export interface IGetSchedule {
   lectures: IGetLecture[];
 }
 
-interface IGetRoutine {
+export interface IGetRoutine {
   id: string;
   semesterId: string;
   batchId: string;
@@ -124,4 +124,8 @@ interface IGetRoutine {
 
 export interface IRoutineByBatchAndSemRes extends IApiRes {
   routine: IGetRoutine;
+}
+
+export interface IScheduleLecturesBatchAndSemRes extends IApiRes {
+  schedule: IGetSchedule;
 }

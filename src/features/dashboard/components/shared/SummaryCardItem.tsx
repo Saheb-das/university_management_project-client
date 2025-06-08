@@ -13,7 +13,7 @@ function SummaryCardItem({ label, icon, grade }: SumCardOptType) {
       <h2 className="capitalize font-medium mb-2 ">{label}</h2>
       {icon}
       <p className="text-foreground font-bold text-[20px] md:text-[22px]">
-        {grade}
+        {grade} %
       </p>
     </div>
   );
