@@ -7,4 +7,8 @@ export const StudyRoomAPIs = {
     url: (batchId: string) => `/notes/materials/batches/${batchId}`,
     method: "get",
   },
+  get_all_notes_by_batch_sem_ids: {
+    url: (id: string) => `/notes/batches/${id}`,
+    method: "get",
+  },
 };

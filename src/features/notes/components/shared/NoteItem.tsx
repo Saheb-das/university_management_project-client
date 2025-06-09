@@ -1,57 +1,44 @@
 // internal import
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { convertFilePathUrl } from "@/utils/convertPath";
 
 interface INote {
-  subjectName: string;
-  subjectImg: string;
-  modeleDesc: string;
+  subName: string;
+  title: string;
+  docUrl: string;
   teacherBy: string;
 }
 
-const NoteItem = ({
-  subjectName,
-  subjectImg,
-  modeleDesc,
-  teacherBy,
-}: INote) => {
+const NoteItem = ({ subName, title, docUrl, teacherBy }: INote) => {
   return (
-    <Card className="max-w-[360px] shadow-xl cursor-pointer rounded-lg overflow-hidden  bg-secondary text-secondary-foreground">
-      {/* Image Section */}
-      <CardHeader className="p-0">
-        <div className="w-full h-[160px] bg-background flex items-center justify-center overflow-hidden">
-          <img
-            src={subjectImg}
-            alt={subjectName}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </CardHeader>
+    <a
+      href={docUrl ? convertFilePathUrl(docUrl) : ""}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block"
+    >
+      <Card className="max-w-[360px] shadow-md hover:shadow-xl transition-shadow rounded-2xl bg-secondary text-secondary-foreground cursor-pointer border border-border">
+        <CardContent className="p-5 space-y-3">
+          <CardTitle className="text-xl font-semibold capitalize">
+            {subName}
+          </CardTitle>
 
-      {/* Title Section */}
-      <CardContent>
-        <CardTitle className="text-lg font-semibold text-secondary-foreground capitalize">
-          {subjectName}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground mt-2">
-          <span className="font-medium text-secondary-foreground">Module:</span>{" "}
-          {modeleDesc}
-        </p>
-      </CardContent>
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium text-secondary-foreground">
+              Module:
+            </span>{" "}
+            {title}
+          </p>
 
-      {/* Footer Section */}
-      <CardFooter className="p-4  bg-background">
-        <p className="text-sm text-secondary-foreground">
-          <span className="font-medium text-foreground">Instructor:</span>{" "}
-          {teacherBy}
-        </p>
-      </CardFooter>
-    </Card>
+          <div className="pt-3 border-t border-muted">
+            <p className="text-sm text-secondary-foreground">
+              <span className="font-medium text-foreground">Instructor:</span>{" "}
+              {teacherBy}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </a>
   );
 };
 

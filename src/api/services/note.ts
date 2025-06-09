@@ -1,4 +1,5 @@
 // internal import
+import { INotesWithTeacherAndSubRes } from "@/features/notes/types/note";
 import apiClient from "../client";
 import { HttpMethod, StudyRoomAPIs } from "../endpoints";
 
@@ -22,6 +23,15 @@ export async function getNotesByBatchId(
   params: any = {}
 ): Promise<INotesByBatchIdRes | null> {
   const { method, url } = StudyRoomAPIs.get_all_notes_by_batch_id;
+  const response = await apiClient[method as HttpMethod](url(id), { params });
+  return response.data;
+}
+
+export async function getNotesByBatchAndSemIds(
+  id: string,
+  params: { semId: string }
+): Promise<INotesWithTeacherAndSubRes | null> {
+  const { method, url } = StudyRoomAPIs.get_all_notes_by_batch_sem_ids;
   const response = await apiClient[method as HttpMethod](url(id), { params });
   return response.data;
 }
