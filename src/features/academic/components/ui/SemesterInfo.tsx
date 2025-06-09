@@ -1,3 +1,8 @@
+// external import
+import { useState } from "react";
+import { useRecoilValue } from "recoil";
+
+// internal import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -14,106 +19,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
-
-interface ISubject {
-  name: string;
-  teacher: string;
-}
-
-interface IResult {
-  subject: string;
-  firstInternal: number;
-  secondInternal: number;
-  final: number;
-  lab: number;
-}
-
-interface ISemesterDetails {
-  subjects: ISubject[];
-  results: IResult[];
-}
-
-interface ISemester {
-  Fall: ISemesterDetails;
-  Spring: ISemesterDetails;
-}
-
-// Dummy data for demonstration
-const semesterData: ISemester = {
-  Fall: {
-    subjects: [
-      { name: "Advanced Algorithms", teacher: "Dr. Alan Turing" },
-      { name: "Machine Learning", teacher: "Dr. Andrew Ng" },
-      { name: "Database Systems", teacher: "Dr. Michael Stonebraker" },
-    ],
-    results: [
-      {
-        subject: "Advanced Algorithms",
-        firstInternal: 85,
-        secondInternal: 88,
-        final: 92,
-        lab: 95,
-      },
-      {
-        subject: "Machine Learning",
-        firstInternal: 82,
-        secondInternal: 86,
-        final: 90,
-        lab: 93,
-      },
-      {
-        subject: "Database Systems",
-        firstInternal: 80,
-        secondInternal: 84,
-        final: 88,
-        lab: 91,
-      },
-    ],
-  },
-  Spring: {
-    subjects: [
-      { name: "Data Structures", teacher: "Dr. Donald Knuth" },
-      { name: "Web Development", teacher: "Dr. Tim Berners-Lee" },
-      { name: "Computer Networks", teacher: "Dr. Vint Cerf" },
-    ],
-    results: [
-      {
-        subject: "Data Structures",
-        firstInternal: 78,
-        secondInternal: 82,
-        final: 85,
-        lab: 88,
-      },
-      {
-        subject: "Web Development",
-        firstInternal: 85,
-        secondInternal: 88,
-        final: 92,
-        lab: 95,
-      },
-      {
-        subject: "Computer Networks",
-        firstInternal: 80,
-        secondInternal: 83,
-        final: 87,
-        lab: 90,
-      },
-    ],
-  },
-};
+import {
+  subjectsWithTeacherSelector,
+  transformResultDetailsSelector,
+} from "../../recoil/academicSelector";
+import { useSemestersByBatchId } from "@/hooks/useSemesterByBatchId";
+import { studentUserAtom } from "@/features/dashboard/recoil/student/dashboardAtom";
+import { useResultBySemBatchStudentIds } from "../../hooks/useResultBySemBatchStudentIds";
 
 const SemesterInfo = () => {
-  const [selectedSemester, setSelectedSemester] =
-    useState<keyof ISemester>("Fall");
+  const subWithTeacher = useRecoilValue(subjectsWithTeacherSelector);
+  const studentInfo = useRecoilValue(studentUserAtom);
+  const [selSem, setSelSem] = useState("");
 
-  // TODO: in-complete functionaly
-  // const handleChange = (event:ChangeEvent) => {
-  //   setSelectedSemester(event.target.)
-  // }
+  useResultBySemBatchStudentIds(selSem, studentInfo.batchId, studentInfo.id);
+  const { data: semData, isSuccess: isSemSuccess } = useSemestersByBatchId(
+    studentInfo.batchId
+  );
+  const resultInfo = useRecoilValue(transformResultDetailsSelector);
 
   return (
     <div className="space-y-6">
+      {/* subject information */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg text-primary">
@@ -122,16 +49,19 @@ const SemesterInfo = () => {
         </CardHeader>
         <CardContent>
           <ul className="space-y-2">
-            {semesterData[selectedSemester].subjects.map((subject, index) => (
-              <li key={index}>
-                <span className="font-semibold">{subject.name}</span> -{" "}
-                {subject.teacher}
-              </li>
-            ))}
+            {subWithTeacher &&
+              subWithTeacher.length > 0 &&
+              subWithTeacher.map((sub, idx) => (
+                <li key={idx}>
+                  <span className="font-semibold">{sub.subName}</span> -{" "}
+                  {sub.teacher}
+                </li>
+              ))}
           </ul>
         </CardContent>
       </Card>
 
+      {/* show result by semester */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg text-primary">
@@ -140,19 +70,19 @@ const SemesterInfo = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <Select
-              // onValueChange={handleChange}
-              defaultValue={selectedSemester}
-            >
+            <Select value={selSem} onValueChange={setSelSem}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select Semester" />
               </SelectTrigger>
               <SelectContent>
-                {Object.keys(semesterData).map((semester) => (
-                  <SelectItem key={semester} value={semester}>
-                    {semester}
-                  </SelectItem>
-                ))}
+                {isSemSuccess &&
+                  semData &&
+                  semData.batchSemDetails.course.semesters.length > 0 &&
+                  semData.batchSemDetails.course.semesters.map((sem) => (
+                    <SelectItem key={sem.id} value={sem.id}>
+                      sem - {sem.semNo}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -167,15 +97,21 @@ const SemesterInfo = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {semesterData[selectedSemester].results.map((result, index) => (
-                <TableRow key={index}>
-                  <TableCell>{result.subject}</TableCell>
-                  <TableCell>{result.firstInternal}</TableCell>
-                  <TableCell>{result.secondInternal}</TableCell>
-                  <TableCell>{result.final}</TableCell>
-                  <TableCell>{result.lab}</TableCell>
+              {resultInfo.length > 0 ? (
+                resultInfo.map((result, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{result.subject}</TableCell>
+                    <TableCell>{result.firstInternal}</TableCell>
+                    <TableCell>{result.secondInternal}</TableCell>
+                    <TableCell>{result.final}</TableCell>
+                    <TableCell>{result.lab}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell>There are no results</TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>

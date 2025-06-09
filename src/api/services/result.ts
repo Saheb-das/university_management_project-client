@@ -6,6 +6,7 @@ import { HttpMethod, ResultAPIs } from "../endpoints";
 import {
   ICreateResultsRes,
   IResultBody,
+  IResultBySemBatchStudentRes,
   IResultByStudentExamSemRes,
 } from "@/features/result/types/result";
 
@@ -19,6 +20,17 @@ export async function getResultByStudentExamSem(
     url(studentId, examId),
     { params }
   );
+  return response.data;
+}
+
+export async function getResultBySemBatchStudentIds(
+  semId: string,
+  params: { batchId: string; studentId: string }
+): Promise<IResultBySemBatchStudentRes | null> {
+  const { method, url } = ResultAPIs.get_result_by_sem_batch_student;
+  const response = await apiClient[method as HttpMethod](url(semId), {
+    params,
+  });
   return response.data;
 }
 

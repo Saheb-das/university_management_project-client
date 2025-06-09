@@ -8,4 +8,8 @@ export const ResultAPIs = {
     url: "/results",
     method: "post",
   },
+  get_result_by_sem_batch_student: {
+    url: (id: string) => `/results/sems/${id}`,
+    method: "get",
+  },
 };

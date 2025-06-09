@@ -100,8 +100,36 @@ interface IResult {
   updatedAt: string;
 }
 
+export interface IResultWithDetails {
+  id: string;
+  marks: 18;
+  studentId: string;
+  batchId: string;
+  semesterId: string;
+  subjectId: string;
+  examId: string;
+  createdAt: string;
+  updatedAt: string;
+  semester: {
+    id: string;
+    semNo: 1;
+  };
+  subject: {
+    id: string;
+    name: string;
+  };
+  exam: {
+    id: string;
+    type: string;
+  };
+}
+
 export interface IResultByStudentExamSemRes extends IApiRes {
   results: IResult[];
+}
+
+export interface IResultBySemBatchStudentRes extends IApiRes {
+  results: IResultWithDetails[];
 }
 
 export interface ICreateResultsRes extends IApiRes {

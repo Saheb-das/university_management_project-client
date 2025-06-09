@@ -68,5 +68,5 @@ export function calcAttendance(data: IAttendCount): string {
 
   if (total === 0) return "class not started";
 
-  return String(((present % total) * 100).toFixed(2));
+  return `${((present % total) * 100).toFixed(2)} %`;
 }

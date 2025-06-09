@@ -11,8 +11,8 @@ function Academic() {
         <h1 className="text-3xl font-bold mb-6">
           Student Academic Information
         </h1>
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList>
+        <Tabs defaultValue="details">
+          <TabsList className="w-full grid-cols-5">
             <TabsTrigger className="text-base" value="details">
               Details
             </TabsTrigger>

@@ -45,6 +45,10 @@ export interface IStudentWithAcademicDetails {
   };
   course: {
     name: string;
+    degree: {
+      id: string;
+      type: string;
+    };
   };
   currentSemester: ICurSemIncSemNo[];
 }

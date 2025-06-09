@@ -1,17 +1,15 @@
+// external import
+import { useRecoilValue } from "recoil";
+
 // internal import
 import InfoRow from "@/components/shared/InfoRow";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const studentInfo: { label: string; name: string }[] = [
-  { label: "Student Name", name: "John Doe" },
-  { label: "Student ID", name: "ST12345" },
-  { label: "Program", name: "Bachelor of Science in Computer Science" },
-  { label: "Current Semester", name: "Fall 2023" },
-  { label: "Academic Advisor", name: "Dr. Jane Smith" },
-  { label: "GPA", name: "3.75" },
-];
+import { transStudentAcademicSelector } from "../../recoil/academicSelector";
 
 const AcademicInfo = () => {
+  const studentInfo = useRecoilValue(transStudentAcademicSelector);
+  if (!studentInfo) return <p>No Data</p>;
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -19,14 +17,23 @@ const AcademicInfo = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {studentInfo &&
-            studentInfo.map((student) => (
-              <InfoRow
-                label={student.label}
-                name={student.name}
-                key={student.name}
-              />
-            ))}
+          <InfoRow label={"FullName"} name={studentInfo.fullName} />
+          <InfoRow label={"Department"} name={studentInfo.dept} />
+          <InfoRow label={"Degree"} name={studentInfo.deg} />
+          <InfoRow label={"Course"} name={studentInfo.course} />
+          <InfoRow label={"Batch"} name={studentInfo.batch} />
+          <InfoRow
+            label={"Registration No"}
+            name={studentInfo.regNo || "not provided yet"}
+          />
+          <InfoRow
+            label={"Roll No"}
+            name={studentInfo.rollNo || "not provided yet"}
+          />
+          <InfoRow
+            label={"Current Semester"}
+            name={String(studentInfo.curSem)}
+          />
         </div>
       </CardContent>
     </Card>
