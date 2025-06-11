@@ -1,6 +1,6 @@
 // internal import
 import Container from "@/components/shared/Container";
-import DynamicFormBuilder from "../components/ui/DummyFormBuilder";
+import DynamicFormBuilder from "../components/ui/DynamicFormBuilder";
 import DynamicFormData from "../components/ui/DynamicFormData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 

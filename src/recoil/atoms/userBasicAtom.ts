@@ -26,6 +26,7 @@ export const userBasicAtom = atom<TBasicUser | null>({
   default: {
     id: "",
     role: "" as TRole,
+    name: "",
     email: "",
     collageId: "",
   },
