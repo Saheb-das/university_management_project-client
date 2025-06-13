@@ -1,4 +1,5 @@
 // internal import
+import { IFeeTransByStudentRes } from "@/features/tution-fees/types/tutionFee";
 import apiClient from "../client";
 import { HttpMethod, TransAPIs } from "../endpoints";
 

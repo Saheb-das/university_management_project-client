@@ -46,7 +46,7 @@ export interface ICreateTransBody {
   userId: string;
 }
 
-interface ITransaction {
+export interface ITransaction {
   id: string;
   type: "salary" | "tutionFee";
   userRole: string;

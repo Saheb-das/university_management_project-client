@@ -7,11 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IStudent } from "../../pages/CheckTutionFees";
+import { IStudent } from "@/features/result/types/result";
 
 interface IFilteredList {
   students: IStudent[];
-  onStudentClick: (student: IStudent) => void;
+  onStudentClick: (studentId: string) => void;
 }
 
 const FilteredList = ({ students, onStudentClick }: IFilteredList) => {
@@ -37,14 +37,17 @@ const FilteredList = ({ students, onStudentClick }: IFilteredList) => {
                 students.map((student) => (
                   <TableRow
                     key={student.id}
-                    onClick={() => onStudentClick(student)}
+                    onClick={() => onStudentClick(student.id)}
                     className="cursor-pointer hover:bg-gray-100"
                   >
-                    <TableCell>{student.name}</TableCell>
-                    <TableCell>{student.department}</TableCell>
-                    <TableCell>{student.course}</TableCell>
-                    <TableCell>{student.rollNumber}</TableCell>
-                    <TableCell>{student.registrationNumber}</TableCell>
+                    <TableCell>
+                      {student?.profile?.user?.firstName}{" "}
+                      {student?.profile?.user?.lastName}
+                    </TableCell>
+                    <TableCell>{student?.department?.type}</TableCell>
+                    <TableCell>{student?.course?.name}</TableCell>
+                    <TableCell>{student?.rollNo}</TableCell>
+                    <TableCell>{student.registretionNo}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
