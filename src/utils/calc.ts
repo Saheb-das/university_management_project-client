@@ -56,3 +56,56 @@ export function getRevenueYearByYear(data: IRevenue[]): IRevenueByYear[] {
     .sort((a, b) => a.year - b.year);
   return result || 0;
 }
+
+/**
+ *  calculate late fine
+ */
+const semTime = {
+  odd: "31-12",
+  even: "30-06",
+};
+
+// Helper to count non-Sunday days between two dates
+function countLateDays(from: Date, to: Date) {
+  let count = 0;
+  let current = new Date(from);
+
+  while (current <= to) {
+    const day = current.getDay();
+    if (day !== 0) count++; // 0 = Sunday
+    current.setDate(current.getDate() + 1);
+  }
+
+  return count;
+}
+
+export function calculateLateFine(semType: "odd" | "even", perDayFine: number) {
+  const today = new Date();
+
+  const deadline = getPaymentLastDate(semType);
+
+  // If today is after the deadline, calculate late fine
+  if (today > deadline) {
+    const lateDays = countLateDays(
+      new Date(deadline.getTime() + 86400000),
+      today
+    ); // Start from next day
+    const fine = lateDays * perDayFine;
+    return { lateDays, fine };
+  } else {
+    return { lateDays: 0, fine: 0 };
+  }
+}
+
+export function getPaymentLastDate(semType: "odd" | "even") {
+  const today = new Date();
+  const [dd, mm] = semTime[semType].split("-");
+
+  const year =
+    semType === "odd"
+      ? today.getFullYear() + 1 // next year
+      : today.getFullYear(); // current year
+
+  const lastDate = new Date(`${year}-${mm}-${dd}`);
+  return lastDate;
+}

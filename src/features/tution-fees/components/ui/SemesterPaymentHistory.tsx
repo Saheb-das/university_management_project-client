@@ -1,6 +1,7 @@
 // external import
 import { ReceiptIndianRupee } from "lucide-react";
 import { Link } from "react-router";
+import { useRecoilValue } from "recoil";
 
 // internal import
 import {
@@ -11,47 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const payHistoryData = [
-  {
-    id: 1,
-    sem: "sem 1",
-    date: "09/08/2021",
-    upiId: "2365149874",
-    amount: "28,000",
-    lateFine: 0,
-    isPaid: true,
-  },
-  {
-    id: 2,
-    sem: "sem 2",
-    date: "12/04/2022",
-    upiId: "2362583415",
-    amount: "28,000",
-    lateFine: 0,
-    isPaid: true,
-  },
-  {
-    id: 3,
-    sem: "sem 3",
-    date: "05/07/2022",
-    upiId: "6523148721",
-    amount: "28,000",
-    lateFine: 200,
-    isPaid: false,
-  },
-  {
-    id: 4,
-    sem: "sem 3",
-    date: "05/07/2022",
-    upiId: "6523148721",
-    amount: "28,000",
-    lateFine: 200,
-    isPaid: false,
-  },
-];
+import { myAllTransactionAtom } from "@/features/transactions/recoil/transaction";
+import { isoToLocalDateFormat } from "@/utils/convertStr";
 
 const SemesterPaymentHistory = () => {
+  const payHistory = useRecoilValue(myAllTransactionAtom);
   return (
     <>
       <Table className="w-[780px] bg-background ">
@@ -68,27 +33,35 @@ const SemesterPaymentHistory = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {payHistoryData.map(
-            ({ id, sem, date, upiId, amount, lateFine, isPaid }) => (
+          {payHistory && payHistory.length > 0 ? (
+            payHistory.map((item) => (
               <TableRow
-                key={id}
+                key={item.id}
                 className="text-[15px] lg:text-base  text-foreground"
               >
-                <TableCell className=" capitalize">{sem}</TableCell>
-                <TableCell>{date}</TableCell>
-                <TableCell>{upiId}</TableCell>
-                <TableCell className="text-center">{lateFine}</TableCell>
-                <TableCell className="">{amount}</TableCell>
+                <TableCell className=" capitalize">
+                  sem {item.tutionFee?.semNo}
+                </TableCell>
+                <TableCell>{isoToLocalDateFormat(item.date)}</TableCell>
+                <TableCell>{item.utr}</TableCell>
+                <TableCell className="text-center">
+                  {item.tutionFee?.lateFine}
+                </TableCell>
+                <TableCell className="">{Number(item.amount) / 100}</TableCell>
                 <TableCell
-                  className={`${isPaid ? "text-green-600" : "text-red-600"}`}
+                  className={`${
+                    item.tutionFee?.isVerified
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
                 >
-                  {isPaid ? "paid" : "pending"}
+                  {item.tutionFee?.isVerified ? "paid" : "pending"}
                 </TableCell>
                 <TableCell className=" text-center ">
                   <Link to={`reciept`}>
                     <ReceiptIndianRupee
                       className={`${
-                        isPaid
+                        item.tutionFee?.isVerified
                           ? "cursor-pointer"
                           : "cursor-not-allowed text-muted-foreground"
                       } `}
@@ -96,7 +69,13 @@ const SemesterPaymentHistory = () => {
                   </Link>
                 </TableCell>
               </TableRow>
-            )
+            ))
+          ) : (
+            <TableRow>
+              <TableCell className="font-semibold font-mono">
+                Threre are no transactions yet
+              </TableCell>
+            </TableRow>
           )}
         </TableBody>
       </Table>

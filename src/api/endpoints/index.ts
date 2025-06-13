@@ -20,3 +20,5 @@ export * from "./note";
 export * from "./attendance";
 export * from "./project";
 export * from "./office";
+export * from "./tution-fee";
+export * from "./razorpay";

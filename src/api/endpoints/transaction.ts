@@ -7,4 +7,8 @@ export const TransAPIs = {
     url: (id: string) => `/transactions/${id}`,
     method: "get",
   },
+  create_new_trans: {
+    url: "/transactions",
+    method: "post",
+  },
 };

@@ -1,5 +1,5 @@
 // external import
-import { getAllTrans, getTransById } from "@/api/services/transaction";
+import { getMyAllTrans, getTransById } from "@/api/services/transaction";
 import { useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 import { useEffect } from "react";
@@ -12,13 +12,13 @@ export const useSalary = (role: string, userId: string) => {
 
   const { data, isSuccess, isLoading, error } = useQuery({
     queryKey: ["transactions", role, userId],
-    queryFn: getAllTrans,
+    queryFn: getMyAllTrans,
     enabled: !!role && !!userId,
   });
 
   useEffect(() => {
     if (isSuccess && data) {
-      setTransactions(data);
+      setTransactions(data.transactions);
     }
   }, [isSuccess, data]);
 

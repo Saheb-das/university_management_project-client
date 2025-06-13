@@ -119,6 +119,7 @@ function Transaction() {
         .includes(utr.toLowerCase());
       return dateMatch && typeMatch && utrMatch;
     });
+
     setFilteredTransactions(filtered);
   };
   return (

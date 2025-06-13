@@ -10,3 +10,8 @@ export function formatShortDate(dateStr: string): string {
     year: "numeric",
   });
 }
+
+export function isoToLocalDateFormat(date: string): string {
+  const dateArr = date.split("-");
+  return `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}`;
+}
