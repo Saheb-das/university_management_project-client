@@ -21,25 +21,33 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { IFilterProps, TransactionType } from "../../pages/Transactions";
+import { localDateStrToYYYYMMDD } from "@/utils/convertStr";
 
 interface ITransactionFilter {
-  onFilter: ({ date, type, utr }: IFilterProps) => void;
+  onFilter: ({ date, type }: IFilterProps) => void;
+  utr: string;
+  setUtr: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TransactionFilter = ({ onFilter }: ITransactionFilter) => {
+const TransactionFilter = ({ onFilter, utr, setUtr }: ITransactionFilter) => {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [type, setType] = useState<TransactionType | "all">("all");
-  const [utr, setUtr] = useState("");
+
+  const handleApply = () => {
+    const formatDate = date && localDateStrToYYYYMMDD(date);
+
+    onFilter({ date: formatDate, type });
+  };
   return (
     <div className="p-3 mb-4 rounded-lg ">
-      <div className="grid grid-cols-3 gap-4 mb-4 ">
+      <div className="grid grid-cols-3 gap-4 mb-8 ">
         {/* Date Picker */}
         <div>
           <Label htmlFor="date" className="mb-2">
-            Date
+            From Date
           </Label>
           <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger className="w-full">
               <Button
                 variant="outline"
                 className={cn(
@@ -56,7 +64,7 @@ const TransactionFilter = ({ onFilter }: ITransactionFilter) => {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                initialFocus
+                captionLayout="dropdown"
               />
             </PopoverContent>
           </Popover>
@@ -70,7 +78,7 @@ const TransactionFilter = ({ onFilter }: ITransactionFilter) => {
           <Select
             value={type}
             onValueChange={(value) =>
-              setType(value as "all" | "salary" | "tuition-fees")
+              setType(value as "all" | "salary" | "tutionFee")
             }
           >
             <SelectTrigger id="type" className="w-full">
@@ -79,29 +87,29 @@ const TransactionFilter = ({ onFilter }: ITransactionFilter) => {
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="salary">Salary</SelectItem>
-              <SelectItem value="tuition-fees">Tuition Fees</SelectItem>
+              <SelectItem value="tutionFee">Tuition Fees</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* UTR Input */}
-        <div>
-          <Label htmlFor="utr" className="mb-2">
-            UTR Number
-          </Label>
-          <Input
-            id="utr"
-            placeholder="Search UTR"
-            value={utr}
-            onChange={(e) => setUtr(e.target.value)}
-          />
-        </div>
+        {/* Apply Filters Button */}
+        <Button className="mt-5 w-fit" onClick={handleApply}>
+          Apply Filters
+        </Button>
       </div>
 
-      {/* Apply Filters Button */}
-      <Button onClick={() => onFilter({ date, type, utr })}>
-        Apply Filters
-      </Button>
+      {/* UTR Input */}
+      <div>
+        <Label htmlFor="utr" className="mb-2">
+          UTR Number
+        </Label>
+        <Input
+          id="utr"
+          placeholder="Search UTR"
+          value={utr}
+          onChange={(e) => setUtr(e.target.value)}
+        />
+      </div>
     </div>
   );
 };

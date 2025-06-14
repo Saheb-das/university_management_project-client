@@ -1,7 +1,15 @@
+// external import
 import { atom } from "recoil";
-import { TransWithSalaryOrFee } from "../types/transaction";
+
+// types import
+import { ITransaction, TransWithSalaryOrFee } from "../types/transaction";
 
 export const myAllTransactionAtom = atom<TransWithSalaryOrFee[]>({
   key: "myAllTransactionAtom",
+  default: [],
+});
+
+export const allTransactionsAtom = atom<ITransaction[]>({
+  key: "allTransactionsAtom",
   default: [],
 });

@@ -1,5 +1,4 @@
 // internal import
-import { IFeeTransByStudentRes } from "@/features/tution-fees/types/tutionFee";
 import apiClient from "../client";
 import { HttpMethod, TransAPIs } from "../endpoints";
 
@@ -7,6 +6,7 @@ import { HttpMethod, TransAPIs } from "../endpoints";
 import {
   ICreateTransBody,
   IMyTransactionsRes,
+  ITransactionsRes,
 } from "@/features/transactions/types/transaction";
 import { TTranRes } from "@/types/transaction";
 
@@ -30,5 +30,14 @@ export async function createNewTrans(
 ): Promise<TTranRes | null> {
   const { method, url } = TransAPIs.create_new_trans;
   const response = await apiClient[method as HttpMethod](url, body);
+  return response.data;
+}
+
+export async function getAllTrans(params: {
+  fromDate?: string;
+  type?: "salary" | "tutionFee";
+}): Promise<ITransactionsRes | null> {
+  const { method, url } = TransAPIs.get_all_trans;
+  const response = await apiClient[method as HttpMethod](url, { params });
   return response.data;
 }

@@ -100,6 +100,10 @@ export interface TransWithSalaryOrFee extends ITransaction {
   tutionFee?: ITutionFee;
 }
 
+export interface ITransactionsRes extends IApiRes {
+  transactions: ITransaction[];
+}
+
 export interface IMyTransactionsRes extends IApiRes {
   transactions: TransWithSalaryOrFee[];
 }

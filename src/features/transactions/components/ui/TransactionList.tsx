@@ -7,36 +7,45 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ITransaction } from "../../pages/Transactions";
+import { useRecoilValue } from "recoil";
+import { isoToLocalDateFormat } from "@/utils/convertStr";
+import { allTransactionsSelector } from "../../recoil/transactionSelector";
 
-interface IList {
-  transactions: ITransaction[];
-}
-
-const TransactionList = ({ transactions }: IList) => {
+const TransactionList = ({ utr }: { utr: string }) => {
+  const transactions = useRecoilValue(allTransactionsSelector(utr));
   return (
     <div className="bg-background text-foreground rounded-lg p-3">
       <div className="max-h-[400px] overflow-y-auto">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Transaction Id</TableHead>
               <TableHead>Amount</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Time</TableHead>
+              <TableHead>Payment Date</TableHead>
               <TableHead>UTR No</TableHead>
+              <TableHead>Mode</TableHead>
               <TableHead>Type</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map((transaction) => (
-              <TableRow className="text-base" key={transaction.id}>
-                <TableCell>{transaction.amount}</TableCell>
-                <TableCell>{transaction.date}</TableCell>
-                <TableCell>{transaction.time}</TableCell>
-                <TableCell>{transaction.utrNo}</TableCell>
-                <TableCell>{transaction.type}</TableCell>
+            {transactions ? (
+              transactions.map((item) => (
+                <TableRow className="text-base" key={item.id}>
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{Number(item.amount) / 100}</TableCell>
+                  <TableCell>{isoToLocalDateFormat(item.date)}</TableCell>
+                  <TableCell>{item.utr}</TableCell>
+                  <TableCell>{item.mode}</TableCell>
+                  <TableCell>{item.type}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell className="font-semibold font-mono">
+                  There are no such transactions
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

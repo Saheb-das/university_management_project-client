@@ -11,4 +11,8 @@ export const TransAPIs = {
     url: "/transactions",
     method: "post",
   },
+  get_all_trans: {
+    url: "/transactions",
+    method: "get",
+  },
 };
