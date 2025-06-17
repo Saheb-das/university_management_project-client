@@ -1,4 +1,5 @@
 // external import
+import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useParams } from "react-router";
 
@@ -14,6 +15,7 @@ import { toast } from "sonner";
 
 function RemoveFromDept() {
   const { teacherId } = useParams();
+  const [removingId, setRemovingId] = useState("");
 
   if (!teacherId) return;
 
@@ -21,6 +23,8 @@ function RemoveFromDept() {
   const { mutate, isPending } = useRemoveAsignedSubject();
 
   const handleRemove = (teacherId: string, subjectId: string) => {
+    setRemovingId(subjectId);
+
     mutate(
       { id: teacherId, subId: subjectId },
       {
@@ -37,6 +41,9 @@ function RemoveFromDept() {
         },
         onError: (err) => {
           toast.error(err.message || "subject remove failed");
+        },
+        onSettled: () => {
+          setRemovingId("");
         },
       }
     );
@@ -66,7 +73,9 @@ function RemoveFromDept() {
                 onClick={() => handleRemove(asign.teacherId, asign.subject.id)}
               >
                 <Trash2 className="w-4 h-4" />
-                {isPending ? "Removing..." : "Remove"}
+                {asign.subjectId === removingId && isPending
+                  ? "Removing..."
+                  : "Remove"}
               </Button>
             </div>
           ))}

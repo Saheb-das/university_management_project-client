@@ -3,7 +3,6 @@ import { Route } from "react-router";
 
 // internal import
 import Academic from "@/features/academic/pages/Academic";
-import Chat from "@/features/chats/pages/Chat";
 import Collage from "@/features/collage/pages/Collage";
 import StudentDashboard from "@/features/dashboard/pages/StudentDashboard";
 import NoteViewer from "@/features/notes/components/ui/NoteViewer";
@@ -14,6 +13,9 @@ import Profile from "@/features/profile/pages/Profile";
 import TuitionFeeReceipt from "@/features/tution-fees/components/ui/TutionFeeReciept";
 import MakeTutionFeeLayout from "@/features/tution-fees/layout/MakeTutionFeeLayout";
 import MakeTutionFees from "@/features/tution-fees/pages/MakeTutionFees";
+import Announcement from "@/features/chats/pages/Announcement";
+import Dropbox from "@/features/chats/pages/Dropbox";
+import Classroom from "@/features/chats/pages/Classroom";
 
 const studentRoutes = (
   <>
@@ -27,9 +29,9 @@ const studentRoutes = (
       <Route index element={<Notes />} />
       <Route path=":noteId" element={<NoteViewer />} />
     </Route>
-    <Route path="announcement" element={<Chat chatType="announcement" />} />
-    <Route path="classgroup" element={<Chat chatType="classgroup" />} />
-    <Route path="dropbox" element={<Chat chatType="dropbox" />} />
+    <Route path="announcement" element={<Announcement />} />
+    <Route path="classroom" element={<Classroom />} />
+    <Route path="dropbox" element={<Dropbox />} />
     <Route path="office" element={<StudentOffice />} />
     <Route path="collage" element={<Collage />} />
     <Route path="profile" element={<Profile />} />

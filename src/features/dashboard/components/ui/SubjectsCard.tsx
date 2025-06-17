@@ -8,7 +8,7 @@ import { todayClassScheduleAtom } from "../../recoil/student/dashboardAtom";
 
 const SubjectsCard = () => {
   const scheduleInfo = useRecoilValue(todayClassScheduleAtom);
-  if (!scheduleInfo || new Date().getDay() === 0) {
+  if (!scheduleInfo && new Date().getDay() === 0) {
     return (
       <p className="text-lg text-blue-800 font-semibold">
         Sunday is Funday. Go and make some Fun 😊

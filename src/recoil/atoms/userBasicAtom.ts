@@ -29,6 +29,7 @@ export const userBasicAtom = atom<TBasicUser | null>({
     name: "",
     email: "",
     collageId: "",
+    avatar: "",
   },
   effects: [localStorageEffect("basicUser")],
 });

@@ -2,7 +2,6 @@
 import { Route } from "react-router";
 
 // internal import
-import Chat from "@/features/chats/pages/Chat";
 import AdminDashboard from "@/features/dashboard/pages/adminDashboard";
 import TransactionDetails from "@/features/salary/components/ui/TransactionDetails";
 import Salary from "@/features/salary/pages/Salary";
@@ -16,6 +15,8 @@ import Profile from "@/features/profile/pages/Profile";
 import FilteredStudents from "@/features/student/pages/FilteredStudents";
 import Routine from "@/features/routine/pages/Routine";
 import Activities from "@/features/activities/pages/Activities";
+import Announcement from "@/features/chats/pages/Announcement";
+import Dropbox from "@/features/chats/pages/Dropbox";
 
 const adminRoutes = (
   <>
@@ -24,7 +25,8 @@ const adminRoutes = (
       <Route index element={<p>Select a transaction</p>} />
       <Route path=":transactionId" element={<TransactionDetails />} />
     </Route>
-    <Route path="announcement" element={<Chat chatType="announcement" />} />
+    <Route path="announcement" element={<Announcement />} />
+    <Route path="dropbox" element={<Dropbox />} />
     <Route path="students" element={<FilteredStudents />} />
     <Route path="stuff" element={<Stuff admin={false} />} />
     <Route path="asign-teachers" element={<AsignTeacherLayout />}>

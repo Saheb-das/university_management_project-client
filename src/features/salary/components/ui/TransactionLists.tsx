@@ -42,9 +42,9 @@ const TransactionLists = () => {
             </TableRow>
           ))
         ) : (
-          <h1 className="text-xl font-medium mt-6 capitalize ">
+          <TableCell className="text-xl font-medium mt-6 capitalize ">
             there is no transactions
-          </h1>
+          </TableCell>
         )}
       </TableBody>
     </Table>

@@ -1,30 +1,23 @@
+// internal import
 import MessageAvatar from "./MessageAvatar";
 
-interface IMsg {
-  id: string;
-  role: string;
-  content: string;
-  createdAt: Date;
-  user: {
-    name: string;
-    avatar: string;
-  };
-}
+// types import
+import { IMessage } from "../../types/chat";
 
-const Message = ({ m }: { m: IMsg }) => {
-  const isMe = "user";
+const Message = ({ m, userId }: { m: IMessage; userId: string }) => {
+  const isMe = userId;
   return (
     <>
-      {isMe !== m.role && <MessageAvatar msg={m} />}
+      {isMe !== m.senderId && <MessageAvatar m={m} />}
       <div
         key={m.id}
         className={`flex ${
-          m.role === "user" ? "justify-end" : "justify-start"
+          m.senderId === userId ? "justify-end" : "justify-start"
         }`}
       >
         <div
-          className={`max-w-[80%] px-4 py-2 rounded-lg ${
-            m.role === "user"
+          className={` px-4 py-2 rounded-lg ${
+            m.senderId === userId
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-foreground"
           }`}
@@ -32,7 +25,7 @@ const Message = ({ m }: { m: IMsg }) => {
           {m.content}
         </div>
       </div>
-      {isMe === m.role && <MessageAvatar msg={m} />}
+      {isMe === m.senderId && <MessageAvatar m={m} />}
     </>
   );
 };

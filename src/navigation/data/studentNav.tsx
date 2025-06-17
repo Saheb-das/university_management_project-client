@@ -47,8 +47,8 @@ export const studentNavLists: NavObj[] = [
   {
     id: 6,
     icon: <Users size={20} />,
-    label: "classgroup",
-    linkPath: "classgroup",
+    label: "classroom",
+    linkPath: "classroom",
   },
   {
     id: 7,

@@ -9,4 +9,5 @@ export type TBasicUser = {
   name: string;
   email: string;
   collageId: string;
+  avatar: string;
 };
