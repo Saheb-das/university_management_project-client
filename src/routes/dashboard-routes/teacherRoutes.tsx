@@ -5,7 +5,6 @@ import { Route } from "react-router";
 import TeacherDashboard from "@/features/dashboard/pages/TeacherDashboard";
 import TransactionDetails from "@/features/salary/components/ui/TransactionDetails";
 import Salary from "@/features/salary/pages/Salary";
-import Chat from "@/features/chats/pages/Chat";
 import Collage from "@/features/collage/pages/Collage";
 import CommonOffice from "@/features/office/pages/CommonOffice";
 import Profile from "@/features/profile/pages/Profile";
