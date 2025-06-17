@@ -6,6 +6,7 @@ import { HttpMethod, TransAPIs } from "../endpoints";
 import {
   ICreateTransBody,
   IMyTransactionsRes,
+  ITransactionRes,
   ITransactionsRes,
 } from "@/features/transactions/types/transaction";
 import { TTranRes } from "@/types/transaction";
@@ -39,5 +40,13 @@ export async function getAllTrans(params: {
 }): Promise<ITransactionsRes | null> {
   const { method, url } = TransAPIs.get_all_trans;
   const response = await apiClient[method as HttpMethod](url, { params });
+  return response.data;
+}
+
+export async function getPrevMonthTransactionByStuffUserId(
+  id: string
+): Promise<ITransactionRes | null> {
+  const { method, url } = TransAPIs.get_prev_month_tran_by_stuff_user_id;
+  const response = await apiClient[method as HttpMethod](url(id));
   return response.data;
 }

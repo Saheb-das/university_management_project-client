@@ -129,3 +129,7 @@ export interface IRoutineByBatchAndSemRes extends IApiRes {
 export interface IScheduleLecturesBatchAndSemRes extends IApiRes {
   schedule: IGetSchedule;
 }
+
+export interface ILecturesByTeacherUserIdAndDay extends IApiRes {
+  lectures: IGetLecture[];
+}

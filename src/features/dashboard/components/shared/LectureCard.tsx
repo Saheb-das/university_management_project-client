@@ -14,7 +14,7 @@ function LectureCard({ classTitle, status, time, roomNo }: ILecture) {
         return "bg-green-500";
       case "running":
         return "bg-yellow-500";
-      case "finished":
+      case "completed":
         return "bg-red-500";
       default:
         return "bg-gray-500";

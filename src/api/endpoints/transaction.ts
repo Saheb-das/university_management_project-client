@@ -15,4 +15,8 @@ export const TransAPIs = {
     url: "/transactions",
     method: "get",
   },
+  get_prev_month_tran_by_stuff_user_id: {
+    url: (userId: string) => `/transactions/stuff/${userId}`,
+    method: "get",
+  },
 };

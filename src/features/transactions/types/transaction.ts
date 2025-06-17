@@ -107,3 +107,7 @@ export interface ITransactionsRes extends IApiRes {
 export interface IMyTransactionsRes extends IApiRes {
   transactions: TransWithSalaryOrFee[];
 }
+
+export interface ITransactionRes extends IApiRes {
+  transaction: ITransaction;
+}

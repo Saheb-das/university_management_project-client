@@ -11,4 +11,8 @@ export const RoutineAPIs = {
     url: (id: string) => `/routines/batch/${id}/schedule`,
     method: "get",
   },
+  get_lectures_by_teacher_user_id_and_day: {
+    url: "/routines/lectures",
+    method: "get",
+  },
 };
