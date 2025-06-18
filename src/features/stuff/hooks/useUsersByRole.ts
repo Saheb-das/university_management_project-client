@@ -16,6 +16,7 @@ export const useUsersByRole = (role: TStuffRole) => {
   const { data, isSuccess } = useQuery({
     queryKey: ["users", role],
     queryFn: () => getUsersByRole({ role }),
+    enabled: !!role,
   });
 
   useEffect(() => {

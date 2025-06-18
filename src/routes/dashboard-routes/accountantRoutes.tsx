@@ -12,13 +12,11 @@ import CheckTutionFees from "@/features/tution-fees/pages/CheckTutionFees";
 import Announcement from "@/features/chats/pages/Announcement";
 import Dropbox from "@/features/chats/pages/Dropbox";
 import Community from "@/features/chats/pages/Community";
+import AccountantDashboard from "@/features/dashboard/pages/AccountantDashboard";
 
 const accountantRoutes = (
   <>
-    <Route
-      index
-      element={<h1>accountant dashboard, here payment distribute by role</h1>}
-    />
+    <Route index element={<AccountantDashboard />} />
     <Route path="check-fees" element={<CheckTutionFees />} />
     <Route path="salary" element={<Salary />}>
       <Route index element={<p>Select a transaction</p>} />

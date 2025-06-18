@@ -10,8 +10,8 @@ import InlineInfo from "../shared/InlineInfo";
 import { courseInfoAtom } from "../../recoil/tutionFeeAtom";
 import { useCourseById } from "../../hooks/useCourseById";
 import { calculateLateFine, getPaymentLastDate } from "@/utils/calc";
-import { useCreatePayOrder } from "../../hooks/useCreatePayOrder";
-import { useVerifyPayOrder } from "../../hooks/useVerifyPayOrder";
+import { useCreatePayOrder } from "../../../../hooks/useCreatePayOrder";
+import { useVerifyPayOrder } from "../../../../hooks/useVerifyPayOrder";
 import { toast } from "sonner";
 import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
 import { myAllTransactionAtom } from "@/features/transactions/recoil/transaction";
@@ -140,11 +140,10 @@ const CurrPayStatus = ({ courseId }: Props) => {
           }
         },
         prefill: {
-          name: "John Doe",
-          email: "student@example.com",
-          contact: "9999999999",
+          name: basicUserInfo?.name!,
+          email: basicUserInfo?.email!,
         },
-        theme: { color: "#0f172a" },
+        theme: { color: "#173b8f" },
       };
 
       const razor = new window.Razorpay(options);

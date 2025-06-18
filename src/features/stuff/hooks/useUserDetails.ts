@@ -1,8 +1,11 @@
-import { getUserDetailsById } from "@/api/services/user";
+// external import
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
+
+// internal import
+import { getUserDetailsById } from "@/api/services/user";
 import { selectUserDetailsAtom } from "../recoil/usersAtom";
-import { useEffect } from "react";
 
 export const useUserDetails = (userId: string) => {
   const setDetailedUser = useSetRecoilState(selectUserDetailsAtom);
@@ -10,6 +13,7 @@ export const useUserDetails = (userId: string) => {
   const { data, isSuccess } = useQuery({
     queryKey: ["users", userId],
     queryFn: () => getUserDetailsById(userId, { role: "stuff" }),
+    enabled: !!userId,
   });
 
   useEffect(() => {

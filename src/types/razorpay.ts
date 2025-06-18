@@ -19,7 +19,6 @@ export interface RazorpayOptions {
   prefill?: {
     name: string;
     email: string;
-    contact: string;
   };
   notes?: Record<string, string>;
   theme?: {
