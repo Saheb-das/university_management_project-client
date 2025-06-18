@@ -7,7 +7,6 @@ import { recieptTransactionDetailsAtom } from "../../recoil/tutionFeeAtom";
 import { collageAtom } from "@/features/collage/recoil/collageAtom";
 import { convertFilePathUrl } from "@/utils/convertPath";
 import RecieptRow from "../shared/RecieptRow";
-import { studentDetailsAtom } from "@/features/student/recoil/studentAtom";
 import { studentUserAtom } from "@/features/dashboard/recoil/student/dashboardAtom";
 import { capitalizeStr, formatShortDate } from "@/utils/convertStr";
 
