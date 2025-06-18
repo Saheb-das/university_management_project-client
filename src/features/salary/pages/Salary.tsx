@@ -18,10 +18,7 @@ const Salary = () => {
     );
   }
 
-  const { error, isLoading, getTransactionById } = useSalary(
-    userRole.slice(0, -1),
-    userId
-  );
+  const { error, isLoading } = useSalary(userRole.slice(0, -1), userId);
 
   return (
     <>
@@ -35,15 +32,19 @@ const Salary = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {isLoading && <p>Loading ...</p>}
-              {error && <p>{error.message}</p>}
-              <TransactionLists />
+              {isLoading ? (
+                <p>Loading ...</p>
+              ) : error ? (
+                <p>{error.message}</p>
+              ) : (
+                <TransactionLists />
+              )}
             </CardContent>
           </Card>
 
           {/* right side */}
           <div className="col-span-5">
-            <Outlet context={getTransactionById} />
+            <Outlet />
           </div>
         </div>
       </Container>

@@ -1,5 +1,6 @@
 // external import
 import { useParams } from "react-router";
+import { useRecoilValue } from "recoil";
 
 // internal import
 import Heading from "@/components/shared/Heading";
@@ -11,11 +12,17 @@ import TeachersCard from "../components/ui/TeachersCard";
 import Container from "@/components/shared/Container";
 import { useStudentUserByUserId } from "../hooks/useStudentUserByUserId";
 import { useStudentDashboard } from "../hooks/useStudentDashboard";
+import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
+import { useCollageInfo } from "@/features/collage/hooks/useCollageInfo";
 
 const StudentDashboard = () => {
   const { userId } = useParams();
+  const basicUser = useRecoilValue(userBasicAtom);
+
   useStudentUserByUserId(userId || "");
+  useCollageInfo(basicUser?.collageId || "");
   const { loading, error } = useStudentDashboard();
+
   return (
     <Container>
       <div className="grid grid-cols-12 mb-6 ">

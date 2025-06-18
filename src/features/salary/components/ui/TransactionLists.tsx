@@ -23,6 +23,7 @@ const TransactionLists = () => {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Transaction Id</TableHead>
           <TableHead>Date</TableHead>
           <TableHead>Amount</TableHead>
           <TableHead>Mode</TableHead>
@@ -36,15 +37,18 @@ const TransactionLists = () => {
               onClick={() => navigate(`${baseUrl}/salary/${transaction.id}`)}
               className={`text-base cursor-pointer hover:bg-muted `}
             >
+              <TableCell>{transaction.id}</TableCell>
               <TableCell>{transaction.date}</TableCell>
-              <TableCell>${transaction.amount}</TableCell>
+              <TableCell>{Number(transaction.amount) / 100}</TableCell>
               <TableCell>{transaction.mode}</TableCell>
             </TableRow>
           ))
         ) : (
-          <TableCell className="text-xl font-medium mt-6 capitalize ">
-            there is no transactions
-          </TableCell>
+          <TableRow>
+            <TableCell className="text-xl font-medium mt-6 capitalize ">
+              there is no transactions
+            </TableCell>
+          </TableRow>
         )}
       </TableBody>
     </Table>

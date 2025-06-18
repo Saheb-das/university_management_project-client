@@ -9,7 +9,7 @@ import {
   ITransactionRes,
   ITransactionsRes,
 } from "@/features/transactions/types/transaction";
-import { TTranRes } from "@/types/transaction";
+import { IDetailedTranRes, TTranRes } from "@/types/transaction";
 
 export async function getMyAllTrans(): Promise<IMyTransactionsRes | null> {
   const { method, url } = TransAPIs.all_my_trans;
@@ -19,8 +19,8 @@ export async function getMyAllTrans(): Promise<IMyTransactionsRes | null> {
 
 export async function getTransById(
   id: string,
-  params: any = {}
-): Promise<TTranRes | null> {
+  params: { payType: "salary" | "tutionFee" }
+): Promise<IDetailedTranRes | null> {
   const { method, url } = TransAPIs.trans_by_id;
   const response = await apiClient[method as HttpMethod](url(id), { params });
   return response.data;

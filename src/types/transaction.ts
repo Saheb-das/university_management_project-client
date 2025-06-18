@@ -1,3 +1,8 @@
+interface IApiRes {
+  success: boolean;
+  message: string;
+}
+
 type TTransMode = "online" | "banking" | "cash" | "in_app";
 type TTransType = "salary" | "tutionFee";
 
@@ -28,6 +33,15 @@ type BankAccount = {
 export interface TTranRes extends TTransRes {
   salary?: Salary;
   tutionFee?: TutionFee;
+}
+
+export interface IDetailedTran extends TTransRes {
+  salary?: Salary;
+  tutionFee?: TutionFee;
+}
+
+export interface IDetailedTranRes extends IApiRes {
+  transaction: IDetailedTran;
 }
 
 export type Salary = {

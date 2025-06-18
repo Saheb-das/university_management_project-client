@@ -13,6 +13,7 @@ export const useCollageInfo = (id: string) => {
   const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["collage", id],
     queryFn: () => getCollageById(id),
+    enabled: !!id,
   });
 
   useEffect(() => {

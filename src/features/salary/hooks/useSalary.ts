@@ -22,17 +22,8 @@ export const useSalary = (role: string, userId: string) => {
     }
   }, [isSuccess, data]);
 
-  // Fetch a transaction by ID using React Query caching if available
-  const getTransactionById = async (id: string) => {
-    return useQuery({
-      queryKey: ["transaction", id],
-      queryFn: () => getTransById(id),
-    });
-  };
-
   return {
     isLoading,
     error,
-    getTransactionById,
   };
 };

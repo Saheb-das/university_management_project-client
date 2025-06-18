@@ -23,3 +23,15 @@ export function localDateStrToYYYYMMDD(date: Date) {
 
   return `${arr[2]}-${mm}-${arr[1]}`;
 }
+
+export function capitalizeStr(name: string = "") {
+  return name
+    .split(" ")
+    .map(
+      (word) =>
+        word.length === 1
+          ? word.toUpperCase() // single-letter words like x y z
+          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // normal words
+    )
+    .join(" ");
+}

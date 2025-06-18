@@ -2,7 +2,7 @@
 import { atom } from "recoil";
 
 // types import
-import { TTranRes, TTransRes } from "@/types/transaction";
+import { TTranRes } from "@/types/transaction";
 import { TransWithSalaryOrFee } from "@/features/transactions/types/transaction";
 
 export const salariesTransAtom = atom<TransWithSalaryOrFee[]>({

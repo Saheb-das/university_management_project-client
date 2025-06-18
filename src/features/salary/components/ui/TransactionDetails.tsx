@@ -1,6 +1,6 @@
 // external import
 import { useEffect, useState } from "react";
-import { useOutletContext, useParams } from "react-router";
+import { useParams } from "react-router";
 
 // internal import
 import Heading from "@/components/shared/Heading";
@@ -11,98 +11,178 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UseQueryResult } from "@tanstack/react-query";
 
 // types import
-import { TTranRes } from "@/types/transaction";
+import { IDetailedTran } from "@/types/transaction";
+import { useTranByTranId } from "../../hooks/useTranByTranId";
 
-interface ITransDetails {
-  getTransactionById: (
-    id: string
-  ) => Promise<UseQueryResult<TTranRes | null, Error>>;
-}
-
-const TransactionDetails = async () => {
-  const [transaction, setTransaction] = useState<TTranRes | null>();
-  const [error, setError] = useState<boolean>();
-  const [loaading, setLoading] = useState<boolean>();
+const TransactionDetails = () => {
+  const [transaction, setTransaction] = useState<IDetailedTran>(
+    {} as IDetailedTran
+  );
   const { transactionId } = useParams();
-  const { getTransactionById } = useOutletContext<ITransDetails>();
+  const { data, isSuccess, isLoading, isError } = useTranByTranId(
+    transactionId || "",
+    "salary"
+  );
+
+  if (!transaction) return;
 
   useEffect(() => {
-    const getTrans = async () => {
-      if (transactionId) {
-        const { data, isError, isLoading, isSuccess } =
-          await getTransactionById(transactionId);
-        setError(isError);
-        setLoading(isLoading);
-
-        if (isSuccess) {
-          setTransaction(data);
-        }
-      }
-    };
-
-    getTrans();
-  }, [transactionId]);
+    if (isSuccess && data) {
+      setTransaction(data.transaction);
+    }
+  }, [isSuccess, data]);
 
   return (
     <>
       <Heading title="transaction details" />
-      {loaading && <p>Loading ...</p>}
-      {error && <p>something went wrong</p>}
-      {transaction && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Transaction #{transaction.id}</CardTitle>
-            <CardDescription>
-              Details of the selected transaction
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <dl className="grid grid-cols-2 gap-4">
+      {isLoading ? (
+        <p>Loading ...</p>
+      ) : isError ? (
+        <p>something went wrong</p>
+      ) : (
+        transaction && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">
+                Transaction Summary
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Detailed summary of salary payment transaction
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              <dl className="grid grid-cols-2  gap-4 text-sm">
+                {/* Date */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">Date</dt>
+                  <dd>
+                    {new Date(transaction.date).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </dd>
+                </div>
+
+                {/* Month */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Salary Month
+                  </dt>
+                  <dd>
+                    {new Date(transaction.date).toLocaleDateString("en-IN", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </dd>
+                </div>
+
+                {/* UTR  */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">UTR</dt>
+                  <dd>{transaction.utr}</dd>
+                </div>
+
+                {/* Total Amount */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Total Amount
+                  </dt>
+                  <dd>₹{(Number(transaction.amount) / 100).toFixed(2)}</dd>
+                </div>
+
+                {/* Base Salary */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Salary Amount
+                  </dt>
+                  <dd>
+                    ₹{Number(transaction.salary?.salaryAmount || 0).toFixed(2)}
+                  </dd>
+                </div>
+
+                {/* Performance Bonus */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Performance Bonus
+                  </dt>
+                  <dd>
+                    ₹
+                    {Number(transaction.salary?.performanceBonus || 0).toFixed(
+                      2
+                    )}
+                  </dd>
+                </div>
+
+                {/* Type */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">Type</dt>
+                  <dd>{transaction.type}</dd>
+                </div>
+
+                {/* Payment Method */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Payment Method
+                  </dt>
+                  <dd>{transaction.mode}</dd>
+                </div>
+
+                {/* Sender Details */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Sender Name
+                  </dt>
+                  <dd>
+                    {transaction.salary?.sender.bankAccount.accountHolderName}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Sender A/C No
+                  </dt>
+                  <dd>{transaction.salary?.sender.bankAccount.accountNo}</dd>
+                </div>
+
+                {/* Receiver Details */}
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Receiver Name
+                  </dt>
+                  <dd>
+                    {transaction.salary?.reciever.bankAccount.accountHolderName}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-muted-foreground">
+                    Receiver A/C No
+                  </dt>
+                  <dd>{transaction.salary?.reciever.bankAccount.accountNo}</dd>
+                </div>
+              </dl>
+
+              {/* Description */}
               <div>
-                <dt className="font-semibold">Date</dt>
-                <dd>{transaction.date}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">Amount</dt>
-                <dd>${transaction.amount}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">Type</dt>
-                <dd>{transaction.type}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">Payment Method</dt>
-                <dd>{transaction.mode}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold">From</dt>
-                <dd>
-                  acc-no: {transaction.salary?.sender.bankAccount.accountNo}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-semibold">To</dt>
-                <dd>
-                  acc-no: {transaction.salary?.reciever.bankAccount.accountNo}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-semibold">Trasnaction Id</dt>
-                <dd>{transaction.utr}</dd>
-              </div>
-              <div className="col-span-2">
-                <dt className="font-semibold">Description</dt>
-                <dd>
+                <dt className="font-semibold text-muted-foreground mb-1">
+                  Description
+                </dt>
+                <dd className="text-sm">
                   Monthly salary payment for the period ending{" "}
-                  {transaction.date}
+                  <span className="font-medium">
+                    {new Date(transaction.date).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
                 </dd>
               </div>
-            </dl>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )
       )}
     </>
   );

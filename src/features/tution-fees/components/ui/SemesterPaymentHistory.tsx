@@ -1,7 +1,7 @@
 // external import
 import { ReceiptIndianRupee } from "lucide-react";
 import { Link } from "react-router";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 // internal import
 import {
@@ -14,9 +14,12 @@ import {
 } from "@/components/ui/table";
 import { myAllTransactionAtom } from "@/features/transactions/recoil/transaction";
 import { isoToLocalDateFormat } from "@/utils/convertStr";
+import { Button } from "@/components/ui/button";
+import { recieptTransactionDetailsAtom } from "../../recoil/tutionFeeAtom";
 
 const SemesterPaymentHistory = () => {
   const payHistory = useRecoilValue(myAllTransactionAtom);
+  const setReciept = useSetRecoilState(recieptTransactionDetailsAtom);
   return (
     <>
       <Table className="w-[780px] bg-background ">
@@ -55,18 +58,25 @@ const SemesterPaymentHistory = () => {
                       : "text-red-600"
                   }`}
                 >
-                  {item.tutionFee?.isVerified ? "paid" : "pending"}
+                  {item.tutionFee?.isVerified ? "verified" : "pending"}
                 </TableCell>
                 <TableCell className=" text-center ">
-                  <Link to={`reciept`}>
-                    <ReceiptIndianRupee
-                      className={`${
-                        item.tutionFee?.isVerified
-                          ? "cursor-pointer"
-                          : "cursor-not-allowed text-muted-foreground"
-                      } `}
-                    />
-                  </Link>
+                  <Button
+                    disabled={!item.tutionFee?.isVerified}
+                    variant={"ghost"}
+                    className="p-0"
+                    onClick={() => setReciept(item)}
+                  >
+                    <Link to={`reciept`}>
+                      <ReceiptIndianRupee
+                        className={`${
+                          item.tutionFee?.isVerified
+                            ? "cursor-pointer"
+                            : "cursor-not-allowed text-muted-foreground"
+                        } `}
+                      />
+                    </Link>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))
