@@ -7,6 +7,7 @@ import Login from "@/features/auth/pages/Login";
 import Register from "@/features/auth/pages/Register";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import DashboardRoutes from "./dashboard-routes";
+import ForgotPassword from "@/features/auth/pages/ForgotPassword";
 
 const BaseRouter = () => {
   return (
@@ -16,6 +17,7 @@ const BaseRouter = () => {
         <Route element={<AuthLayout />}>
           <Route index element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* dashboard routes */}

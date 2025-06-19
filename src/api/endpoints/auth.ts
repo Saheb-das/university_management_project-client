@@ -19,4 +19,8 @@ export const AuthAPIs = {
     url: "/auth/reset-password",
     method: "post",
   },
+  get_all_collages: {
+    url: "/auth/collages",
+    method: "get",
+  },
 };

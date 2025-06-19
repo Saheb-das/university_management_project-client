@@ -49,3 +49,26 @@ export interface ILoginClient {
   email: string;
   password: string;
 }
+
+export interface CommonBody {
+  email: string;
+  role: string;
+  collageId: string;
+}
+
+export interface VerifyBody extends CommonBody {
+  enteredOTP: string;
+}
+
+export interface ResetBody extends CommonBody {
+  newPassword: string;
+}
+
+export interface ICollagesRes {
+  success: boolean;
+  message: string;
+  collages: {
+    id: string;
+    name: string;
+  }[];
+}
