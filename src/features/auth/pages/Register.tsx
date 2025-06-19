@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { z } from "zod";
 import { registerSchema } from "@/zod/auth";
 
 // UI Components

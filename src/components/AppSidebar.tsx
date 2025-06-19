@@ -22,11 +22,16 @@ import {
 import NavigationLink from "./NavigationLink";
 import { Moon, Sun } from "lucide-react";
 import { useMode } from "@/hooks/useMode";
+import { useRecoilValue } from "recoil";
+import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
+import { convertFilePathUrl } from "@/utils/convertPath";
 
 const AppSidebar = () => {
   const { darkMode, toggleMode } = useMode();
   const { userRole, userId } = useParams();
   const baseUrl = `${userRole}/${userId}`;
+
+  const basicUser = useRecoilValue(userBasicAtom);
 
   let lists;
   let role = userRole?.slice(0, -1);
@@ -55,7 +60,9 @@ const AppSidebar = () => {
           {/* Profile Image */}
           <div className="relative">
             <img
-              src="" // Replace with actual profile image
+              src={
+                basicUser?.avatar ? convertFilePathUrl(basicUser.avatar) : ""
+              }
               alt="Profile"
               className="w-18 h-18 rounded-full border-1 border-primary shadow-lg"
             />
