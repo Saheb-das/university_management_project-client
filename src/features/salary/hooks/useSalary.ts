@@ -1,5 +1,5 @@
 // external import
-import { getMyAllTrans, getTransById } from "@/api/services/transaction";
+import { getMyAllTrans } from "@/api/services/transaction";
 import { useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 import { useEffect } from "react";

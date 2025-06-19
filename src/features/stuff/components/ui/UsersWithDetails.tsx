@@ -26,7 +26,10 @@ const UsersWithDetails = ({ usersData }: UsersWithDetailsProps) => {
     setSelectedUser(user);
   };
 
-  const handleDelete = (userId: string) => {};
+  // TODO: add delete fucntionality later if needed
+  const handleDelete = (userId: string) => {
+    console.log("user id", userId);
+  };
 
   return (
     <div className="w-full flex gap-4 ">

@@ -22,9 +22,6 @@ const StudentsTable = ({ onStudentClick, onDelete }: StudentTableProps) => {
   const [searchRollNo, setSearchRollNo] = useState("");
 
   // TODO: search functionality added later
-  const filteredStudents = studentsInfo.filter((student) =>
-    student.rollNo?.toLowerCase().includes(searchRollNo.toLowerCase())
-  );
 
   const coloredStatus = (status: string) => {
     switch (status) {

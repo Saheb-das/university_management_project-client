@@ -34,6 +34,8 @@ type TApiResponse = {
     role: TRole;
     email: string;
     collageId: string;
+    name: string;
+    avatar: string;
   };
 };
 

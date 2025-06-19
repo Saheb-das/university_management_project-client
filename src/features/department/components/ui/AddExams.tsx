@@ -224,7 +224,7 @@ export default function Component() {
               className="w-full"
               disabled={!allSelectionsComplete}
             >
-              Submit Registration
+              {isPending ? "Submitting..." : "Submit Registration"}
             </Button>
           </form>
         </CardContent>

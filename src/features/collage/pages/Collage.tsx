@@ -18,16 +18,6 @@ import { userBasicAtom } from "@/recoil/atoms/userBasicAtom";
 import { convertFilePathUrl } from "@/utils/convertPath";
 import ImageViewer from "@/components/shared/ImageViewer";
 
-const collegeData = {
-  name: "Swami Vivekananda University",
-  location: "Bara-khthalia, Barackpore, North 24 paraganas, WB",
-  established: 1965,
-  students: 15000,
-  programs: ["Computer Science", "Business", "Engineering", "Arts", "Medicine"],
-  ranking: 25,
-  acceptanceRate: "68%",
-};
-
 const Collage = () => {
   const basicUser = useRecoilValue(userBasicAtom);
   if (!basicUser) return null;
