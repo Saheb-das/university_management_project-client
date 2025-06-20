@@ -78,23 +78,27 @@ The **University Management System** allows any university or college to registe
 
 ---
 
-## 🖼️ Screenshots
+## 🔐 Demo User Credentials
 
-### 👇 Login & Role-Based Dashboard
+Use the following test accounts to explore different user roles within the application:
 
-![Login Page](https://user-images.githubusercontent.com/your-image-id.png)
+| Role        | Email              | Password     |
+| ----------- | ------------------ | ------------ |
+| Super Admin | `sourav@gmail.com` | `Sourav@123` |
+| Admin       | `rajesh@gmail.com` | `Rajesh@123` |
+| Counselor   | `sneha@gmail.com`  | `Sneha@123`  |
+| Exam Cell   | `rahul@gmail.com`  | `Rahul@123`  |
+| Teacher     | `arjun@gmail.com`  | `Arjun@123`  |
+| Student     | `debu@gmail.com`   | `Debu@123`   |
 
-### 📊 Admin Statistics Dashboard
+> ⚠️ **Note**: These accounts are for demo purposes only. Please do not use them for real data submission.
 
-![Admin Dashboard](https://user-images.githubusercontent.com/your-image-id.png)
+---
 
-### 🗂 Study Materials Upload
+### 🔗 Live Links
 
-![Study Material](https://user-images.githubusercontent.com/your-image-id.png)
-
-### 💬 Chat System
-
-![Chat System](https://user-images.githubusercontent.com/your-image-id.png)
+- **Frontend:** [https://university-management-project-clien.vercel.app](https://university-management-project-clien.vercel.app)
+- **Backend API:** [https://university-management-project-server.onrender.com](https://university-management-project-server.onrender.com)
 
 ---
 
