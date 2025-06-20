@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // Define base URL
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 const API_VERSION = "api/v1";
 
 // Create an Axios instance with default settings
